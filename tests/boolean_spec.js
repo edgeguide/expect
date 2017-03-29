@@ -11,7 +11,7 @@ describe('Expect package (boolean validation):', () => {
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('tests that undefined is not a boolean', () => {
+  it('tests that undefined is a boolean', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       test: 'boolean'
@@ -19,21 +19,21 @@ describe('Expect package (boolean validation):', () => {
       test: undefined
     });
 
-    expect(expectations.wereMet()).toBe(false);
+    expect(expectations.wereMet()).toBe(true);
   });
 
-  it('tests that undefined is a boolean with the allowUndefined flag', () => {
+  it('tests that undefined is not a boolean with the strict flag', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
-        allowUndefined: true
+        strict: true
       }
     }, {
       test: undefined
     });
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(expectations.wereMet()).toBe(false);
   });
 
   it('tests that null is not a boolean', () => {
@@ -64,6 +64,28 @@ describe('Expect package (boolean validation):', () => {
       test: 'boolean'
     }, {
       test: 1
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('tests a string is not a boolean', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'boolean'
+    }, {
+      test: 'foo'
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('tests an array is not a boolean', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'boolean'
+    }, {
+      test: [1,2,3,4,5]
     });
 
     expect(expectations.wereMet()).toBe(false);

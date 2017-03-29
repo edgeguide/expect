@@ -1,0 +1,178 @@
+## Install via NPM
+
+```
+npm install @edgeguideab/expect
+```
+## In the browser
+You will need to require the module and then package your scripts using a bundler like webpack or browserify.
+
+## Usage
+Expect will expose a function with the signature ```function expect(expectations, actualValues, options) ```.
+All arguments are expected to be objects, and the values will be matched based on equal keys in ```expectations``` and ```actualValues```.
+### Validate parameters on the server
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({
+  foo: 'string'
+}, {
+  foo: 'test'
+});
+
+expectations.wereMet(); //true
+
+expectations = expect({
+  foo: 'string'
+}, {});
+
+expectations.wereMet(); //false
+
+console.log(expectations.errors()); //Expected parameter foo to be a string but it was undefined
+
+expectations = expect({
+  foo: 'string'
+}, {
+  foo: 1
+});
+
+expectations.wereMet(); //false
+
+console.log(expectations.errors()); //Expected parameter foo to be a string but it was 1
+```
+
+### Validate several parameters, for example with express
+
+```javascript
+const expect = require('@edgeguideab/expect');
+
+app.put('/user', (req, res) => {
+  let expectations = expect({
+    name: 'string',
+    age: 'number',
+    admin: 'boolean'
+  }, req.body);
+
+  if (!expectations.wereMet()) {
+    res.status(400).send({
+      msg: expectations.errors()
+    });
+    return;
+  }
+
+  //Our parameters were correct, add the user to our application
+});
+```
+### Types
+| Type    | Available options   | Description                                                                       |
+|---------|---------------------|-----------------------------------------------------------------------------------|
+| string  | allowNull | expects a string.                                                                           |
+| array   | allowNull | expects an array.                                                                           |
+| boolean | allowNull, strict | expects a boolean                                                           |
+| date    | allowNull | expects either a valid date object or date string                                           |
+| email   | allowNull, strict | expects a string formatted as an email address                                      |
+| number  | allowNull | expects a number                                                                            |
+| object  | allowNull | expects an object. Note that arrays will __not__ count as objects                           |
+| phone   | allowNull, strict | expects a phone number                                                              |
+
+### options
+In order to use options certain elements, you need to specify the types with objects instead of string, with an additional "type" key. You can specify options for individual values as follows:
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({
+  foo: {
+    type: 'string',
+    allowNull: true
+  },
+  bar: 'string'
+}, {
+  bar: 'deadbeef'
+});
+
+expectations.wereMet(); //true
+```
+#### allowNull
+Allow null is available for all types. If set, an expected value can be matched against null and undefined. In other words, it will make a value optional.
+
+#### strict
+The strict option is available for email, phone and boolean types.
+
+##### Email
+It will change the internal regular expression with which these values are validated. For email, the normal expression is ```/.+@.+/```, while the strict option sets it to
+```
+/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+```
+##### Phone
+For phone numbers, ```/^\D?[\d\s\(\)]+$/``` is normally used, but it uses
+```
+/^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/
+```
+in strict mode.
+
+##### Boolean
+For boolean values, if the strict option is specified the value __must__ be of type boolean. If the strict option is not specified, ```undefined``` also counts as a boolean.
+
+### Global options
+If you want to make all values optional, you can set a global ```allowNull```option.
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({
+  foo: 'string',
+  bar: 'string'
+}, {}, {
+  allowNull: true
+});
+
+expectations.wereMet(); //true
+```
+### Matchers
+Another thing that can be added to a value are matchers. Matchers will match the value against a specific function, and only pass if it matches this function.
+#### equalTo
+The ```equalTo``` matcher will match another value specified by a key.
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({
+  foo: {
+    type: 'string',
+    allowNull: true,
+    equalTo: 'bar'
+  },
+  bar: 'string'
+}, {
+  foo: 'deadbeef',
+  bar: 'deadbeef'
+});
+
+expectations.wereMet(); //true
+
+let expectations = expect({
+  foo: {
+    type: 'string',
+    allowNull: true,
+    equalTo: 'bar'
+  },
+  bar: {
+    type: 'string',
+    allowNull: true
+  }
+}, {});
+
+expectations.wereMet(); //true, since both have the allowNull option and are both undefined (equal)
+
+expectations = expect({
+  foo: {
+    type: 'string',
+    allowNull: true,
+    equalTo: 'bar'
+  },
+  bar: 'string'
+}, {
+  foo: 'deadbeef',
+  bar: 'feebdaed'
+});
+
+expectations.wereMet(); //false
+```
+
+## Author
+
+ [EdgeGuide AB](http://www.edgeguide.com)
