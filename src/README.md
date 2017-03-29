@@ -9,6 +9,7 @@ You will need to require the module and then package your scripts using a bundle
 ## Usage
 Expect will expose a function with the signature ```function expect(expectations, actualValues, options) ```.
 All arguments are expected to be objects, and the values will be matched based on equal keys in ```expectations``` and ```actualValues```.
+
 ### Validate parameters on the server
 
 ```javascript
@@ -126,7 +127,9 @@ expectations.wereMet(); //true
 ```
 ### Matchers
 Another thing that can be added to a value are matchers. Matchers will match the value against a specific function, and only pass if it matches this function.
+
 #### equalTo
+
 The ```equalTo``` matcher will match another value specified by a key.
 ```javascript
 const expect = require('@edgeguideab/expect');
