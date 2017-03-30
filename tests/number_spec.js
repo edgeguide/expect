@@ -101,4 +101,18 @@ describe('Expect package (number validation):', () => {
 
     expect(expectations.wereMet()).toBe(true);
   });
+
+  it('test that "1" is not a number with the strict option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        strict: true
+      }
+    }, {
+      test: "1"
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
 });

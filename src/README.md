@@ -71,7 +71,7 @@ app.put('/user', (req, res) => {
 | boolean | allowNull, strict | expects a boolean                                                           |
 | date    | allowNull | expects either a valid date object or date string                                           |
 | email   | allowNull, strict | expects a string formatted as an email address                                      |
-| number  | allowNull | expects a number                                                                            |
+| number  | allowNull, strict | expects a number                                                                            |
 | object  | allowNull | expects an object. Note that arrays will __not__ count as objects                           |
 | phone   | allowNull, strict | expects a phone number                                                              |
 
@@ -111,6 +111,9 @@ in strict mode.
 
 ##### Boolean
 For boolean values, if the strict option is specified the value __must__ be of type boolean. If the strict option is not specified, ```undefined``` also counts as a boolean.
+
+##### Number
+Values are generally regarded as numbers if they can be parsed to numbers (isNaN evaluates to false). With the strict mode, they have to actually be of type number in order to be regarded as numbers.
 
 ### Global options
 If you want to make all values optional, you can set a global ```allowNull```option.
