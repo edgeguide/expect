@@ -16,7 +16,7 @@ function test(parameter, expected, actualValues, options) {
 
   if (value !== equalValue) {
     return {
-      error: `Expected parameter ${parameter} to be equal to ${equalField} but it wasn\'t. ${parameter}=${actual}, ${equalField}=${actualValues[equalField]}`,
+      error: options.errorCode === undefined ? `Expected parameter ${parameter} to be equal to ${equalField} but it wasn\'t. ${parameter}=${actual}, ${equalField}=${actualValues[equalField]}` : options.errorCode,
       valid: false
     };
   }

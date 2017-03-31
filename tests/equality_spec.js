@@ -160,6 +160,25 @@ describe('Expect package (equality validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
+  it('tests respects the errorCode option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'number',
+        equalTo: 'bar',
+        errorCode: 'unequality'
+      },
+      bar: 'number'
+    }, {
+      foo: 0,
+      bar: 1
+    });
+
+    expect(expectations.errors()).toEqual({
+      foo: 'unequality'
+    });
+  });
+
   it('tests can handle a match error and a validation error', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
