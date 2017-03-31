@@ -166,7 +166,7 @@ describe('Expect package (equality validation):', () => {
       foo: {
         type: 'number',
         equalTo: 'bar',
-        errorCode: 'unequality'
+        equalityErrorCode: 'unequality'
       },
       bar: 'number'
     }, {
