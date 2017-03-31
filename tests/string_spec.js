@@ -66,6 +66,18 @@ describe('Expect package (string validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
+  it('empty string should not be a string', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'string'
+    }, {
+      test: ''
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+
   it('respects the allowNull option', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
@@ -75,6 +87,20 @@ describe('Expect package (string validation):', () => {
       }
     }, {
       test: null
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('empty string should be allowed with the allowNull options', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        allowNull: true
+      }
+    }, {
+      test: ''
     });
 
     expect(expectations.wereMet()).toBe(true);
