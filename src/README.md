@@ -66,14 +66,14 @@ app.put('/user', (req, res) => {
 ### Types
 | Type    | Available options   | Description                                                                       |
 |---------|---------------------|-----------------------------------------------------------------------------------|
-| string  | allowNull | expects a string.                                                                           |
-| array   | allowNull | expects an array.                                                                           |
-| boolean | allowNull, strict | expects a boolean                                                           |
-| date    | allowNull | expects either a valid date object or date string                                           |
-| email   | allowNull, strict | expects a string formatted as an email address                                      |
-| number  | allowNull, strict | expects a number                                                                            |
-| object  | allowNull | expects an object. Note that arrays will __not__ count as objects                           |
-| phone   | allowNull, strict | expects a phone number                                                              |
+| string  | allowNull, errorCode | expects a string.                                                                           |
+| array   | allowNull, errorCode | expects an array.                                                                           |
+| boolean | allowNull, errorCode, strict | expects a boolean                                                                   |
+| date    | allowNull, errorCode | expects either a valid date object or date string                                           |
+| email   | allowNull, errorCode, strict | expects a string formatted as an email address                                      |
+| number  | allowNull, errorCode, strict | expects a number                                                                    |
+| object  | allowNull, errorCode | expects an object. Note that arrays will __not__ count as objects                           |
+| phone   | allowNull, errorCode, strict | expects a phone number                                                              |
 
 ### options
 In order to use options certain elements, you need to specify the types with objects instead of string, with an additional "type" key. You can specify options for individual values as follows:
@@ -93,6 +93,35 @@ expectations.wereMet(); //true
 ```
 #### allowNull
 Allow null is available for all types. If set, an expected value can be matched against null and undefined. In other words, it will make a value optional.
+
+#### errorCode
+Changes the value of the returned error. Default is a string describing what went wrong, but if you specify an error code it will be returned instead
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: 'string'
+}, {
+  bar: {}
+});
+
+expectations.wereMet(); //false
+expectations.errors(); //{ bar: 'Expected parameter bar to be a string but it was {}' }
+
+
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'string',
+    errorCode: 'bar is required'
+  }
+}, {
+  bar: {}
+});
+
+expectations.wereMet(); //false
+expectations.errors(); //{ bar: 'bar is required' }
+```
 
 #### strict
 The strict option is available for email, phone and boolean types.

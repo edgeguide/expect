@@ -107,4 +107,18 @@ describe('Expect package (email validation):', () => {
 
     expect(expectations.wereMet()).toBe(true);
   });
+
+  it('respects the errorCode option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'email',
+        errorCode: 'missing parameter'
+      }
+    }, {});
+
+    expect(expectations.errors()).toEqual({
+      test: 'missing parameter'
+    });
+  });
 });

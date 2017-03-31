@@ -115,4 +115,18 @@ describe('Expect package (number validation):', () => {
 
     expect(expectations.wereMet()).toBe(false);
   });
+
+  it('respects the errorCode option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        errorCode: 'missing parameter'
+      }
+    }, {});
+
+    expect(expectations.errors()).toEqual({
+      test: 'missing parameter'
+    });
+  });
 });

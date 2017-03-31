@@ -159,4 +159,20 @@ describe('Expect package (equality validation):', () => {
 
     expect(expectations.wereMet()).toBe(false);
   });
+
+  it('tests can handle a match error and a validation error', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'number',
+        equalTo: 'bar'
+      },
+      bar: 'number'
+    }, {
+      foo: undefined,
+      bar: 1
+    });
+    expect(Array.isArray(expectations.errors().foo)).toBe(true);
+    expect(expectations.errors().foo.length).toBe(2);
+  });
 });

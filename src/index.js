@@ -4,8 +4,9 @@ const types = require('./types');
 const matchers = require('./matchers');
 
 module.exports = function(expected, actualValues, options) {
-  var errors = [];
+  var errors = {};
   options = options || {};
+  actualValues = actualValues || {};
   var valid = true;
 
   Object.keys(expected).forEach(parameter => {
@@ -18,7 +19,7 @@ module.exports = function(expected, actualValues, options) {
 
     if (!match.valid) {
       valid = false;
-      errors.push(match.error);
+      errors[parameter] = match.error;
     }
 
     if ((allowNull || options.allowNull) && (actual === undefined || actual === null)) {
@@ -28,7 +29,12 @@ module.exports = function(expected, actualValues, options) {
     let validation = types.validate(type, parameter, actual, parameterOptions);
     if (!validation.valid) {
       valid = false;
-      errors.push(validation.error);
+      if (errors[parameter]) {
+        errors[parameter] = Array.isArray(errors[parameter]) ? [...errors[parameter]] : [errors[parameter]];
+        errors[parameter].push(validation.error);
+      } else {
+        errors[parameter] = validation.error;
+      }
     }
   });
 
@@ -37,7 +43,7 @@ module.exports = function(expected, actualValues, options) {
       return valid;
     },
     errors: function() {
-      return errors.join(', ');
+      return errors;
     }
   };
 };

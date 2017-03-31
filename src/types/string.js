@@ -1,7 +1,7 @@
-module.exports = (parameter, actual) => {  
+module.exports = (parameter, actual, options) => {
   if (typeof actual !== 'string') {
     return {
-      error: `Expected parameter ${parameter} to be a string but it was ${JSON.stringify(actual)}`,
+      error: options.errorCode === undefined ? `Expected parameter ${parameter} to be a string but it was ${JSON.stringify(actual)}` : options.errorCode,
       valid: false
     };
   }

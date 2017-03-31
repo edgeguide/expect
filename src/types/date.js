@@ -1,4 +1,4 @@
-module.exports = (parameter, actual) => {
+module.exports = (parameter, actual, options) => {
   if (actual === null || actual === undefined) {
     return error();
   }
@@ -15,7 +15,7 @@ module.exports = (parameter, actual) => {
 
   function error() {
     return {
-      error: `Expected parameter ${parameter} to be a date but it was ${JSON.stringify(actual)}`,
+      error: options.errorCode === undefined ? `Expected parameter ${parameter} to be a date but it was ${JSON.stringify(actual)}` : options.errorCode,
       valid: false
     };
   }

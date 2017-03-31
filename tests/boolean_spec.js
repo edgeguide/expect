@@ -104,4 +104,20 @@ describe('Expect package (boolean validation):', () => {
 
     expect(expectations.wereMet()).toBe(true);
   });
+
+  it('respects the errorCode option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        errorCode: 'missing parameter'
+      }
+    }, {
+      test: 'hello world'
+    });
+
+    expect(expectations.errors()).toEqual({
+      test: 'missing parameter'
+    });
+  });
 });
