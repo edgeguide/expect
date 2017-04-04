@@ -1,6 +1,18 @@
+const util = require('../util');
+
 module.exports = (parameter, actual, options) => {
-  if (actual === null || actual === undefined || Array.isArray(actual)) {
+  if (Array.isArray(actual)) {
     return error();
+  }
+
+  if (util.isNull(actual)) {
+    let errorCode = options.nullCode || options.errorCode;
+    errorCode = errorCode || `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(actual)}`;
+
+    return {
+      error: [errorCode],
+      valid: false
+    };
   }
 
   if (typeof actual !== 'object') {

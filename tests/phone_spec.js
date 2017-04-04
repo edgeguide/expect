@@ -173,4 +173,19 @@ describe('Expect package (phone validation):', () => {
 
     expect(expectations.wereMet()).toBe(false);
   });
+
+  it('respects the nullCode option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'phone',
+        nullCode: 'missing parameter',
+        errorCode: 'error'
+      }
+    }, {});
+
+    expect(expectations.errors()).toEqual({
+      test: ['missing parameter']
+    });
+  });
 });

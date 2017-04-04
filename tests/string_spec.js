@@ -166,4 +166,19 @@ describe('Expect package (string validation):', () => {
 
     expect(expectations.wereMet()).toBe(false);
   });
+
+  it('respects the nullCode option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        nullCode: 'missing parameter',
+        errorCode: 'error'
+      }
+    }, {});
+
+    expect(expectations.errors()).toEqual({
+      test: ['missing parameter']
+    });
+  });
 });

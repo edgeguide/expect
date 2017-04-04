@@ -154,4 +154,20 @@ describe('Expect package (boolean validation):', () => {
 
     expect(expectations.wereMet()).toBe(false);
   });
+
+  it('respects the nullCode option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        nullCode: 'missing parameter',
+        errorCode: 'error',
+        strict: true
+      }
+    }, {});
+
+    expect(expectations.errors()).toEqual({
+      test: ['missing parameter']
+    });
+  });
 });
