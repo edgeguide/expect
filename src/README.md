@@ -28,7 +28,7 @@ expectations = expect({
 
 expectations.wereMet(); //false
 
-console.log(expectations.errors()); //Expected parameter foo to be a string but it was undefined
+console.log(expectations.errors()); // { foo: [Expected parameter foo to be a string but it was undefined] }
 
 expectations = expect({
   foo: 'string'
@@ -38,7 +38,7 @@ expectations = expect({
 
 expectations.wereMet(); //false
 
-console.log(expectations.errors()); //Expected parameter foo to be a string but it was 1
+console.log(expectations.errors()); //{ foo: [Expected parameter foo to be a string but it was 1] }
 ```
 
 ### Validate several parameters, for example with express
@@ -66,14 +66,14 @@ app.put('/user', (req, res) => {
 ### Types
 | Type    | Available options   | Description                                                                       |
 |---------|---------------------|-----------------------------------------------------------------------------------|
-| string  | allowNull, errorCode | expects a string.                                                                           |
-| array   | allowNull, errorCode | expects an array.                                                                           |
-| boolean | allowNull, errorCode, strict | expects a boolean                                                                   |
-| date    | allowNull, errorCode | expects either a valid date object or date string                                           |
-| email   | allowNull, errorCode, strict | expects a string formatted as an email address                                      |
-| number  | allowNull, errorCode, strict | expects a number                                                                    |
-| object  | allowNull, errorCode | expects an object. Note that arrays will __not__ count as objects                           |
-| phone   | allowNull, errorCode, strict | expects a phone number                                                              |
+| string  | allowNull, errorCode, requiredIf | expects a string.                                                                           |
+| array   | allowNull, errorCode, requiredIf | expects an array.                                                                           |
+| boolean | allowNull, errorCode, strict, requiredIf | expects a boolean                                                                   |
+| date    | allowNull, errorCode, requiredIf | expects either a valid date object or date string                                           |
+| email   | allowNull, errorCode, strict, requiredIf | expects a string formatted as an email address                                      |
+| number  | allowNull, errorCode, strict, requiredIf | expects a number                                                                    |
+| object  | allowNull, errorCode, requiredIf | expects an object. Note that arrays will __not__ count as objects                           |
+| phone   | allowNull, errorCode, strict, requiredIf | expects a phone number                                                              |
 
 ### options
 In order to use options certain elements, you need to specify the types with objects instead of string, with an additional "type" key. You can specify options for individual values as follows:
@@ -106,7 +106,7 @@ let expectations = expect({
 });
 
 expectations.wereMet(); //false
-expectations.errors(); //{ bar: 'Expected parameter bar to be a string but it was {}' }
+expectations.errors(); //{ bar: ['Expected parameter bar to be a string but it was {}'] }
 
 
 const expect = require('@edgeguideab/expect');
@@ -120,7 +120,39 @@ let expectations = expect({
 });
 
 expectations.wereMet(); //false
-expectations.errors(); //{ bar: 'bar is required' }
+expectations.errors(); //{ bar: ['bar is required'] }
+```
+
+#### requiredIf
+An element is allowed to be null or undefined if another value is null or undefined
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'string',
+    requiredIf: 'foo'
+  },
+  foo: 'string'
+}, {});
+
+expectations.wereMet(); //true
+
+
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'string',
+    errorCode: 'bar is required if foo',
+    requiredIf: 'foo'
+  },
+  foo: 'string'
+}, {
+  foo: 'test'
+});
+
+expectations.wereMet(); //false
+expectations.errors(); //{ bar: ['bar is required if foo'] }
 ```
 
 #### strict
@@ -206,6 +238,34 @@ expectations = expect({
 });
 
 expectations.wereMet(); //false
+```
+
+#### regexp
+The ```regexp``` matcher will match a value against a regular expression. The ```regexp``` parameter __must__ be a regexp object.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({
+  foo: {
+    type: 'string',
+    regexp: /.*/
+  }
+}, {
+  foo: 'deadbeef'
+});
+
+expectations.wereMet(); //true
+
+let expectations = expect({
+  foo: {
+    type: 'string',
+    regexp: /^\d*$/
+  }
+}, {
+  foo: 'deadbeef'
+});
+
+expectations.wereMet(); //false, 'deadbeef' is not a number
 ```
 
 ## Author

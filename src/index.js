@@ -11,15 +11,22 @@ module.exports = function(expected, actualValues, options) {
 
   Object.keys(expected).forEach(parameter => {
     let parameterOptions = typeof expected[parameter] === 'object' ? expected[parameter] : {};
-    var actual = actualValues[parameter];
-    var type = parameterOptions.type || expected[parameter];
-    var allowNull =  parameterOptions.allowNull || false;
+    let actual = actualValues[parameter];
+    let type = parameterOptions.type || expected[parameter];
+    let allowNull =  parameterOptions.allowNull || false;
+    let requiredIf = parameterOptions.requiredIf || false;
 
-    let match = matchers.match(parameter, expected, actualValues, parameterOptions);
+    let matches = matchers.match(parameter, expected, actualValues, parameterOptions);
 
-    if (!match.valid) {
+    if (!matches.valid) {
       valid = false;
-      errors[parameter] = match.error;
+      errors[parameter] = matches.errors;
+    }
+
+    if (requiredIf && (actual === undefined || actual === null)) {
+      if (actualValues[requiredIf] === undefined || actualValues[requiredIf] === null) {
+        return;
+      }
     }
 
     if ((allowNull || options.allowNull) && (actual === undefined || actual === null)) {
@@ -31,7 +38,7 @@ module.exports = function(expected, actualValues, options) {
       valid = false;
       if (errors[parameter]) {
         errors[parameter] = Array.isArray(errors[parameter]) ? [...errors[parameter]] : [errors[parameter]];
-        errors[parameter].push(validation.error);
+        errors[parameter] = errors[parameter].concat(validation.error);
       } else {
         errors[parameter] = validation.error;
       }

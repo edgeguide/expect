@@ -15,7 +15,7 @@ module.exports = (parameter, actual, options) => {
 
   function error() {
     return {
-      error: options.errorCode === undefined ? `Expected parameter ${parameter} to be a date but it was ${JSON.stringify(actual)}` : options.errorCode,
+      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a date but it was ${JSON.stringify(actual)}` : options.errorCode],
       valid: false
     };
   }

@@ -5,7 +5,7 @@ module.exports = (parameter, actual, options) => {
   let regexp = options.strict ? STRICT_EMAIL_REGEXP : EMAIL_REGEXP;
   if (!regexp.test(actual)) {
     return {
-      error: options.errorCode === undefined ? `Expected parameter ${parameter} to be email address but it was incorrectly formatted: ${JSON.stringify(actual)}` : options.errorCode,
+      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be email address but it was incorrectly formatted: ${JSON.stringify(actual)}` : options.errorCode],
       valid: false
     };
   }

@@ -137,7 +137,34 @@ describe('Expect package (phone validation):', () => {
     }, {});
 
     expect(expectations.errors()).toEqual({
-      test: 'missing parameter'
+      test: ['missing parameter']
     });
+  });
+
+  it('is not required if another field is undefined', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'phone',
+        requiredIf: 'foo'
+      }
+    }, {});
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('is required if another field is not undefined', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'phone',
+        requiredIf: 'foo'
+      },
+      foo: 'string'
+    }, {
+      foo: '123'
+    });
+
+    expect(expectations.wereMet()).toBe(false);
   });
 });

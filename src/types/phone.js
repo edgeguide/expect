@@ -5,7 +5,7 @@ module.exports = (parameter, actual, options) => {
   let regexp = options.strict ? PHONE_REGEXP_STRICT : PHONE_REGEXP;
   if (!regexp.test(actual)) {
     return {
-      error: options.errorCode === undefined ? `Expected parameter ${parameter} to be a phone number but it was incorrectly formatted: (${JSON.stringify(actual)})` : options.errorCode,
+      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a phone number but it was incorrectly formatted: (${JSON.stringify(actual)})` : options.errorCode],
       valid: false
     };
   }
