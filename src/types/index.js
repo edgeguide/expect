@@ -6,6 +6,7 @@ const objectValidation = require('./object');
 const phoneValidation = require('./phone');
 const stringValidation = require('./string');
 const dateValidation = require('./date');
+const identityNumberValidation = require('./identityNumber');
 
 module.exports = {
   validate
@@ -29,6 +30,8 @@ function validate(type, parameter, value, parameterOptions) {
       return arrayValidation(parameter, value, parameterOptions);
     case 'boolean':
       return booleanValidation(parameter, value, parameterOptions);
+    case 'identityNumber':
+      return identityNumberValidation(parameter, value, parameterOptions);
     default:
       throw new Error(`${parameter} could not be validated against type "${type}": it has not been defined`);
       return;

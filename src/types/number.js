@@ -9,7 +9,6 @@ module.exports = (parameter, actual, options) => {
       error: [errorCode],
       valid: false
     };
-
   }
 
   if (isNaN(parseFloat(actual)) || (options.strict ? typeof actual !== 'number' : false)) {
