@@ -123,6 +123,9 @@ expectations.wereMet(); //false
 expectations.errors(); //{ bar: ['bar is required'] }
 ```
 
+#### nullCode
+Like errorCode, but only changed the returned error if it was a null error
+
 #### requiredIf
 An element is allowed to be null or undefined if another value is falsy
 
