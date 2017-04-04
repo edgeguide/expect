@@ -116,14 +116,20 @@ describe('Expect package (date validation):', () => {
     });
   });
 
-  it('is not required if another field is undefined', () => {
+  it('is not required if another field is falsy', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       test: {
         type: 'date',
         requiredIf: 'foo'
+      },
+      foo: {
+        type: 'string',
+        allowNull: true
       }
-    }, {});
+    }, {
+      foo: ''
+    });
 
     expect(expectations.wereMet()).toBe(true);
   });

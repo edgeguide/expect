@@ -24,7 +24,7 @@ module.exports = function(expected, actualValues, options) {
     }
 
     if (requiredIf && (actual === undefined || actual === null)) {
-      if (actualValues[requiredIf] === undefined || actualValues[requiredIf] === null) {
+      if (!actualValues[requiredIf]) {
         return;
       }
     }

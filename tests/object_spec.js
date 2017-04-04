@@ -83,14 +83,20 @@ describe('Expect package (object validation):', () => {
     });
   });
 
-  it('is not required if another field is undefined', () => {
+  it('is not required if another field is falsy', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       test: {
         type: 'object',
         requiredIf: 'test'
+      },
+      foo: {
+        type: 'string',
+        allowNull: true
       }
-    }, {});
+    }, {
+      foo: ''
+    });
 
     expect(expectations.wereMet()).toBe(true);
   });

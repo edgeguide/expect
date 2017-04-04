@@ -124,7 +124,7 @@ expectations.errors(); //{ bar: ['bar is required'] }
 ```
 
 #### requiredIf
-An element is allowed to be null or undefined if another value is null or undefined
+An element is allowed to be null or undefined if another value is falsy
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -134,7 +134,9 @@ let expectations = expect({
     requiredIf: 'foo'
   },
   foo: 'string'
-}, {});
+}, {
+  foo: ''
+});
 
 expectations.wereMet(); //true
 
