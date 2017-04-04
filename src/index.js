@@ -2,6 +2,7 @@ const PHONE_REGEXP = /^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/;
 
 const types = require('./types');
 const matchers = require('./matchers');
+const util = require('./util');
 
 module.exports = function(expected, actualValues, options) {
   var errors = {};
@@ -23,13 +24,13 @@ module.exports = function(expected, actualValues, options) {
       errors[parameter] = matches.errors;
     }
 
-    if (requiredIf && (actual === undefined || actual === null)) {
+    if (requiredIf && util.isNull(actual)) {
       if (!actualValues[requiredIf]) {
         return;
       }
     }
 
-    if ((allowNull || options.allowNull) && (actual === undefined || actual === null)) {
+    if ((allowNull || options.allowNull) && util.isNull(actual)) {
       return;
     }
 
