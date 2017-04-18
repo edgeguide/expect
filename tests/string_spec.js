@@ -300,4 +300,33 @@ describe('Expect package (string validation):', () => {
       test: '1337'
     });
   });
+
+  it('can parse null', () => {
+    let testObject =  {
+      test: null
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.wereMet()).toEqual(true);
+  });
+
+  it('fails to parse undefined', () => {
+    let testObject =  {
+      test: undefined
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string'
+      }
+    }, testObject);
+
+    expect(expectations.wereMet()).toEqual(false);
+  });
 });

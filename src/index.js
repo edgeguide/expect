@@ -25,17 +25,18 @@ module.exports = function(expected, actualValues, options) {
       errors[parameter] = matches.errors;
     }
 
-    if (requiredIf && util.isNull(actual)) {
+    let validation = types.validate(type, parameter, actual, parameterOptions);
+
+    if (requiredIf && util.isNull(validation.parsed)) {
       if (!actualValues[requiredIf]) {
         return;
       }
     }
 
-    if ((allowNull || options.allowNull) && util.isNull(actual)) {
+    if ((allowNull || options.allowNull) && util.isNull(validation.parsed)) {
       return;
     }
 
-    let validation = types.validate(type, parameter, actual, parameterOptions);
     if (!validation.valid) {
       valid = false;
       if (errors[parameter]) {
