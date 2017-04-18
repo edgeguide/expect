@@ -177,4 +177,67 @@ describe('Expect package (number validation):', () => {
       test: ['missing parameter']
     });
   });
+
+  it('parses the actual value if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    }, {
+      test: '1'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('doesn\'t mutate the input value when parsing', () => {
+    let testObject =  {
+      test: '1337'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    }, testObject);
+
+    expect(testObject.test).toEqual(jasmine.any(String));
+    expect(testObject.test).toEqual(testObject.test);
+  });
+
+  it('correctly returns the parsed value', () => {
+    let testObject =  {
+      test: '1337'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: 1337
+    });
+  });
+
+  it('returns the initial if no parsing is specified', () => {
+    let testObject =  {
+      test: '1337'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'date'
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: '1337'
+    });
+  });
 });

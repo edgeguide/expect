@@ -1,6 +1,10 @@
 const util = require('../util');
 
 module.exports = (parameter, actual, options) => {
+  if (options.parse) {
+    actual = new Date(actual);
+  }
+
   if (util.isNull(actual)) {
     let errorCode = options.nullCode || options.errorCode;
     errorCode = errorCode ||  `Expected parameter ${parameter} to be a boolean but it was ${JSON.stringify(actual)}`;
@@ -17,7 +21,7 @@ module.exports = (parameter, actual, options) => {
     return error(errorCode);
   }
 
-  return { valid: true };
+  return { valid: true, parsed: actual };
 
   function error(errorCode) {
     return {

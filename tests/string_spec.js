@@ -181,4 +181,123 @@ describe('Expect package (string validation):', () => {
       test: ['missing parameter']
     });
   });
+
+  it('parses numbers if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    }, {
+      test: 1
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('parses dates if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    }, {
+      test: new Date('2017-01-01')
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('parses arrays if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    }, {
+      test: [1,2,3]
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('parses objects if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    }, {
+      test: { foo: 'bar' }
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('parses booleans if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    }, {
+      test: false
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('doesn\'t mutate the input value when parsing', () => {
+    let testObject =  {
+      test: 1337
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    }, testObject);
+
+    expect(testObject.test).toEqual(jasmine.any(Number));
+    expect(testObject.test).toEqual(testObject.test);
+  });
+
+  it('correctly returns the parsed value', () => {
+    let testObject =  {
+      test: 1337
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: '1337'
+    });
+  });
+
+  it('returns the initial if no parsing is specified', () => {
+    let testObject =  {
+      test: '1337'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string'
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: '1337'
+    });
+  });
 });

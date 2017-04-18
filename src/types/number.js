@@ -1,6 +1,10 @@
 const util = require('../util');
 
 module.exports = (parameter, actual, options) => {
+  if (options.parse) {
+    actual = parseFloat(actual);
+  }
+
   if (util.isNull(actual)) {
     let errorCode = options.nullCode || options.errorCode;
     errorCode = errorCode || `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}`;
@@ -18,5 +22,5 @@ module.exports = (parameter, actual, options) => {
     };
   }
 
-  return { valid: true };
+  return { valid: true, parsed: actual };
 }

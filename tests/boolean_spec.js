@@ -170,4 +170,67 @@ describe('Expect package (boolean validation):', () => {
       test: ['missing parameter']
     });
   });
+
+  it('parses the actual value if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true
+      }
+    }, {
+      test: 'true'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('doesn\'t mutate the input value when parsing', () => {
+    let testObject =  {
+      test: 'true'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true
+      }
+    }, testObject);
+
+    expect(testObject.test).toEqual(jasmine.any(String));
+    expect(testObject.test).toEqual('true');
+  });
+
+  it('correctly returns the parsed value', () => {
+    let testObject =  {
+      test: 'true'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: true
+    });
+  });
+
+  it('returns the initial if no parsing is specified', () => {
+    let testObject =  {
+      test: true
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean'
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: true
+    });
+  });
 });

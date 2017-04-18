@@ -5,10 +5,11 @@ const matchers = require('./matchers');
 const util = require('./util');
 
 module.exports = function(expected, actualValues, options) {
-  var errors = {};
   options = options || {};
   actualValues = actualValues || {};
-  var valid = true;
+  let errors = {};
+  let parsedValues = {};
+  let valid = true;
 
   Object.keys(expected).forEach(parameter => {
     let parameterOptions = typeof expected[parameter] === 'object' ? expected[parameter] : {};
@@ -43,6 +44,8 @@ module.exports = function(expected, actualValues, options) {
       } else {
         errors[parameter] = validation.error;
       }
+    } else {
+      parsedValues[parameter] = validation.parsed;
     }
   });
 
@@ -52,6 +55,9 @@ module.exports = function(expected, actualValues, options) {
     },
     errors: function() {
       return errors;
+    },
+    getParsed: function() {
+      return parsedValues;
     }
   };
 };

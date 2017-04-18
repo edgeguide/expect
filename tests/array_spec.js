@@ -140,4 +140,67 @@ describe('Expect package (array validation):', () => {
       test: ['missing parameter']
     });
   });
+
+  it('parses the actual value if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        parse: true
+      }
+    }, {
+      test: '[1,2,3]'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('doesn\'t mutate the input value when parsing', () => {
+    let testObject =  {
+      test: '[1,2,3]'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        parse: true
+      }
+    }, testObject);
+
+    expect(testObject.test).toEqual(jasmine.any(String));
+    expect(testObject.test).toEqual('[1,2,3]');
+  });
+
+  it('correctly returns the parsed value', () => {
+    let testObject =  {
+      test: '[1,2,3]'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: [1,2,3]
+    });
+  });
+
+  it('returns the initial if no parsing is specified', () => {
+    let testObject =  {
+      test: [1,2,3]
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array'
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: [1,2,3]
+    });
+  });
 });

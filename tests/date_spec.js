@@ -163,4 +163,65 @@ describe('Expect package (date validation):', () => {
       test: ['missing parameter']
     });
   });
+
+  it('parses the actual value if the parse option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'date',
+        parse: true
+      }
+    }, {
+      test: '2017-01-01'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('doesn\'t mutate the input value when parsing', () => {
+    let testObject =  {
+      test: new Date()
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'date',
+        parse: true
+      }
+    }, testObject);
+
+    expect(testObject.test).toEqual(jasmine.any(Date));
+    expect(testObject.test).toEqual(testObject.test);
+  });
+
+  it('correctly returns the parsed value', () => {
+    let testObject =  {
+      test: '2017-01-01'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'date',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: new Date('2017-01-01')
+    });
+  });
+
+  it('returns the initial if no parsing is specified', () => {
+    let testObject =  {
+      test: new Date()
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'date'
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual(testObject);
+  });
 });
