@@ -224,4 +224,21 @@ describe('Expect package (date validation):', () => {
 
     expect(expectations.getParsed()).toEqual(testObject);
   });
+
+
+  it('doesn\'t destroy correct values when parsing', () => {
+    let testObject =  {
+      test: new Date()
+    };
+
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'date',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual(testObject);
+  });
 });

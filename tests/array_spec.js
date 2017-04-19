@@ -203,4 +203,20 @@ describe('Expect package (array validation):', () => {
       test: [1,2,3]
     });
   });
+
+  it('doesn\'t destroy correct values when parsing', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        parse: true
+      }
+    }, {
+      test: [1,2,3]
+    });
+
+    expect(expectations.getParsed()).toEqual({
+      test: [1,2,3]
+    });
+  });
 });

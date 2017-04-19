@@ -233,4 +233,21 @@ describe('Expect package (boolean validation):', () => {
       test: true
     });
   });
+
+  it('doesn\'t destroy correct values when parsing', () => {
+
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true
+      }
+    }, {
+      test: true
+    });
+
+    expect(expectations.getParsed()).toEqual({
+      test: true
+    });
+  });
 });

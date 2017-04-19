@@ -160,7 +160,7 @@ describe('Expect package (equality validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('tests respects the errorCode option', () => {
+  it('respects the errorCode option', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       foo: {
@@ -177,6 +177,50 @@ describe('Expect package (equality validation):', () => {
     expect(expectations.errors()).toEqual({
       foo: ['unequality']
     });
+  });
+
+  it('checks that a boolean and string are not equal', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'boolean',
+        equalTo: 'bar',
+        equalToErrorCode: 'unequality'
+      },
+      bar: {
+        type: 'boolean',
+        errorCode: 'error'
+      }
+    }, {
+      foo: true,
+      bar: 'true'
+    });
+
+    expect(expectations.errors()).toEqual({
+      bar: ['error'],
+      foo: ['unequality']
+    });
+  });
+
+  it('checks that a boolean and string are equal if the string is parsed', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'boolean',
+        equalTo: 'bar',
+        equalToErrorCode: 'unequality'
+      },
+      bar: {
+        type: 'boolean',
+        parse: true,
+        errorCode: 'error'
+      }
+    }, {
+      foo: true,
+      bar: 'true'
+    });
+
+    expect(expectations.errors()).toEqual({});
   });
 
   it('tests can handle a match error and a validation error', () => {

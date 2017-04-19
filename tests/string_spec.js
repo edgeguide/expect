@@ -316,6 +316,22 @@ describe('Expect package (string validation):', () => {
     expect(expectations.wereMet()).toEqual(true);
   });
 
+  it('doesn\'t destroy correct values when parsing', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        parse: true
+      }
+    },{
+      test: 'hello world'
+    });
+
+    expect(expectations.getParsed()).toEqual({
+      test: 'hello world'
+    });
+  });
+
   it('fails to parse undefined', () => {
     let testObject =  {
       test: undefined

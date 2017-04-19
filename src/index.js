@@ -18,13 +18,6 @@ module.exports = function(expected, actualValues, options) {
     let allowNull =  parameterOptions.allowNull || false;
     let requiredIf = parameterOptions.requiredIf || false;
 
-    let matches = matchers.match(parameter, expected, actualValues, parameterOptions);
-
-    if (!matches.valid) {
-      valid = false;
-      errors[parameter] = matches.errors;
-    }
-
     let validation = types.validate(type, parameter, actual, parameterOptions);
 
     if (requiredIf && util.isNull(validation.parsed)) {
@@ -45,10 +38,26 @@ module.exports = function(expected, actualValues, options) {
       } else {
         errors[parameter] = validation.error;
       }
-    } else {
-      parsedValues[parameter] = validation.parsed;
+    }
+    parsedValues[parameter] = validation.parsed || actual;
+  });
+
+  Object.keys(expected).forEach(parameter => {
+    let parameterOptions = typeof expected[parameter] === 'object' ? expected[parameter] : {};
+
+    let matches = matchers.match(parameter, expected, parsedValues, parameterOptions);
+
+    if (!matches.valid) {
+      valid = false;
+      if (errors[parameter]) {
+        errors[parameter] = Array.isArray(errors[parameter]) ? [...errors[parameter]] : [errors[parameter]];
+        errors[parameter] = errors[parameter].concat(matches.errors);
+      } else {
+        errors[parameter] = matches.errors;
+      }
     }
   });
+
 
   return {
     wereMet: function() {
