@@ -1,5 +1,3 @@
-const PHONE_REGEXP = /^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/;
-
 const types = require('./types');
 const matchers = require('./matchers');
 const util = require('./util');
