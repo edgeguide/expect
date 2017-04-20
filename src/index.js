@@ -19,7 +19,7 @@ module.exports = function(expected, actualValues, options) {
     let validation = types.validate(type, parameter, actual, parameterOptions);
 
     if (requiredIf && util.isNull(validation.parsed)) {
-      if (!actualValues[requiredIf]) {
+      if (util.isNull(actualValues[requiredIf]) || typeof actualValues[requiredIf] === 'boolean' ? !actualValues[requiredIf] : false) {
         return;
       }
     }
@@ -42,6 +42,13 @@ module.exports = function(expected, actualValues, options) {
 
   Object.keys(expected).forEach(parameter => {
     let parameterOptions = typeof expected[parameter] === 'object' ? expected[parameter] : {};
+    let requiredIf = parameterOptions.requiredIf || false;
+
+    if (requiredIf && util.isNull(parsedValues[parameter])) {
+      if (util.isNull(parsedValues[requiredIf]) || typeof parsedValues[requiredIf] === 'boolean' ? !parsedValues[requiredIf] : false) {
+        return;
+      }
+    }
 
     let matches = matchers.match(parameter, expected, parsedValues, parameterOptions);
 

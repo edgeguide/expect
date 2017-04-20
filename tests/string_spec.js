@@ -134,12 +134,31 @@ describe('Expect package (string validation):', () => {
     });
   });
 
-  it('is not required if another field is falsy', () => {
+  it('is not required if another field is null', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       test: {
         type: 'string',
         requiredIf: 'foo'
+      },
+      foo: {
+        type: 'string',
+        allowNull: true
+      }
+    }, {
+      foo: ''
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('is not required if another field is null, even if matchers fail', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        requiredIf: 'foo',
+        regexp: /^testfest$/
       },
       foo: {
         type: 'string',

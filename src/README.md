@@ -127,7 +127,7 @@ expectations.errors(); //{ bar: ['bar is required'] }
 Like errorCode, but only changed the returned error if it was a null error
 
 #### requiredIf
-An element is allowed to be null or undefined if another value is falsy
+An element is allowed to be null or undefined if another value is null
 
 ```javascript
 const expect = require('@edgeguideab/expect');

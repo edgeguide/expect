@@ -121,7 +121,7 @@ describe('Expect package (boolean validation):', () => {
     });
   });
 
-  it('is not required if another field is falsy', () => {
+  it('is not required if another field is null', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       test: {
