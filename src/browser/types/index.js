@@ -1,5 +1,7 @@
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var arrayValidation = require('./array');
 var booleanValidation = require('./boolean');
 var emailValidation = require('./email');
@@ -29,7 +31,32 @@ function validate(type, parameter, value, parameterOptions) {
     case 'string':
       return stringValidation(parameter, value, parameterOptions);
     case 'array':
-      return arrayValidation(parameter, value, parameterOptions);
+      if (parameterOptions.items) {
+        var validation = arrayValidation(parameter, value, parameterOptions);
+        if (!validation.valid) {
+          return validation;
+        }
+
+        var itemOptions = _typeof(parameterOptions.items) === 'object' ? parameterOptions.items : {};
+        var itemType = _typeof(parameterOptions.items) === 'object' ? parameterOptions.items.type : parameterOptions.items;
+
+        var containsInvalidChild = value.some(function (item) {
+          var validation = validate(itemType, parameter, item, itemOptions);
+          return !validation.valid;
+        });
+
+        if (containsInvalidChild) {
+          var errorCode = itemOptions.errorCode || 'Parameter ' + parameter + ' contained items which were not of type ' + itemType;
+          return {
+            valid: false,
+            error: [errorCode]
+          };
+        } else {
+          return { valid: true };
+        }
+      } else {
+        return arrayValidation(parameter, value, parameterOptions);
+      }
     case 'boolean':
       return booleanValidation(parameter, value, parameterOptions);
     case 'identityNumber':
