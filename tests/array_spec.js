@@ -219,4 +219,74 @@ describe('Expect package (array validation):', () => {
       test: [1,2,3]
     });
   });
+
+  it('can validate all items', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        items: 'number'
+      }
+    }, {
+      test: [1,2,3]
+    });
+
+    expect(expectations.wereMet()).toEqual(true);
+  });
+
+  it('fails if some item is of the incorrect type', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        items: {
+          type: 'number',
+          strict: true
+        }
+      }
+    }, {
+      test: [1,2,'3']
+    });
+
+    expect(expectations.wereMet()).toEqual(false);
+  });
+
+  it('gives a proper error if some item is of the incorrect type', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        items: {
+          type: 'number',
+          strict: true
+        }
+      }
+    }, {
+      test: [1,2,'3']
+    });
+
+    expect(expectations.errors()).toEqual({
+      test: ['Parameter test contained items which were not of type number']
+    });
+  });
+
+  it('respects the errorCode option for item validation', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        items: {
+          type: 'number',
+          strict: true,
+          errorCode: 'incorrect.item.format'
+        }
+      }
+    }, {
+      test: [1,2,'3']
+    });
+
+    expect(expectations.errors()).toEqual({
+      test: ['incorrect.item.format']
+    });
+  });
 });

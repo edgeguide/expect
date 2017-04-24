@@ -242,19 +242,19 @@ describe('Expect package (number validation):', () => {
   });
 
 
-    it('doesn\'t destroy correct values when parsing', () => {
-      let expectModule = require('../src');
-      let expectations = expectModule({
-        test: {
-          type: 'number',
-          parse: true
-        }
-      },{
-        test: 1
-      });
-
-      expect(expectations.getParsed()).toEqual({
-        test: 1
-      });
+  it('doesn\'t destroy correct values when parsing', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    },{
+      test: 1
     });
+
+    expect(expectations.getParsed()).toEqual({
+      test: 1
+    });
+  });
 });

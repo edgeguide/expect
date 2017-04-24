@@ -27,7 +27,32 @@ function validate(type, parameter, value, parameterOptions) {
     case 'string':
       return stringValidation(parameter, value, parameterOptions);
     case 'array':
-      return arrayValidation(parameter, value, parameterOptions);
+      if (parameterOptions.items) {
+        let validation = arrayValidation(parameter, value, parameterOptions);
+        if (!validation.valid) {
+          return validation;
+        }
+
+        let itemOptions = typeof parameterOptions.items === 'object' ? parameterOptions.items : {};
+        let itemType = typeof parameterOptions.items === 'object' ? parameterOptions.items.type : parameterOptions.items;
+
+        let containsInvalidChild = value.some(item => {
+          let validation = validate(itemType, parameter, item, itemOptions);
+          return !validation.valid;
+        });
+
+        if (containsInvalidChild) {
+          let errorCode = itemOptions.errorCode || `Parameter ${parameter} contained items which were not of type ${itemType}`;
+          return {
+            valid: false,
+            error: [errorCode]
+          };
+        } else {
+          return {valid: true};
+        }
+      } else {
+        return arrayValidation(parameter, value, parameterOptions);
+      }
     case 'boolean':
       return booleanValidation(parameter, value, parameterOptions);
     case 'identityNumber':
