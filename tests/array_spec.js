@@ -309,4 +309,23 @@ describe('Expect package (array validation):', () => {
 
     expect(expectations.wereMet()).toEqual(true);
   });
+
+  it('can allow items to be null', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        items: {
+          type: 'date',
+          strict: true,
+          errorCode: 'incorrect.item.format',
+          allowNull: true
+        }
+      }
+    }, {
+      test: ['2017-01-01', null, null]
+    });
+
+    expect(expectations.wereMet()).toEqual(true);
+  });
 });

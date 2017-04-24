@@ -5,7 +5,7 @@ module.exports = (parameter, actual, options) => {
     actual = new Date(actual);
   }
 
-  if (util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(actual)) {
     let errorCode = options.nullCode || options.errorCode;
     errorCode = errorCode ||  `Expected parameter ${parameter} to be a boolean but it was ${JSON.stringify(actual)}`;
 

@@ -5,7 +5,7 @@ const IDENTITY_NUMBER_REGEXP_STRICT = /^(\d{6}(?:-|\+)?\d{4})$/;
 module.exports = (parameter, actual, options) => {
   let regexp = options.strict ? IDENTITY_NUMBER_REGEXP_STRICT : IDENTITY_NUMBER_REGEXP;
 
-  if (util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(actual)) {
     let errorCode = options.nullCode || options.errorCode;
 
     return error(errorCode);

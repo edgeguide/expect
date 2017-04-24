@@ -4,7 +4,7 @@ const STRICT_EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)
 
 module.exports = (parameter, actual, options) => {
   let regexp = options.strict ? STRICT_EMAIL_REGEXP : EMAIL_REGEXP;
-  if (util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(actual)) {
     let errorCode = options.nullCode || options.errorCode;
     errorCode = errorCode || `Expected parameter ${parameter} to be an email address but it was ${JSON.stringify(actual)}`;
 
