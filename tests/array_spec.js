@@ -289,4 +289,24 @@ describe('Expect package (array validation):', () => {
       test: ['incorrect.item.format']
     });
   });
+
+  it('parses items', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        items: {
+          type: 'date',
+          strict: true,
+          errorCode: 'incorrect.item.format',
+          allowNull: true,
+          parse: true
+        }
+      }
+    }, {
+      test: [1,2,'3']
+    });
+
+    expect(expectations.wereMet()).toEqual(true);
+  });
 });

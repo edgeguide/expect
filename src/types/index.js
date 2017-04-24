@@ -36,11 +36,12 @@ function validate(type, parameter, value, parameterOptions) {
         let itemOptions = typeof parameterOptions.items === 'object' ? parameterOptions.items : {};
         let itemType = typeof parameterOptions.items === 'object' ? parameterOptions.items.type : parameterOptions.items;
 
+        let parsed = [];
         let containsInvalidChild = value.some(item => {
           let validation = validate(itemType, parameter, item, itemOptions);
+          parsed.push(validation.parsed ? validation.parsed : item);
           return !validation.valid;
         });
-
         if (containsInvalidChild) {
           let errorCode = itemOptions.errorCode || `Parameter ${parameter} contained items which were not of type ${itemType}`;
           return {
@@ -48,7 +49,7 @@ function validate(type, parameter, value, parameterOptions) {
             error: [errorCode]
           };
         } else {
-          return {valid: true};
+          return {valid: true, parsed: parsed};
         }
       } else {
         return arrayValidation(parameter, value, parameterOptions);

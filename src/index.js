@@ -24,7 +24,7 @@ module.exports = function(expected, actualValues, options) {
       }
     }
 
-    if ((allowNull || options.allowNull) && util.isNull(validation.parsed)) {
+    if ((allowNull || options.allowNull) && util.isNull(validation.parsed || actual)) {
       return;
     }
 
