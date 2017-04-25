@@ -11,7 +11,7 @@ describe('Expect package (array validation):', () => {
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('tests that an empty array does not validate to true', () => {
+  it('tests that an empty array validates to true', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       test: 'array'
@@ -19,7 +19,38 @@ describe('Expect package (array validation):', () => {
       test: []
     });
 
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that an empty array does not validate to true in strict mode', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        strict: true
+      }
+    }, {
+      test: []
+    });
+
     expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('respects the emptyErrorCode ', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        strict: true,
+        emptyErrorCode: 'emptyArray'
+      }
+    }, {
+      test: []
+    });
+
+    expect(expectations.errors()).toEqual({
+      test: ['emptyArray']
+    });
   });
 
   it('tests that null is not a array', () => {
