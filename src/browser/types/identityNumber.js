@@ -7,7 +7,7 @@ var IDENTITY_NUMBER_REGEXP_STRICT = /^(\d{6}(?:-|\+)?\d{4})$/;
 module.exports = function (parameter, actual, options) {
   var regexp = options.strict ? IDENTITY_NUMBER_REGEXP_STRICT : IDENTITY_NUMBER_REGEXP;
 
-  if (util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(actual)) {
     var errorCode = options.nullCode || options.errorCode;
 
     return error(errorCode);

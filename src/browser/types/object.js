@@ -9,7 +9,7 @@ module.exports = function (parameter, actual, options) {
     return error();
   }
 
-  if (util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(actual)) {
     var errorCode = options.nullCode || options.errorCode;
     errorCode = errorCode || 'Expected parameter ' + parameter + ' to be an object but it was ' + JSON.stringify(actual);
 

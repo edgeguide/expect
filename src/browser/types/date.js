@@ -7,13 +7,13 @@ module.exports = function (parameter, actual, options) {
     actual = new Date(actual);
   }
 
-  if (util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(actual)) {
     var _errorCode = options.nullCode || options.errorCode;
-    _errorCode = _errorCode || 'Expected parameter ' + parameter + ' to be a boolean but it was ' + JSON.stringify(actual);
+    _errorCode = _errorCode || 'Expected parameter ' + parameter + ' to be a date but it was ' + JSON.stringify(actual);
 
     return error(_errorCode);
   }
-  var errorCode = options.errorCode || 'Expected parameter ' + parameter + ' to be a boolean but it was ' + JSON.stringify(actual);
+  var errorCode = options.errorCode || 'Expected parameter ' + parameter + ' to be a date but it was ' + JSON.stringify(actual);
   if (typeof actual === 'number') {
     return error(errorCode);
   }

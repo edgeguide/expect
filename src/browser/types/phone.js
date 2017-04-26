@@ -7,7 +7,7 @@ var PHONE_REGEXP_STRICT = /^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/;
 
 module.exports = function (parameter, actual, options) {
   var regexp = options.strict ? PHONE_REGEXP_STRICT : PHONE_REGEXP;
-  if (util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(actual)) {
     var errorCode = options.nullCode || options.errorCode;
     errorCode = errorCode || 'Expected parameter ' + parameter + ' to be a phone number but it was ' + JSON.stringify(actual);
 

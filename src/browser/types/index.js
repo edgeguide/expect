@@ -40,11 +40,12 @@ function validate(type, parameter, value, parameterOptions) {
         var itemOptions = _typeof(parameterOptions.items) === 'object' ? parameterOptions.items : {};
         var itemType = _typeof(parameterOptions.items) === 'object' ? parameterOptions.items.type : parameterOptions.items;
 
+        var parsed = [];
         var containsInvalidChild = value.some(function (item) {
           var validation = validate(itemType, parameter, item, itemOptions);
+          parsed.push(validation.parsed ? validation.parsed : item);
           return !validation.valid;
         });
-
         if (containsInvalidChild) {
           var errorCode = itemOptions.errorCode || 'Parameter ' + parameter + ' contained items which were not of type ' + itemType;
           return {
@@ -52,7 +53,7 @@ function validate(type, parameter, value, parameterOptions) {
             error: [errorCode]
           };
         } else {
-          return { valid: true };
+          return { valid: true, parsed: parsed };
         }
       } else {
         return arrayValidation(parameter, value, parameterOptions);
