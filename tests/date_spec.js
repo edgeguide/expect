@@ -22,6 +22,19 @@ describe('Expect package (date validation):', () => {
     expect(expectations.wereMet()).toBe(true);
   });
 
+  it('returns a correctly formatted error message', () => {
+   let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'date'
+    }, {
+      test: undefined 
+    });
+
+    expect(expectations.errors()).toEqual({
+      test: ['Expected parameter test to be a date but it was undefined']
+    });
+  });
+
   it('tests that an incorrectly formatted string is a not date', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
