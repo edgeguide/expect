@@ -6,7 +6,7 @@ let ignored = ['browser', 'package.json', 'README.md'];
 gulp.task('default', done => {
   transpileDirectory({
     src: 'src',
-    dest: 'src/browser'
+    dest: 'dist'
   });
 
   function transpileDirectory({src, dest}) {
