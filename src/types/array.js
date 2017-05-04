@@ -34,7 +34,7 @@ module.exports = (parameter, actual, options) => {
 
     if (options.strict && actual.length === 0) {
       return {
-        error: [options.emptyErrorCode === undefined ? `Empty arrays are not allowed in stricy mode (${parameter} was ${JSON.stringify(actual)})` : options.emptyErrorCode],
+        error: [options.emptyErrorCode === undefined ? `Empty arrays are not allowed in strict mode (${parameter} was ${JSON.stringify(actual)})` : options.emptyErrorCode],
         valid: false
       };
     }
