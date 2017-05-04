@@ -1,5 +1,7 @@
-const equalTo = require('./equalTo.js');
-const regexp = require('./regexp.js')
+const equalTo = require('./equalTo');
+const maxLength = require('./maxLength');
+const minLength = require('./minLength');
+const regexp = require('./regexp')
 
 module.exports = {
   match
@@ -15,8 +17,25 @@ function match(parameter, expected, actualValues, options) {
       result.errors.push(match.error);
     }
   }
+
   if (options.regexp) {
     let match = regexp(parameter, expected, actualValues, options);
+    if (!match.valid) {
+      result.valid = false;
+      result.errors.push(match.error);
+    }
+  }
+
+  if (options.maxLength) {
+    let match = maxLength(parameter, expected, actualValues, options);
+    if (!match.valid) {
+      result.valid = false;
+      result.errors.push(match.error);
+    }
+  }
+
+  if (options.minLength) {
+    let match = minLength(parameter, expected, actualValues, options);
     if (!match.valid) {
       result.valid = false;
       result.errors.push(match.error);
