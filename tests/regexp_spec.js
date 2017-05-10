@@ -50,4 +50,35 @@ describe('Expect package (equality validation):', () => {
       foo: ['did not match']
     });
   });
+
+  it('does not fail if the allow null option is specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'phone',
+        allowNull: true,
+        regexp: /^\D?[\d\s\(\)-]*$/,
+        regexpErrorCode: 'did not match'
+      }
+    }, {
+      foo: ''
+    });
+
+    expect(expectations.wereMet()).toEqual(true);
+  });
+
+  it('fails if the allow null option is not specified', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'phone',
+        regexp: /^\D?[\d\s\(\)-]*$/,
+        regexpErrorCode: 'did not match'
+      }
+    }, {
+      foo: ''
+    });
+
+    expect(expectations.wereMet()).toEqual(false);
+  });
 });

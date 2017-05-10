@@ -43,11 +43,16 @@ module.exports = function(expected, actualValues, options) {
   Object.keys(expected).forEach(parameter => {
     let parameterOptions = typeof expected[parameter] === 'object' ? expected[parameter] : {};
     let requiredIf = parameterOptions.requiredIf || false;
+    let allowNull =  parameterOptions.allowNull || false;
 
     if (requiredIf && util.isNull(parsedValues[parameter])) {
       if (util.isNull(parsedValues[requiredIf]) || typeof parsedValues[requiredIf] === 'boolean' ? !parsedValues[requiredIf] : false) {
         return;
       }
+    }
+
+    if ((allowNull || options.allowNull) && util.isNull(parsedValues[parameter])) {
+      return;
     }
 
     let matches = matchers.match(parameter, expected, parsedValues, parameterOptions);
