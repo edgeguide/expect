@@ -4,7 +4,20 @@ module.exports = (parameter, expected, actualValues, options) => {
   let actual = actualValues[parameter];
   let equalValue = actualValues[equalField];
 
-  if (isDate(actual) || isDate(equalValue)) {
+  if (options.type === 'date') {
+    let error = '';
+    if (!isDate(equalValue)) {
+      error = `Expected ${equalValue} to be a date, but it wasn't. `;
+    }
+    if (!isDate(actual)) {
+      error += `Expected ${actual} to be a date, but it wasn't.`;
+    }
+    if (error) {
+      return {
+        error,
+        valid: false
+      };
+    }
     actual = new Date(actual).getTime();
     equalValue = new Date(equalValue).getTime();
   }

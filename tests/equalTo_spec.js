@@ -32,6 +32,41 @@ describe('Expect package (equality validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
+  it('tests that numbers without specified type won\'t get parsed to dates', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'number',
+        equalTo: 'bar'
+      },
+      bar: 'number'
+    }, {
+      foo: '123',
+      bar: '321'
+    });
+
+    expect(expectations.errors().foo[0]).toBe('Expected parameter foo to be equal to bar but it wasn\'t. foo=123, bar=321');
+  });
+
+  it('tests that numbers can be intepreted as dates', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'date',
+        equalTo: 'bar',
+        parse: true
+      },
+      bar: {
+        type: 'date'
+      }
+    }, {
+      foo: 0,
+      bar: new Date(0)
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
   it('tests that dates can be equal', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
@@ -44,7 +79,6 @@ describe('Expect package (equality validation):', () => {
       foo: new Date('2017-01-01'),
       bar: new Date('2017-01-01')
     });
-
     expect(expectations.wereMet()).toBe(true);
   });
 
