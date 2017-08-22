@@ -250,4 +250,41 @@ describe('Expect package (boolean validation):', () => {
       test: true
     });
   });
+
+  it('handles exceptions when parsing non-JSON values', () => {
+
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true
+      }
+    }, {
+      test: undefined
+    });
+
+    expect(expectations.getParsed()).toEqual({
+      test: undefined
+    });
+  });
+
+  it('returns correct error codes when parsing non-JSON values', () => {
+
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        errorCode: 'error',
+        parse: true
+      }
+    }, {
+      test: undefined
+    });
+
+    expect(expectations.errors()).toEqual({
+      test: ['error']
+    });
+
+    expect(expectations.wereMet()).toEqual(false);
+  });
 });
