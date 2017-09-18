@@ -22,6 +22,20 @@ describe('Expect package (number validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
+  it('tests that NaN is not a number in strict mode', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        strict: true
+      }
+    }, {
+      test: NaN
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
   it('tests that 0 is a number', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
@@ -31,6 +45,106 @@ describe('Expect package (number validation):', () => {
     });
 
     expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that 12300001 is a number', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'number'
+    }, {
+      test: 12300001
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that "12300001" is a number', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'number'
+    }, {
+      test: '12300001'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that "1230 0001" is not a number', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'number'
+    }, {
+      test: '1230 0001'
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('tests that "1230 0001" is a number with the parse option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    }, {
+      test: '1230 0001'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that the parsed "1230 0001" is 12300001', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    }, {
+      test: '1230 0001'
+    });
+
+    expect(expectations.getParsed().test).toBe(12300001);
+  });
+
+  it('tests that "1230.0001" is a number', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'number'
+    }, {
+      test: '1230.0001'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that "1230.0001" is a number with the parse option', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    }, {
+      test: '1230.0001'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that the parsed "1230.0001" is 1230.0001', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    }, {
+      test: '1230.0001'
+    });
+
+    expect(expectations.getParsed().test).toBe(1230.0001);
   });
 
   it('tests that Infinity is a number', () => {
@@ -83,6 +197,28 @@ describe('Expect package (number validation):', () => {
       test: 'number'
     }, {
       test: {}
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('tests that a string with non-numerical characters is not a number', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'number'
+    }, {
+      test: 'foo~~ bar'
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('tests that a string containing non-numerical characters is not a number', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: 'number'
+    }, {
+      test: '123a'
     });
 
     expect(expectations.wereMet()).toBe(false);
