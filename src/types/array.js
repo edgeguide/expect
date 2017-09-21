@@ -1,6 +1,35 @@
 const util = require('../util');
 
-module.exports = (parameter, actual, options) => {
+module.exports = (parameter, actual, options, validate) => {
+  if (options.items) {
+    let validation = arrayTypeCheck(parameter, actual, options);
+    if (!validation.valid) {
+      return validation;
+    }
+    let itemOptions = typeof options.items === 'object' ? options.items : {};
+    let itemType = typeof options.items === 'object' ? options.items.type : options.items;
+
+    let parsed = [];
+    let containsInvalidChild = actual.some(item => {
+      let validation = validate(itemType, parameter, item, itemOptions);
+      parsed.push(validation.parsed ? validation.parsed : item);
+      return !validation.valid;
+    });
+    if (containsInvalidChild) {
+      let errorCode = itemOptions.errorCode || `Parameter ${parameter} contained items which were not of type ${itemType}`;
+      return {
+        valid: false,
+        error: [errorCode]
+      };
+    } else {
+      return {valid: true, parsed: parsed};
+    }
+  } else {
+    return arrayTypeCheck(parameter, actual, options);
+  }
+}
+
+function arrayTypeCheck(parameter, actual, options) {
   let result = checkValue();
   if (result.valid) {
     return result;
