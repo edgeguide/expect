@@ -2,17 +2,7 @@ const util = require('../util');
 
 module.exports = (parameter, actual, options) => {
   if (options.parse) {
-    try {
-      actual = JSON.parse(actual);
-    } catch (error) {
-      let errorCode = options.nullCode || options.errorCode;
-      errorCode = errorCode ||  `Expected parameter ${parameter} to be a boolean but it was ${JSON.stringify(actual)}`;
-
-      return {
-        error: [errorCode],
-        valid: false
-      };
-    }
+    actual = util.parseType('boolean', actual);
   }
 
   if (options.strict ? util.isNull(actual) : false) {
@@ -20,16 +10,16 @@ module.exports = (parameter, actual, options) => {
     errorCode = errorCode ||  `Expected parameter ${parameter} to be a boolean but it was ${JSON.stringify(actual)}`;
 
     return {
-      error: [errorCode],
+      errors: [errorCode],
       valid: false
     };
   }
   if (typeof actual !== 'boolean' && (!options.strict ? typeof actual !== 'undefined' : true)) {
     return {
-      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a boolean but it was ${JSON.stringify(actual)}` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a boolean but it was ${JSON.stringify(actual)}` : options.errorCode],
       valid: false
     };
   }
 
-  return { valid: true, parsed: actual };
+  return { valid: true, parsed: actual, errors: [] };
 }

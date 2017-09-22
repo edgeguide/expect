@@ -2,8 +2,7 @@ const util = require('../util');
 
 module.exports = (parameter, actual, options) => {
   if (options.parse && typeof actual === 'string') {
-    actual = actual.replace(/\s/, '');
-    actual = parseFloat(actual);
+    actual = util.parseType('number', actual);
   }
 
   if (!options.allowNull && util.isNull(actual)) {
@@ -11,14 +10,14 @@ module.exports = (parameter, actual, options) => {
     errorCode = errorCode || `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}`;
 
     return {
-      error: [errorCode],
+      errors: [errorCode],
       valid: false
     };
   }
 
   if (options.strict && typeof actual !== 'number' || isNaN(actual)) {
     return {
-      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}` : options.errorCode],
       valid: false
     };
   }
@@ -26,10 +25,10 @@ module.exports = (parameter, actual, options) => {
   let parsed = parseFloat(actual);
   if (isNaN(parsed) || parsed.toString() !== actual.toString()) {
     return {
-      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}` : options.errorCode],
       valid: false
     };
   }
 
-  return { valid: true, parsed: actual };
+  return { valid: true, parsed: actual, errors: []};
 }

@@ -9,17 +9,17 @@ module.exports = (parameter, actual, options) => {
     errorCode = errorCode || `Expected parameter ${parameter} to be an email address but it was ${JSON.stringify(actual)}`;
 
     return {
-      error: [errorCode],
+      errors: [errorCode],
       valid: false
     };
   }
 
   if (!regexp.test(actual)) {
     return {
-      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be email address but it was incorrectly formatted: ${JSON.stringify(actual)}` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be email address but it was incorrectly formatted: ${JSON.stringify(actual)}` : options.errorCode],
       valid: false
     };
   }
 
-  return { valid: true };
+  return { valid: true, errors: [] };
 }

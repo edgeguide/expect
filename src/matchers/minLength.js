@@ -8,12 +8,12 @@ module.exports = (parameter, expected, actualValues, options) => {
 
   if (length < options.minLength) {
     return {
-      error: options.minLengthErrorCode === undefined ? `Parameter ${parameter} was shorter than ${options.minLength} (it was ${length})` : options.minLengthErrorCode,
+      errors: options.minLengthErrorCode === undefined ? `Parameter ${parameter} was shorter than ${options.minLength} (it was ${length})` : options.minLengthErrorCode,
       valid: false
     };
   }
 
-  return { valid : true };
+  return { valid : true, errors: [] };
 
   function getLength() {
     if (Array.isArray(actual)) {

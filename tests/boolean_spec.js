@@ -275,6 +275,7 @@ describe('Expect package (boolean validation):', () => {
       test: {
         type: 'boolean',
         errorCode: 'error',
+        strict: true,
         parse: true
       }
     }, {

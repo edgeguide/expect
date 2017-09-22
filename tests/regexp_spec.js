@@ -82,3 +82,38 @@ describe('Expect package (equality validation):', () => {
     expect(expectations.wereMet()).toEqual(false);
   });
 });
+
+
+it('validates nested objects with errors on several levels', () => {
+  let expectModule = require('../src');
+  let expectations = expectModule({
+    foo: {
+      type: 'object',
+      nullCode: 'missing parameter',
+      errorCode: 'error',
+      keys: {
+        dead: {
+          type: 'object',
+          keys: {
+            beef: {
+              type: 'string',
+              regexp: /^\d+$/
+            }
+          }
+        },
+        bar: 'string',
+      }
+    }
+  }, {
+    foo: {
+      dead: {
+        beef: 'fail'
+      },
+      bar: 'festfest',
+    }
+  });
+
+  expect(expectations.errors()).toEqual({
+    'foo.dead.beef': ['Parameter foo.dead.beef did not match the regexp /^\\d+$/']
+  });
+});

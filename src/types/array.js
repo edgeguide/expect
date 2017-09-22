@@ -8,25 +8,33 @@ module.exports = (parameter, actual, options, validate) => {
     }
     let itemOptions = typeof options.items === 'object' ? options.items : {};
     let itemType = typeof options.items === 'object' ? options.items.type : options.items;
-
+    let errors = {};
     let parsed = [];
-    let containsInvalidChild = actual.some(item => {
-      let validation = validate(itemType, parameter, item, itemOptions);
+    let hasInvalidItems = actual.filter((item, index) => {
+      let validation = validate({
+        type: itemType,
+        parameter: `${parameter}.${index}`,
+        value: item,
+        parameterOptions: itemOptions,
+        actualValues: actual
+      });
+      if (validation.errors) {
+        errors[`${parameter}.${index}`] = validation.errors;
+      }
       parsed.push(validation.parsed ? validation.parsed : item);
       return !validation.valid;
     });
-    if (containsInvalidChild) {
-      let errorCode = itemOptions.errorCode || `Parameter ${parameter} contained items which were not of type ${itemType}`;
+    if (hasInvalidItems.length > 0) {
       return {
         valid: false,
-        error: [errorCode]
+        errors: [errors]
       };
     } else {
       return {valid: true, parsed: parsed};
     }
-  } else {
-    return arrayTypeCheck(parameter, actual, options);
   }
+
+  return arrayTypeCheck(parameter, actual, options);
 }
 
 function arrayTypeCheck(parameter, actual, options) {
@@ -36,7 +44,7 @@ function arrayTypeCheck(parameter, actual, options) {
   }
 
   if (options.parse) {
-    actual = JSON.parse(actual);
+    actual = util.parseType('array', actual);
     return Object.assign({}, checkValue(actual), {
       parsed: actual
     });
@@ -49,25 +57,25 @@ function arrayTypeCheck(parameter, actual, options) {
       let errorCode = options.nullCode || options.errorCode;
       errorCode = errorCode ||  `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(actual)}`;
       return {
-        error: [errorCode],
+        errors: [errorCode],
         valid: false
       };
     }
 
     if (!Array.isArray(actual)) {
       return {
-        error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(actual)}` : options.errorCode],
+        errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(actual)}` : options.errorCode],
         valid: false
       };
     }
 
     if (options.strict && actual.length === 0) {
       return {
-        error: [options.emptyErrorCode === undefined ? `Empty arrays are not allowed in strict mode (${parameter} was ${JSON.stringify(actual)})` : options.emptyErrorCode],
+        errors: [options.emptyErrorCode === undefined ? `Empty arrays are not allowed in strict mode (${parameter} was ${JSON.stringify(actual)})` : options.emptyErrorCode],
         valid: false
       };
     }
 
-    return { valid: true, parsed: actual };
+    return { valid: true, parsed: actual, errors: []};
   }
 }

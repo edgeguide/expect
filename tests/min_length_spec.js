@@ -148,11 +148,12 @@ describe('Expect package (min length validation):', () => {
         }
       },
     }, {
-      foo: [1,2,3,4]
+      foo: ['1',2,'3','4']
     });
 
     expect(expectations.errors()).toEqual({
-      foo: ['typeError', 'lengthError']
+      foo: ['lengthError'],
+      'foo.1': ['typeError']
     });
   });
 });

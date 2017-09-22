@@ -148,11 +148,13 @@ describe('Expect package (max length validation):', () => {
         }
       },
     }, {
-      foo: [1,2,3,4,5,6,7,8]
+      foo: ['1','2','3','4','5','6',7,'8']
     });
 
     expect(expectations.errors()).toEqual({
-      foo: ['typeError', 'lengthError']
+      foo: ['lengthError'],
+      'foo.6': ['typeError']
     });
   });
 });
+

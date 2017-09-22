@@ -7,7 +7,7 @@ module.exports = (parameter, actual, options) => {
     return result;
   }
   if (options.parse) {
-    actual = JSON.stringify(actual);
+    actual = util.parseType('string', actual);
     return Object.assign({}, checkValue(actual), {
       parsed: actual
     });
@@ -21,7 +21,7 @@ module.exports = (parameter, actual, options) => {
       errorCode = errorCode || `Expected parameter ${parameter} to be a string but it was ${JSON.stringify(actual)}`;
 
       return {
-        error: [errorCode],
+        errors: [errorCode],
         valid: false
       };
     }
@@ -35,12 +35,12 @@ module.exports = (parameter, actual, options) => {
       return error();
     }
 
-    return {valid: true};
+    return {valid: true, errors: []};
   }
 
   function error() {
     return {
-      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a string but it was ${JSON.stringify(actual)}` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a string but it was ${JSON.stringify(actual)}` : options.errorCode],
       valid: false
     };
   }

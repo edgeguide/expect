@@ -10,7 +10,7 @@ module.exports = (parameter, actual, options) => {
     errorCode = errorCode || `Expected parameter ${parameter} to be a phone number but it was ${JSON.stringify(actual)}`;
 
     return {
-      error: [errorCode],
+      errors: [errorCode],
       valid: false
     };
   }
@@ -18,10 +18,10 @@ module.exports = (parameter, actual, options) => {
 
   if (!regexp.test(actual)) {
     return {
-      error: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a phone number but it was incorrectly formatted: (${JSON.stringify(actual)})` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a phone number but it was incorrectly formatted: (${JSON.stringify(actual)})` : options.errorCode],
       valid: false
     };
   }
 
-  return { valid: true };
+  return { valid: true, errors: [] };
 }

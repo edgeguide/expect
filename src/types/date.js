@@ -2,7 +2,7 @@ const util = require('../util');
 
 module.exports = (parameter, actual, options) => {
   if (options.parse) {
-    actual = new Date(actual);
+    actual = util.parseType('date', actual);
   }
 
   if (!options.allowNull && util.isNull(actual)) {
@@ -21,11 +21,11 @@ module.exports = (parameter, actual, options) => {
     return error(errorCode);
   }
 
-  return { valid: true, parsed: actual };
+  return { valid: true, parsed: actual, errors: [] };
 
   function error(errorCode) {
     return {
-      error: [errorCode],
+      errors: [errorCode],
       valid: false
     };
   }

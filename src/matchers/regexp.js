@@ -8,10 +8,10 @@ module.exports = (parameter, expected, actualValues, options) => {
 
   if (!regexp.test(actual)) {
     return {
-      error: options.regexpErrorCode === undefined ? `Parameter ${parameter} did not match the regexp ${regexp}` : options.regexpErrorCode,
+      errors: options.regexpErrorCode === undefined ? `Parameter ${parameter} did not match the regexp ${regexp}` : options.regexpErrorCode,
       valid: false
     };
   }
 
-  return { valid : true };
+  return { valid : true, errors: [] };
 }

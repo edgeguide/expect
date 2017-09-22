@@ -25,7 +25,8 @@ module.exports = (parameter, actual, options) => {
   }
 
   return {
-    valid: true
+    valid: true,
+    errors: []
   }
 
   function verifyLuhn(value) {
@@ -49,7 +50,7 @@ module.exports = (parameter, actual, options) => {
   function error(errorCode) {
     errorCode = errorCode ||  `Expected parameter ${parameter} to be a personal identity number but it was ${JSON.stringify(actual)}`;
     return {
-      error: [errorCode],
+      errors: [errorCode],
       valid: false
     };
   }
