@@ -66,14 +66,15 @@ app.put('/user', (req, res) => {
 ### Types
 | Type    | Available options   | Description                                                                       |
 |---------|---------------------|-----------------------------------------------------------------------------------|
-| string  | allowNull, errorCode, requiredIf | expects a string.                                                                           |
-| array   | allowNull, errorCode, requiredIf | expects an array.                                                                           |
-| boolean | allowNull, errorCode, strict, requiredIf | expects a boolean                                                                   |
-| date    | allowNull, errorCode, requiredIf | expects either a valid date object or date string                                           |
-| email   | allowNull, errorCode, strict, requiredIf | expects a string formatted as an email address                                      |
-| number  | allowNull, errorCode, strict, requiredIf | expects a number                                                                    |
-| object  | allowNull, errorCode, requiredIf | expects an object. Note that arrays will __not__ count as objects                           |
-| phone   | allowNull, errorCode, strict, requiredIf | expects a phone number                                                              |
+| string  | allowNull, parse, errorCode, nullCode, requiredIf | expects a string.                                                                           |
+| array   | allowNull, parse, errorCode, nullCode, requiredIf, items | expects an array.                                                                           |
+| boolean | allowNull, parse, errorCode, nullCode, strict, requiredIf | expects a boolean                                                                   |
+| date    | allowNull, parse, errorCode, nullCode, requiredIf | expects either a valid date object or date string                                           |
+| email   | allowNull, errorCode, nullCode, strict, requiredIf | expects a string formatted as an email address                                      |
+| number  | allowNull, parse, errorCode, nullCode, strict, requiredIf | expects a number                                                                    |
+| object  | allowNull, errorCode, nullCode, requiredIf, keys, strictKeyCheck | expects an object. Note that arrays will __not__ count as objects                           |
+| phone   | allowNull, errorCode, nullCode, strict, requiredIf | expects a phone number                                                              |
+| identityNumber | allowNull, errorCode, nullCode, requiredIf | expects a correctly formatted swedish personal identity number                       |
 
 ### options
 In order to use options certain elements, you need to specify the types with objects instead of string, with an additional "type" key. You can specify options for individual values as follows:
@@ -94,6 +95,30 @@ expectations.wereMet(); //true
 #### allowNull
 Allow null is available for all types. If set, an expected value can be matched against null and undefined. In other words, it will make a value optional.
 
+#### parse
+Some types have a ```parse``` option available. This means that expect will attempt to parse the value before checking its type. For example:
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  foo: 'string',
+  bar: {
+    type: 'number',
+    strict: true,
+    parse: true
+  }
+}, {
+  foo: 'hello',
+  bar: '11'
+});
+
+expectations.wereMet(); //true
+expectations.errors(); //{ }
+expectations.getParsed() // { foo: 'hello', bar: 11 }
+```
+
+In this example, "bar" will first be parsed to the number 11, and then evaluated. This means that the check will pass even though bar is technically a string, since it can be parsed
+into a number. To access an object which contains the parsed values (as well as any non-parsed values in their original form), the ```getParsed``` method can be used.
+
 #### errorCode
 Changes the value of the returned error. Default is a string describing what went wrong, but if you specify an error code it will be returned instead
 
@@ -113,14 +138,14 @@ const expect = require('@edgeguideab/expect');
 let expectations = expect({  
   bar: {
     type: 'string',
-    errorCode: 'bar is required'
+    errorCode: 'bar is incorrectly formatted'
   }
 }, {
   bar: {}
 });
 
 expectations.wereMet(); //false
-expectations.errors(); //{ bar: ['bar is required'] }
+expectations.errors(); //{ bar: ['bar is incorrectly formatted'] }
 ```
 
 #### nullCode
@@ -163,6 +188,161 @@ expectations.errors(); //{ bar: ['bar is required if foo'] }
 #### strict
 The strict option is available for email, phone and boolean types.
 
+### Type explanations
+
+#### Object
+Expects the value to be of type object. If the "keys" option is given, the different keys for the object can be evaluated recursively.
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'object',
+    keys: {
+      fizz: 'number',
+      buzz: 'string'
+    }
+  }
+}, {
+  bar: {
+    fizz: 1,
+    buzz: 1
+  }
+});
+
+expectations.wereMet(); //false
+expectations.errors() // { 'bar.buzz': ['Expected parameter bar.buzz to be a string but it was 1] }
+```
+
+Object validation can be nested with several keys-options.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'object',
+    keys: {
+      fizz: 'number',
+      buzz: {
+        type: 'object',
+        keys: {
+          bizz: 'number'
+        }
+      }
+    }
+  }
+}, {
+  bar: {
+    fizz: 1,
+    buzz: {
+      bizz: 'hello'
+    }
+  }
+});
+
+expectations.wereMet(); //false
+expectations.errors() // { 'bar.buzz.bizz': ['Expected parameter bar.buzz.bizz to be a number but it was "hello"] }
+```
+
+Unlike top-level validation, when evaluating deeper in an object the error-key will be a path to the parameter which failed (as a string). If the "keys"-option is combined with the "strictKeyCheck", object validation will fail
+if the actual object contains any keys which are not explicitly checked for.
+
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'object',
+    keys: {
+      fizz: 'number',
+      buzz: {
+        type: 'object',
+        keys: {
+          bizz: 'number'
+        }
+      }
+    }
+  }
+}, {
+  bar: {
+    fizz: 1,
+    buzz: {
+      bizz: 2
+    },
+    kizz: 3
+  }
+});
+
+expectations.wereMet(); //false
+expectations.errors() // { 'bar': ['Object contained unchecked keys "kizz"'] }
+```
+
+#### Array
+Checks whether the parameter is an array or not. If given the "items"-option, each child in the array can be evaluated. You can even nest arrays and objects, using the objects "keys"-option.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'array',
+    items: {
+      type: 'object',
+      keys: {
+        foo: 'number',
+        bar: 'string'
+      }
+    }
+  }
+}, {
+  bar: [{
+    foo: 1,
+    bar: '1'
+  }, {
+    foo: 2,
+    bar: '2'
+  }, {
+    foo: 3,
+    bar: '3'
+  }, {
+    foo: 4,
+    bar: '4'
+  }]
+});
+
+expectations.wereMet(); //true
+expectations.errors() // { }
+
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  beef: {
+    type: 'array',
+    items: {
+      type: 'object',
+      keys: {
+        foo: 'number',
+        bar: 'string'
+      }
+    }
+  }
+}, {
+  beef: [{
+    foo: 1,
+    bar: '1'
+  }, {
+    foo: 2,
+    bar: '2'
+  }, {
+    foo: 3,
+    bar: 3
+  }, {
+    foo: 4,
+    bar: '4'
+  }]
+});
+
+expectations.wereMet(); //false
+expectations.errors() // { beef.2.bar: ['Expected parameter beef.2.bar to be of type string but it was 3']}
+```
+
 ##### Email
 It will change the internal regular expression with which these values are validated. For email, the normal expression is ```/.+@.+/```, while the strict option sets it to
 ```
@@ -179,7 +359,8 @@ in strict mode.
 For boolean values, if the strict option is specified the value __must__ be of type boolean. If the strict option is not specified, ```undefined``` also counts as a boolean.
 
 ##### Number
-Values are generally regarded as numbers if they can be parsed to numbers (isNaN evaluates to false). With the strict mode, they have to actually be of type number in order to be regarded as numbers.
+Values are generally regarded as numbers if they can be parsed to numbers (isNaN evaluates to false). With the strict mode, they have to actually be of type number in order to be regarded as numbers. Note that
+even though a string such as "11foobar" can be parsed to ```11``` using ```parseInt```, the string will not be considered a number unless the parsed numbers ```toString``` method evaluates to the original string.
 
 ### Global options
 If you want to make all values optional, you can set a global ```allowNull```option.
