@@ -12,7 +12,7 @@ module.exports = function(expected, actualValues, options) {
     let parameterOptions = typeof expected[parameter] === 'object' ? expected[parameter] : {};
     let actual = actualValues[parameter];
     let type = parameterOptions.type || expected[parameter];
-    
+
     let validation = types.validate({
       type,
       parameter,
@@ -26,7 +26,12 @@ module.exports = function(expected, actualValues, options) {
       valid = false;
       errors = util.mergeErrors(parameter, errors, validation.errors);
     }
-    parsedValues[parameter] = validation.parsed || actual;
+
+    if (validation.parsed === null || validation.parsed === undefined) {
+      parsedValues[parameter] = actual;
+    } else {
+      parsedValues[parameter] = validation.parsed;
+    }
   });
 
   return {

@@ -361,6 +361,23 @@ describe('Expect package (number validation):', () => {
     });
   });
 
+  it('correctly returns the parsed falsy value', () => {
+    let testObject =  {
+      test: '0'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'number',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: 0
+    });
+  });
+
   it('returns the initial if no parsing is specified', () => {
     let testObject =  {
       test: '1337'

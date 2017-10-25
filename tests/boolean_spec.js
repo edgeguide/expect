@@ -218,6 +218,23 @@ describe('Expect package (boolean validation):', () => {
     });
   });
 
+  it('correctly returns the parsed false value', () => {
+    let testObject =  {
+      test: 'false'
+    };
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true
+      }
+    }, testObject);
+
+    expect(expectations.getParsed()).toEqual({
+      test: false
+    });
+  });
+
   it('returns the initial if no parsing is specified', () => {
     let testObject =  {
       test: true
