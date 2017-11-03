@@ -14,7 +14,7 @@ module.exports = {
   validate
 };
 
-function validate({type, parameter, value, parameterOptions, actualValues = {}, chain = [], expected = {}}) {
+function validate({type, parameter, value, parameterOptions, actualValues = {}, chain, expected = {}}) {
   let requiredIf = parameterOptions.requiredIf || false;
   let allowNull =  parameterOptions.allowNull || false;
   chain = chain || parameter;
@@ -35,7 +35,7 @@ function validate({type, parameter, value, parameterOptions, actualValues = {}, 
     }
   }
 
-  if ((allowNull || parameterOptions.allowNull) && util.isNull(util.getDeep(chain, actualValues))) {
+  if (allowNull && util.isNull(util.getDeep(chain, actualValues))) {
     return {
       errors: [],
       valid: true

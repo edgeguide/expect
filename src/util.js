@@ -60,8 +60,15 @@ function mergeErrors(parameter, allErrors, newErrors) {
 }
 
 function getDeep(chain, values) {
-  if (values.hasOwnProperty(chain)) {
+  if (values.hasOwnProperty && values.hasOwnProperty(chain)) {
     return values[chain];
+  }
+  let level = values;
+  for (let i = 0; i < chain.length; i++) {
+    level = level[chain[0]];
+    if (typeof level !== 'object') {
+      return level;
+    }
   }
 
   return null;
