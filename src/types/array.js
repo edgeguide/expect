@@ -10,7 +10,6 @@ module.exports = ({parameter, value, actualValues, options, validate}) => {
     let itemType = typeof options.items === 'object' ? options.items.type : options.items;
     let errors = {};
     let parsed = [];
-    debugger;
     let hasInvalidItems = value.filter((item, index) => {
       let validation = validate({
         type: itemType,

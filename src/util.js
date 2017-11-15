@@ -62,7 +62,6 @@ function mergeErrors(parameter, allErrors, newErrors) {
 }
 
 function getDeep(chain, values) {
-  debugger;
   if (values === undefined) {
     return undefined;
   }
