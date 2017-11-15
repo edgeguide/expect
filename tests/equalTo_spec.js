@@ -272,4 +272,31 @@ describe('Expect package (equality validation):', () => {
     expect(Array.isArray(expectations.errors().foo)).toBe(true);
     expect(expectations.errors().foo.length).toBe(2);
   });
+
+  it('can check equality in nested objects', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        nullCode: 'missing parameter',
+        errorCode: 'error',
+        keys: {
+          dead: {
+            type: 'string',
+            equalTo: ['foo', 'bar']
+          },
+          bar: {
+            type: 'string'
+          }
+        }
+      }
+    }, {
+      foo: {
+        dead: 'abc',
+        bar: 'abc'
+      }
+    });
+
+    expect(expectations.errors()).toEqual({});
+  });
 });

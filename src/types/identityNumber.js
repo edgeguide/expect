@@ -3,6 +3,7 @@ const IDENTITY_NUMBER_REGEXP = /^(?:19|20)?(\d{6}(?:-|\+)?\d{4})$/;
 const IDENTITY_NUMBER_REGEXP_STRICT = /^(\d{6}(?:-|\+)?\d{4})$/;
 
 module.exports = (parameter, actual, options) => {
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
   let regexp = options.strict ? IDENTITY_NUMBER_REGEXP_STRICT : IDENTITY_NUMBER_REGEXP;
 
   if (!options.allowNull && util.isNull(actual)) {

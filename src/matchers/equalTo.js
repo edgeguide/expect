@@ -2,8 +2,10 @@ const util = require('../util');
 
 module.exports = (parameter, expected, actualValues, options, expectations = {}) => {
   let equalField = options.equalTo;
-  let actual = actualValues[parameter];
-  let equalValue = actualValues[equalField];
+  let actual = util.getDeep(parameter, actualValues);
+  let equalValue = util.getDeep(equalField, actualValues);
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
+
 
   if (options.type === 'date') {
     let error = '';
@@ -24,16 +26,16 @@ module.exports = (parameter, expected, actualValues, options, expectations = {})
   } else {
     if (typeof expectations[equalField] === 'object' && expectations[equalField].parse) {
       equalValue = util.parseType(expectations[equalField].type, equalValue);
-    } 
-  
+    }
+
     if (options.parse) {
       actual = util.parseType(options.type, actual);
     }
   }
-  
+
   if (actual !== equalValue) {
     return {
-      errors: options.equalToErrorCode === undefined ? `Expected parameter ${parameter} to be equal to ${equalField} but it wasn\'t. ${parameter}=${actual}, ${equalField}=${actualValues[equalField]}` : options.equalToErrorCode,
+      errors: options.equalToErrorCode === undefined ? `Expected parameter ${parameter} to be equal to ${equalField} but it wasn\'t. ${parameter}=${actual}, ${equalField}=${equalValue}` : options.equalToErrorCode,
       valid: false
     };
   }

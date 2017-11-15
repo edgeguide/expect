@@ -13,13 +13,14 @@ module.exports = (parameter, actual, options, validate) => {
     let hasInvalidItems = actual.filter((item, index) => {
       let validation = validate({
         type: itemType,
-        parameter: `${parameter}.${index}`,
+        parameter: Array.isArray(parameter) ? parameter.concat(index) : [parameter, index],
         value: item,
-        parameterOptions: itemOptions,
+        options: itemOptions,
         actualValues: actual
       });
       if (validation.errors) {
-        errors[`${parameter}.${index}`] = validation.errors;
+        let errorKey = Array.isArray(parameter) ? parameter.concat(index).join('.') : `${parameter}.${index}`;
+        errors[errorKey] = validation.errors;
       }
       parsed.push(validation.parsed ? validation.parsed : item);
       return !validation.valid;
@@ -38,6 +39,8 @@ module.exports = (parameter, actual, options, validate) => {
 }
 
 function arrayTypeCheck(parameter, actual, options) {
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
+
   let result = checkValue();
   if (result.valid) {
     return result;

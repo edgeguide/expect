@@ -1,6 +1,9 @@
+const util = require('../util');
+
 module.exports = (parameter, expected, actualValues, options) => {
-  let actual = actualValues[parameter];
+  let actual = util.getDeep(parameter, actualValues);
   let regexp = options.regexp;
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
   if (Object.prototype.toString.apply(regexp) !== '[object RegExp]') {
     throw new Error(`${regexp} was expected to be a regexp object but was ${Object.prototype.toString.apply(regexp)}`);

@@ -9,7 +9,6 @@ module.exports = {
 
 function match(parameter, expected, actualValues, options, expectations) {
   let result = { valid: true, errors: [] };
-
   if (options.equalTo) {
     let match = equalTo(parameter, expected, actualValues, options, expectations);
     if (!match.valid) {

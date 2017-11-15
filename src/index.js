@@ -9,15 +9,15 @@ module.exports = function(expected, actualValues, options) {
   let valid = true;
 
   Object.keys(expected).forEach(parameter => {
-    let parameterOptions = typeof expected[parameter] === 'object' ? expected[parameter] : {};
+    let options = typeof expected[parameter] === 'object' ? expected[parameter] : {};
     let actual = actualValues[parameter];
-    let type = parameterOptions.type || expected[parameter];
+    let type = options.type || expected[parameter];
 
     let validation = types.validate({
       type,
       parameter,
       value: actual,
-      parameterOptions,
+      options,
       actualValues,
       expected
     });

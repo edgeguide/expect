@@ -4,12 +4,12 @@ describe('Expect package (equality validation):', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
       foo: {
-        type: 'number',
-        regexp: /\d/g
+        type: 'string',
+        regexp: /\d[a-z]/g
       },
       bar: 'number'
     }, {
-      foo: 1,
+      foo: '1a',
       bar: 1
     });
 

@@ -1,4 +1,5 @@
 module.exports = (parameter, expected, actualValues, options) => {
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
   let actual = actualValues[parameter];
   let length = getLength();
 

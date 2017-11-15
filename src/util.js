@@ -42,6 +42,8 @@ function getErrors(chain, errors) {
 
 
 function mergeErrors(parameter, allErrors, newErrors) {
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
+
   if (!Array.isArray(newErrors)) {
     return allErrors;
   }
@@ -60,11 +62,20 @@ function mergeErrors(parameter, allErrors, newErrors) {
 }
 
 function getDeep(chain, values) {
+  if (values === undefined) {
+    return undefined;
+  }
+
   if (values.hasOwnProperty(chain)) {
     return values[chain];
   }
 
-  return null;
+  if (!Array.isArray(chain)) {
+    return undefined;
+  }
+
+  let key = chain[0];
+  return getDeep(chain.slice(1), values[key]);
 }
 
 function parseType(type, value) {

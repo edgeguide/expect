@@ -1,68 +1,73 @@
 const util = require('../util');
 
-module.exports = (parameter, actual, options, validate) => {
-  if (options.keys) {
-    let valid = true;
-    let validation = objectTypeCheck(parameter, actual, options);
-    if (!validation.valid) {
-      return validation;
-    }
+module.exports = ({parameter, value, actualValues, options, validate}) => {
+  if (!options.keys) {
+    return objectTypeCheck(parameter, value, options);
+  }
 
-    let parsed = {};
-    let errors = {};
+  let valid = true;
+  let validation = objectTypeCheck(parameter, value, options);
+  if (!validation.valid) {
+    return validation;
+  }
 
-    if (options.strictKeyCheck) {
-      let checkedKeys = Object.keys(options.keys);
-      let uncheckedKeys = Object.keys(actual).filter(key => {
-        return !checkedKeys.includes(key);
-      });
+  let parsed = {};
+  let errors = {};
 
-      if (uncheckedKeys.length > 0) {
-        valid = false;
-        errors[parameter] = [options.errorCode || `Object contained unchecked keys "${uncheckedKeys.join(', ')}"`]
-      }
-    }
-
-    let invalidKeys = Object.keys(options.keys).filter(key => {
-      let keyOptions = typeof options.keys[key] === 'object' ? options.keys[key] : {};
-      let keyType = typeof options.keys[key] === 'object' ? options.keys[key].type : options.keys[key];
-
-      let validation = validate({
-        type: keyType,
-        parameter: `${parameter}.${key}`,
-        value: actual[key],
-        parameterOptions: keyOptions
-      });
-      if (validation.errors && validation.errors.length > 0) {
-        errors[`${parameter}.${key}`] = validation.errors;
-      }
-      parsed[key] = validation.parsed ? validation.parsed : actual[key];
-      return !validation.valid;
+  if (options.strictKeyCheck) {
+    let checkedKeys = Object.keys(options.keys);
+    let uncheckedKeys = Object.keys(value).filter(key => {
+      return !checkedKeys.includes(key);
     });
 
-    if (invalidKeys.length > 0 || errors[parameter] && errors[parameter].length > 0) {
+    if (uncheckedKeys.length > 0) {
       valid = false;
-
-      return {
-        valid,
-        errors: [errors]
-      };
-    } else {
-      return {valid, parsed: parsed};
+      let errorKey = Array.isArray(parameter) ? parameter.join('.') : parameter;
+      errors[errorKey] = [options.errorCode || `Object contained unchecked keys "${uncheckedKeys.join(', ')}"`]
     }
   }
 
-  return objectTypeCheck(parameter, actual, options);
+  let invalidKeys = Object.keys(options.keys).filter(key => {
+    let keyOptions = typeof options.keys[key] === 'object' ? options.keys[key] : {};
+    let keyType = typeof options.keys[key] === 'object' ? options.keys[key].type : options.keys[key];
+
+    let validation = validate({
+      type: keyType,
+      parameter: Array.isArray(parameter) ? parameter.concat(key) : [parameter, key],
+      value: value[key],
+      actualValues,
+      options: keyOptions
+    });
+    if (validation.errors && validation.errors.length > 0) {
+      let errorKey = Array.isArray(parameter) ? parameter.concat(key).join('.') : `${parameter}.${key}`;
+      errors[errorKey] = validation.errors;
+    }
+    parsed[key] = validation.parsed ? validation.parsed : value[key];
+    return !validation.valid;
+  });
+
+  let errorKey = Array.isArray(parameter) ? parameter.join('.') : parameter;
+  if (invalidKeys.length > 0 || errors[errorKey] && errors[errorKey].length > 0) {
+    valid = false;
+
+    return {
+      valid,
+      errors: [errors]
+    };
+  } else {
+    return {valid, parsed: parsed};
+  }
 }
 
-function objectTypeCheck(parameter, actual, options) {
-  if (Array.isArray(actual)) {
+function objectTypeCheck(parameter, value, options) {
+  if (Array.isArray(value)) {
     return error();
   }
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
-  if (!options.allowNull && util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(value)) {
     let errorCode = options.nullCode || options.errorCode;
-    errorCode = errorCode || `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(actual)}`;
+    errorCode = errorCode || `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(value)}`;
 
     return {
       errors: [errorCode],
@@ -70,7 +75,7 @@ function objectTypeCheck(parameter, actual, options) {
     };
   }
 
-  if (typeof actual !== 'object') {
+  if (typeof value !== 'object') {
     return error();
   }
 
@@ -78,7 +83,7 @@ function objectTypeCheck(parameter, actual, options) {
 
   function error() {
     return {
-      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(actual)}` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(value)}` : options.errorCode],
       valid: false
     };
   }

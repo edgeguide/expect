@@ -1,6 +1,7 @@
 const util = require('../util');
 
 module.exports = (parameter, actual, options) => {
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
   let result = checkValue(actual);
   if (result.valid) {

@@ -1,6 +1,8 @@
 const util = require('../util');
 
 module.exports = (parameter, actual, options) => {
+  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
+
   if (options.parse) {
     actual = util.parseType('date', actual);
   }
