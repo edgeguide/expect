@@ -83,6 +83,27 @@ describe('Expect package (equality validation):', () => {
   });
 });
 
+fit('validates nested objects', () => {
+  let expectModule = require('../src');
+  debugger;
+  let expectations = expectModule({
+    foo: {
+      type: 'object',
+      keys: {
+        bar: {
+          type: 'string',
+          regexp: /abc/
+        }
+      }
+    }
+  }, {
+    foo: {
+      bar: 'abc'
+    }
+  });
+
+  expect(expectations.wereMet()).toBe(true);
+});
 
 it('validates nested objects with errors on several levels', () => {
   let expectModule = require('../src');
