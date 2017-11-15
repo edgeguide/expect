@@ -54,7 +54,7 @@ describe('Expect package (max length validation):', () => {
     });
 
     expect(expectations.errors()).toEqual({
-      foo: ['Parameter foo was longer than 8 (it was 11)']
+      foo: ['hello world was longer than 8 (it was 11)']
     });
   });
 

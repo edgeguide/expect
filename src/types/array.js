@@ -1,8 +1,8 @@
 const util = require('../util');
 
-module.exports = (parameter, actual, options, validate) => {
+module.exports = ({parameter, value, actualValues, options, validate}) => {
   if (options.items) {
-    let validation = arrayTypeCheck(parameter, actual, options);
+    let validation = arrayTypeCheck(parameter, value, options);
     if (!validation.valid) {
       return validation;
     }
@@ -10,13 +10,14 @@ module.exports = (parameter, actual, options, validate) => {
     let itemType = typeof options.items === 'object' ? options.items.type : options.items;
     let errors = {};
     let parsed = [];
-    let hasInvalidItems = actual.filter((item, index) => {
+    debugger;
+    let hasInvalidItems = value.filter((item, index) => {
       let validation = validate({
         type: itemType,
         parameter: Array.isArray(parameter) ? parameter.concat(index) : [parameter, index],
         value: item,
         options: itemOptions,
-        actualValues: actual
+        actualValues
       });
       if (validation.errors) {
         let errorKey = Array.isArray(parameter) ? parameter.concat(index).join('.') : `${parameter}.${index}`;
@@ -35,10 +36,10 @@ module.exports = (parameter, actual, options, validate) => {
     }
   }
 
-  return arrayTypeCheck(parameter, actual, options);
+  return arrayTypeCheck(parameter, value, options);
 }
 
-function arrayTypeCheck(parameter, actual, options) {
+function arrayTypeCheck(parameter, value, options) {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
   let result = checkValue();
@@ -47,38 +48,38 @@ function arrayTypeCheck(parameter, actual, options) {
   }
 
   if (options.parse) {
-    actual = util.parseType('array', actual);
-    return Object.assign({}, checkValue(actual), {
-      parsed: actual
+    value = util.parseType('array', value);
+    return Object.assign({}, checkValue(value), {
+      parsed: value
     });
   } else {
     return result;
   }
 
   function checkValue() {
-    if (!options.allowNull && util.isNull(actual)) {
+    if (!options.allowNull && util.isNull(value)) {
       let errorCode = options.nullCode || options.errorCode;
-      errorCode = errorCode ||  `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(actual)}`;
+      errorCode = errorCode ||  `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(value)}`;
       return {
         errors: [errorCode],
         valid: false
       };
     }
 
-    if (!Array.isArray(actual)) {
+    if (!Array.isArray(value)) {
       return {
-        errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(actual)}` : options.errorCode],
+        errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(value)}` : options.errorCode],
         valid: false
       };
     }
 
-    if (options.strict && actual.length === 0) {
+    if (options.strict && value.length === 0) {
       return {
-        errors: [options.emptyErrorCode === undefined ? `Empty arrays are not allowed in strict mode (${parameter} was ${JSON.stringify(actual)})` : options.emptyErrorCode],
+        errors: [options.emptyErrorCode === undefined ? `Empty arrays are not allowed in strict mode (${parameter} was ${JSON.stringify(value)})` : options.emptyErrorCode],
         valid: false
       };
     }
 
-    return { valid: true, parsed: actual, errors: []};
+    return { valid: true, parsed: value, errors: []};
   }
 }

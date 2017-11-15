@@ -35,7 +35,7 @@ module.exports = (parameter, expected, actualValues, options, expectations = {})
 
   if (actual !== equalValue) {
     return {
-      errors: options.equalToErrorCode === undefined ? `Expected parameter ${parameter} to be equal to ${equalField} but it wasn\'t. ${parameter}=${actual}, ${equalField}=${equalValue}` : options.equalToErrorCode,
+      errors: options.equalToErrorCode === undefined ? `Expected ${actual} to be equal to ${equalValue} but it was not.` : options.equalToErrorCode,
       valid: false
     };
   }

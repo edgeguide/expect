@@ -1,6 +1,7 @@
+const util = require('../util');
+
 module.exports = (parameter, expected, actualValues, options) => {
-  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-  let actual = actualValues[parameter];
+  let actual = util.getDeep(parameter, actualValues);
   let length = getLength();
 
   if (isNaN(options.maxLength)) {
@@ -9,7 +10,7 @@ module.exports = (parameter, expected, actualValues, options) => {
 
   if (length > options.maxLength) {
     return {
-      errors: options.maxLengthErrorCode === undefined ? `Parameter ${parameter} was longer than ${options.maxLength} (it was ${length})` : options.maxLengthErrorCode,
+      errors: options.maxLengthErrorCode === undefined ? `${actual} was longer than ${options.maxLength} (it was ${length})` : options.maxLengthErrorCode,
       valid: false
     };
   }

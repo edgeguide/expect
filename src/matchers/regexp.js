@@ -11,7 +11,7 @@ module.exports = (parameter, expected, actualValues, options) => {
 
   if (!regexp.test(actual)) {
     return {
-      errors: options.regexpErrorCode === undefined ? `Parameter ${parameter} did not match the regexp ${regexp}` : options.regexpErrorCode,
+      errors: options.regexpErrorCode === undefined ? `${actual} did not match the regexp ${regexp}` : options.regexpErrorCode,
       valid: false
     };
   }

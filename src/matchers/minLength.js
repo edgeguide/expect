@@ -1,6 +1,7 @@
+const util = require('../util');
+
 module.exports = (parameter, expected, actualValues, options) => {
-  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-  let actual = actualValues[parameter];
+  let actual = util.getDeep(parameter, actualValues);
   let length = getLength();
 
   if (isNaN(options.minLength)) {
@@ -9,7 +10,7 @@ module.exports = (parameter, expected, actualValues, options) => {
 
   if (length < options.minLength) {
     return {
-      errors: options.minLengthErrorCode === undefined ? `Parameter ${parameter} was shorter than ${options.minLength} (it was ${length})` : options.minLengthErrorCode,
+      errors: options.minLengthErrorCode === undefined ? `${actual} was shorter than ${options.minLength} (it was ${length})` : options.minLengthErrorCode,
       valid: false
     };
   }

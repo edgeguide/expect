@@ -83,23 +83,29 @@ describe('Expect package (equality validation):', () => {
   });
 });
 
-fit('validates nested objects', () => {
+it('validates nested objects', () => {
   let expectModule = require('../src');
-  debugger;
   let expectations = expectModule({
     foo: {
-      type: 'object',
+      type: 'array',
       keys: {
-        bar: {
-          type: 'string',
-          regexp: /abc/
+        dead: {
+          type: 'object',
+          keys: {
+            beef: {
+              type: 'string',
+              regexp: /abc/
+            }
+          }
         }
       }
     }
   }, {
-    foo: {
-      bar: 'abc'
-    }
+    foo: [{
+      dead: {
+        beef: 'abc'
+      }
+    }]
   });
 
   expect(expectations.wereMet()).toBe(true);
@@ -135,6 +141,6 @@ it('validates nested objects with errors on several levels', () => {
   });
 
   expect(expectations.errors()).toEqual({
-    'foo.dead.beef': ['Parameter foo.dead.beef did not match the regexp /^\\d+$/']
+    'foo.dead.beef': ['fail did not match the regexp /^\\d+$/']
   });
 });

@@ -54,7 +54,7 @@ describe('Expect package (min length validation):', () => {
     });
 
     expect(expectations.errors()).toEqual({
-      foo: ['Parameter foo was shorter than 12 (it was 11)']
+      foo: ['hello world was shorter than 12 (it was 11)']
     });
   });
 

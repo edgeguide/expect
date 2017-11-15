@@ -45,7 +45,7 @@ describe('Expect package (equality validation):', () => {
       bar: '321'
     });
 
-    expect(expectations.errors().foo[0]).toBe('Expected parameter foo to be equal to bar but it wasn\'t. foo=123, bar=321');
+    expect(expectations.errors().foo[0]).toBe('Expected 123 to be equal to 321 but it was not.');
   });
 
   it('tests that numbers can be intepreted as dates', () => {

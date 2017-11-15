@@ -1,14 +1,14 @@
 const util = require('../util');
 
-module.exports = (parameter, actual, options) => {
+module.exports = ({parameter, value, options}) => {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-  if (options.parse && typeof actual === 'string') {
-    actual = util.parseType('number', actual);
+  if (options.parse && typeof value === 'string') {
+    value = util.parseType('number', value);
   }
 
-  if (!options.allowNull && util.isNull(actual)) {
+  if (!options.allowNull && util.isNull(value)) {
     let errorCode = options.nullCode || options.errorCode;
-    errorCode = errorCode || `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}`;
+    errorCode = errorCode || `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(value)}`;
 
     return {
       errors: [errorCode],
@@ -16,20 +16,20 @@ module.exports = (parameter, actual, options) => {
     };
   }
 
-  if (options.strict && typeof actual !== 'number' || isNaN(actual)) {
+  if (options.strict && typeof value !== 'number' || isNaN(value)) {
     return {
-      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(value)}` : options.errorCode],
       valid: false
     };
   }
 
-  let parsed = parseFloat(actual);
-  if (isNaN(parsed) || parsed.toString() !== actual.toString()) {
+  let parsed = parseFloat(value);
+  if (isNaN(parsed) || parsed.toString() !== value.toString()) {
     return {
-      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(actual)}` : options.errorCode],
+      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(value)}` : options.errorCode],
       valid: false
     };
   }
 
-  return { valid: true, parsed: actual, errors: []};
+  return { valid: true, parsed: value, errors: []};
 }
