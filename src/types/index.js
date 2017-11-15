@@ -20,7 +20,14 @@ function validate({type, parameter, value, options, actualValues = {}, chain = [
   chain = chain || parameter;
 
   if (requiredIf && util.isNull(value)) {
-    if (util.isNull(actualValues[requiredIf]) || typeof actualValues[requiredIf] === 'boolean' ? !actualValues[requiredIf] : false) {
+    let requiredFieldType = typeof expected[requiredIf] === 'string' ? expected[requiredIf] : expected[requiredIf].type;
+    let requiredFieldValue = actualValues[requiredIf];
+
+    if (requiredFieldType === 'boolean' && expected[requiredIf].parse) {
+      requiredFieldValue = JSON.parse(requiredFieldValue);
+    }
+
+    if (util.isNull(actualValues[requiredIf]) || (requiredFieldType === 'boolean' && !requiredFieldValue)) {
       return {
         errors: [],
         valid: true

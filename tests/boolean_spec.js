@@ -305,4 +305,41 @@ describe('Expect package (boolean validation):', () => {
 
     expect(expectations.wereMet()).toEqual(false);
   });
+
+  it('handles "false" as false in requiredIf if the required field is of type boolean and the parse option is used', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true
+      },
+      foo: {
+        type: 'string',
+        requiredIf: 'test'
+      } 
+    }, {
+      test: 'false',
+      foo: ''
+    });
+
+    expect(expectations.wereMet()).toEqual(true);
+  });
+
+  it('handles "false" as a string in requiredIf if the required field is of type boolean and the parse option is not used', () => {
+    let expectModule = require('../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean'
+      },
+      foo: {
+        type: 'string',
+        requiredIf: 'test'
+      } 
+    }, {
+      test: 'false',
+      foo: ''
+    });
+
+    expect(expectations.wereMet()).toEqual(false);
+  });
 });
