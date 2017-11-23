@@ -306,6 +306,40 @@ describe('Expect package (boolean validation):', () => {
     expect(expectations.wereMet()).toEqual(false);
   });
 
+  it('handles "true" as true if parse and allowNull options are used', () => {
+    const expectModule = require('../src');
+    const expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true,
+        allowNull: true
+      }
+    }, {
+      test: 'true'
+    });
+    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.getParsed()).toEqual({
+      test: true
+    });
+  });
+
+  it('handles "false" as false if parse and allowNull options are used', () => {
+    const expectModule = require('../src');
+    const expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true,
+        allowNull: true
+      }
+    }, {
+      test: 'false'
+    });
+    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.getParsed()).toEqual({
+      test: false
+    });
+  });
+
   it('handles "false" as false in requiredIf if the required field is of type boolean and the parse option is used', () => {
     let expectModule = require('../src');
     let expectations = expectModule({
@@ -316,7 +350,7 @@ describe('Expect package (boolean validation):', () => {
       foo: {
         type: 'string',
         requiredIf: 'test'
-      } 
+      }
     }, {
       test: 'false',
       foo: ''
@@ -334,7 +368,7 @@ describe('Expect package (boolean validation):', () => {
       foo: {
         type: 'string',
         requiredIf: 'test'
-      } 
+      }
     }, {
       test: 'false',
       foo: ''
