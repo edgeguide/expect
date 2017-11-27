@@ -1,7 +1,7 @@
 describe('Expect package (equality validation):', () => {
 
   it('tests for equality with numbers correctly', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'number',
@@ -17,7 +17,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that numbers and string types are not equal', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'number',
@@ -33,7 +33,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that numbers without specified type won\'t get parsed to dates', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'number',
@@ -49,7 +49,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that numbers can be intepreted as dates', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'date',
@@ -68,7 +68,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that dates can be equal', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'date',
@@ -83,7 +83,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that dates can be unequal', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'date',
@@ -99,7 +99,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that a date can be equal to a date string', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'date',
@@ -115,7 +115,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that a date can be equal a number', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'date',
@@ -131,7 +131,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that a date can not equal an object', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'date',
@@ -147,7 +147,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that a date can not equal null', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'date',
@@ -163,7 +163,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that a date can not equal undefined', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'date',
@@ -179,7 +179,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests that 0 does not equal undefined', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'number',
@@ -195,7 +195,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'number',
@@ -214,7 +214,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('checks that a boolean and string are not equal', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'boolean',
@@ -237,7 +237,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('checks that a boolean and string are equal if the string is parsed', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'boolean',
@@ -258,7 +258,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('tests can handle a match error and a validation error', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'number',
@@ -274,7 +274,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('can check equality in nested objects', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'object',

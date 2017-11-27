@@ -41,39 +41,42 @@ function validate({type, parameter, value, options, actualValues = {}, chain = [
       valid: true
     };
   }
-
+  let validation;
   switch (type) {
     case 'phone': {
-      let validation = phoneValidation({parameter, value, options});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
+      validation = phoneValidation({parameter, value, options});
+      break;
     } case 'email': {
-      let validation = emailValidation({parameter, value, options});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
+      validation = emailValidation({parameter, value, options});
+      break;
     } case 'number': {
-      let validation = numberValidation({parameter, value, options});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
+      validation = numberValidation({parameter, value, options});
+      break;
     } case 'object': {
-      let validation = objectValidation({parameter, value, actualValues, options, validate});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
+      validation = objectValidation({parameter, value, actualValues, options, validate});
+      break;
     } case 'date': {
-      let validation = dateValidation({parameter, value, options});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
+      validation = dateValidation({parameter, value, options});
+      break;
     } case 'string': {
-      let validation = stringValidation({parameter, value, options});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
+      validation = stringValidation({parameter, value, options});
+      break;
     } case 'array': {
-      let validation = arrayValidation({parameter, value, actualValues, options, validate});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
+      validation = arrayValidation({parameter, value, actualValues, options, validate});
+      break;
     } case 'boolean': {
-      let validation = booleanValidation({parameter, value, options});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
+      validation = booleanValidation({parameter, value, options});
+      break;
     } case 'identityNumber': {
-      let validation = identityNumberValidation({parameter, value, options});
-      return applyMatchers(validation, actualValues, parameter, value, options, expected);
-    } default:
+      validation = identityNumberValidation({parameter, value, options});
+      break;
+    } default: {
       throw new Error(`${parameter} could not be validated against type "${type}": it has not been defined`);
       return;
+    }
   }
+
+  return applyMatchers(validation, actualValues, parameter, value, options, expected);
 };
 
 function applyMatchers(validation, actualValues, parameter, value, options, expected) {

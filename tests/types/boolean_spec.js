@@ -1,7 +1,7 @@
 describe('Expect package (boolean validation):', () => {
 
   it('tests for boolean type correctly', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'boolean'
     }, {
@@ -12,7 +12,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('tests that undefined is a boolean', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'boolean'
     }, {
@@ -23,7 +23,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('tests that undefined is not a boolean with the strict flag', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -37,7 +37,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('tests that null is not a boolean', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'boolean'
     }, {
@@ -48,7 +48,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('tests that an object is not a boolean', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'boolean'
     }, {
@@ -59,7 +59,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('tests a number is not a boolean', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'boolean'
     }, {
@@ -70,7 +70,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('tests a string is not a boolean', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'boolean'
     }, {
@@ -81,7 +81,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('tests an array is not a boolean', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'boolean'
     }, {
@@ -92,7 +92,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('respects the allowNull option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -106,7 +106,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -122,7 +122,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('is not required if another field is null', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -140,7 +140,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('is required if another field is not undefined', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -156,7 +156,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('respects the nullCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -172,7 +172,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('parses the actual value if the parse option is specified', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -189,7 +189,7 @@ describe('Expect package (boolean validation):', () => {
     let testObject =  {
       test: 'true'
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -205,7 +205,7 @@ describe('Expect package (boolean validation):', () => {
     let testObject =  {
       test: 'true'
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -222,7 +222,7 @@ describe('Expect package (boolean validation):', () => {
     let testObject =  {
       test: 'false'
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -239,7 +239,7 @@ describe('Expect package (boolean validation):', () => {
     let testObject =  {
       test: true
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean'
@@ -253,7 +253,7 @@ describe('Expect package (boolean validation):', () => {
 
   it('doesn\'t destroy correct values when parsing', () => {
 
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -270,7 +270,7 @@ describe('Expect package (boolean validation):', () => {
 
   it('handles exceptions when parsing non-JSON values', () => {
 
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -287,7 +287,7 @@ describe('Expect package (boolean validation):', () => {
 
   it('returns correct error codes when parsing non-JSON values', () => {
 
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -307,7 +307,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('handles "false" as false in requiredIf if the required field is of type boolean and the parse option is used', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean',
@@ -326,7 +326,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('handles "false" as a string in requiredIf if the required field is of type boolean and the parse option is not used', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'boolean'

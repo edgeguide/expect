@@ -1,7 +1,7 @@
 describe('Expect package (date validation):', () => {
 
   it('tests for date type correctly', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -12,7 +12,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('tests that a correctly formatted string is a date', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -23,7 +23,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('returns a correctly formatted error message', () => {
-   let expectModule = require('../src');
+   let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -36,7 +36,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('tests that an incorrectly formatted string is a not date', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -47,7 +47,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('tests that an empty array is not date', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -58,7 +58,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('tests that null is not a date', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -69,7 +69,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('tests that undefined is not a date', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -80,7 +80,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('tests that an object is not a date', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -91,7 +91,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('tests a number is not a date', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'date'
     }, {
@@ -102,7 +102,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('respects the allowNull option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',
@@ -116,7 +116,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',
@@ -130,7 +130,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('is not required if another field is null', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',
@@ -148,7 +148,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('is required if another field is not undefined', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',
@@ -163,7 +163,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('respects the nullCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',
@@ -178,7 +178,7 @@ describe('Expect package (date validation):', () => {
   });
 
   it('parses the actual value if the parse option is specified', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',
@@ -195,7 +195,7 @@ describe('Expect package (date validation):', () => {
     let testObject =  {
       test: new Date()
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',
@@ -211,7 +211,7 @@ describe('Expect package (date validation):', () => {
     let testObject =  {
       test: '2017-01-01'
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',
@@ -228,7 +228,7 @@ describe('Expect package (date validation):', () => {
     let testObject =  {
       test: new Date()
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date'
@@ -244,7 +244,7 @@ describe('Expect package (date validation):', () => {
       test: new Date()
     };
 
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'date',

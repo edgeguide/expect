@@ -3,8 +3,75 @@ module.exports = {
   getErrors,
   mergeErrors,
   getDeep,
-  parseType
+  parseType,
+  containsUnsafe,
+  sanitize
 };
+
+const htmlEntityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  '\'': '&apos;',
+  '!': '&excl;',
+  '@': '&commat;',
+  '$': '&dollar;',
+  '(': '&lpar;',
+  ')': '&rpar;',
+  '=': '&equals;',
+  '+': '&plus;',
+  '{': '&lbrace;',
+  '}': '&rbrace;',
+  '[': '&lbrack;',
+  ']': '&rbrack;'
+};
+
+const nonStrictSubset = ['&', '<', '>', '"', '\''];
+
+function containsUnsafe({value, strict, allowed = []}) {
+  if (typeof value !== 'string') {
+    throw new Error('Non-strings cannot be checked for unsafe values');
+  }
+
+  const characters = Array.from(value);
+
+  return characters.some(character => {
+    if (!strict && !nonStrictSubset.includes(character)) {
+      return false;
+    }
+    if (allowed.includes(character)) {
+      return false;
+    }
+
+    return htmlEntityMap[character] !== undefined;
+  });
+}
+
+function sanitize({value, strict, allowed = []}) {
+
+  if (typeof value !== 'string') {
+    throw new Error('Non-strings cannot be sanitized');
+  }
+
+  let sanitizedValue = '';
+  const characters = Array.from(value);
+
+  characters.forEach(character => {
+    if (!strict && !nonStrictSubset.includes(character)) {
+      sanitizedValue += character;
+      return;
+    }
+    if (allowed.includes(character)) {
+      sanitizedValue += character;
+      return;
+    }
+    const entity = htmlEntityMap[character];
+    sanitizedValue += entity ? entity : character;
+  });
+  
+  return sanitizedValue;
+}
 
 function isNull(value) {
   if (value === undefined) {

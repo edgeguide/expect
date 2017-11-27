@@ -24,5 +24,17 @@ module.exports = ({parameter, value, options}) => {
     };
   }
 
+  let allowedCharacters = Array.isArray(options.allowed) ? options.allowed.concat('@') : ['@']; // Always allow @ for email adresses, even when blocking unsafe
+  if (options.blockUnsafe && util.containsUnsafe({value, strict: options.strictEntities, allowed: allowedCharacters})) {
+    let errorCode = options.unsafeErrorCode || options.errorCode;
+    errorCode = errorCode || `Parameter ${parameter} contained unsafe, unescaped characters`;
+
+    return {
+      errors: [errorCode],
+      valid: false
+    };
+  }
+
+
   return { valid: true, errors: [] };
 }

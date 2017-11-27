@@ -1,7 +1,7 @@
 describe('Expect package (errorCode):', () => {
 
   it('can handle several errors', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'object',
@@ -20,7 +20,7 @@ describe('Expect package (errorCode):', () => {
   });
 
   it('can handle several matching errors', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'object',

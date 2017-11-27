@@ -1,7 +1,7 @@
 describe('Expect package (object validation):', () => {
 
   it('tests for object type correctly', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'object'
     }, {
@@ -12,7 +12,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('tests that null is not an object', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'object'
     }, {
@@ -23,7 +23,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('tests that undefined is not an object', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'object'
     }, {
@@ -34,7 +34,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('tests that an array is not an object', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'object'
     }, {
@@ -45,7 +45,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('tests a number is not an object', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'object'
     }, {
@@ -56,7 +56,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('respects the allowNull option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'object',
@@ -70,7 +70,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'object',
@@ -84,7 +84,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('is not required if another field is null', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'object',
@@ -102,7 +102,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('is required if another field is not undefined', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'object',
@@ -117,7 +117,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('respects the nullCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'object',
@@ -132,7 +132,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('validates object keys if given the keys option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'object',
@@ -159,7 +159,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('validates nested objects with the keys option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'object',
@@ -192,7 +192,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('validates nested objects with errors on several levels', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'object',
@@ -228,7 +228,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('validates an array with objects', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'array',
@@ -264,7 +264,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('validates an array with objects where one is incorrect', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'array',
@@ -300,7 +300,7 @@ describe('Expect package (object validation):', () => {
   });
 
   it('prints out an error when validation an array with objects where one is incorrect', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'array',
@@ -342,7 +342,7 @@ describe('Expect package (object validation):', () => {
 
 
 it('detects null for nested objects', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',
@@ -373,7 +373,7 @@ it('detects null for nested objects', () => {
 });
 
 it('allows null for nested objects', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',
@@ -405,7 +405,7 @@ it('allows null for nested objects', () => {
 });
 
 it('can parse values deep in a nested object', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',
@@ -438,7 +438,7 @@ it('can parse values deep in a nested object', () => {
 });
 
 it('can parse values deep in a nested object', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',
@@ -471,7 +471,7 @@ it('can parse values deep in a nested object', () => {
 });
 
 it('getParsed returns correct values for nested objects', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',
@@ -521,7 +521,7 @@ it('getParsed returns correct values for nested objects', () => {
 });
 
 it('fails if an object contains unused keys when the strictKeyCheck mode is enabled', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',
@@ -565,7 +565,7 @@ it('fails if an object contains unused keys when the strictKeyCheck mode is enab
 });
 
 it('fails if a nested object contains unused keys when the strictKeyCheck mode is enabled', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',
@@ -610,7 +610,7 @@ it('fails if a nested object contains unused keys when the strictKeyCheck mode i
 });
 
 it('passes if a nested object contains null keys when the strictKeyCheck mode is enabled', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',

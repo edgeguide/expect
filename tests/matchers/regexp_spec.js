@@ -1,7 +1,7 @@
 describe('Expect package (equality validation):', () => {
 
   it('tests a regexp correctly', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'string',
@@ -17,7 +17,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('fails a regexp correctly', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'number',
@@ -33,7 +33,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('respects the error code parameter', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'number',
@@ -52,7 +52,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('does not fail if the allow null option is specified', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'phone',
@@ -68,7 +68,7 @@ describe('Expect package (equality validation):', () => {
   });
 
   it('fails if the allow null option is not specified', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       foo: {
         type: 'phone',
@@ -84,7 +84,7 @@ describe('Expect package (equality validation):', () => {
 });
 
 it('validates nested objects', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'array',
@@ -112,7 +112,7 @@ it('validates nested objects', () => {
 });
 
 it('validates nested objects with errors on several levels', () => {
-  let expectModule = require('../src');
+  let expectModule = require('../../src');
   let expectations = expectModule({
     foo: {
       type: 'object',

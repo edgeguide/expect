@@ -1,7 +1,7 @@
 describe('Expect package (array validation):', () => {
 
   it('tests for array type correctly', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'array'
     }, {
@@ -12,7 +12,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('tests that an empty array validates to true', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'array'
     }, {
@@ -23,7 +23,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('tests that an empty array does not validate to true in strict mode', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -37,7 +37,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('respects the emptyErrorCode ', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -54,7 +54,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('tests that null is not a array', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'array'
     }, {
@@ -65,7 +65,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('tests that undefined is not a array', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'array'
     }, {
@@ -76,7 +76,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('tests that an object is not a array', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'array'
     }, {
@@ -87,7 +87,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('tests a number is not a array', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: 'array'
     }, {
@@ -98,7 +98,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('respects the allowNull option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -112,7 +112,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -126,7 +126,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('is not required if another field is null', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -143,7 +143,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('is required if another field is not undefined', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -158,7 +158,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('respects the nullCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -173,7 +173,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('parses the actual value if the parse option is specified', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -190,7 +190,7 @@ describe('Expect package (array validation):', () => {
     let testObject =  {
       test: '[1,2,3]'
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -206,7 +206,7 @@ describe('Expect package (array validation):', () => {
     let testObject =  {
       test: '[1,2,3]'
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -223,7 +223,7 @@ describe('Expect package (array validation):', () => {
     let testObject =  {
       test: [1,2,3]
     };
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array'
@@ -236,7 +236,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('doesn\'t destroy correct values when parsing', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -252,7 +252,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('can validate all items', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -266,7 +266,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('fails if some item is of the incorrect type', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -283,7 +283,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('gives a proper error if some item is of the incorrect type', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -302,7 +302,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('respects the errorCode option for item validation', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -322,7 +322,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('parses items', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',
@@ -342,7 +342,7 @@ describe('Expect package (array validation):', () => {
   });
 
   it('can allow items to be null', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
         type: 'array',

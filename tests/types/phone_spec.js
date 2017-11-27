@@ -1,59 +1,56 @@
-describe('Expect package (email validation):', () => {
+describe('Expect package (phone validation):', () => {
 
-  it('tests for email type correctly', () => {
-    let expectModule = require('../src');
+  it('tests for phone number type correctly', () => {
+    let expectModule = require('../../src');
     let expectations = expectModule({
-      test: 'email'
+      test: 'phone'
     }, {
-      test: 'tester@mydomain.cxx'
+      test: '0701113210'
     });
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('tests that an invalid email is invalid', () => {
-    let expectModule = require('../src');
+  it('tests that a phone number with a country code is valid', () => {
+    let expectModule = require('../../src');
     let expectations = expectModule({
-      test: 'email'
+      test: 'phone'
     }, {
-      test: 'testermydomain.cxx'
+      test: '+46701a123210'
     });
 
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('tests that an email is invalid in strict mode', () => {
-    let expectModule = require('../src');
+  it('tests that a invalid phone number is invalid', () => {
+    let expectModule = require('../../src');
     let expectations = expectModule({
-      test: {
-        type: 'email',
-        strict: true
-      }
+      test: 'phone'
     }, {
-      test: 'teste r@mydomain.cxx'
+      test: '0701a123210'
     });
 
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('tests that an email is valid in strict mode', () => {
-    let expectModule = require('../src');
+  it('tests that a phone number is valid in strict mode', () => {
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
-        type: 'email',
+        type: 'phone',
         strict: true
       }
     }, {
-      test: 'tester@mydomain.cxx'
+      test: '0701113210'
     });
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('tests that null is not an email', () => {
-    let expectModule = require('../src');
+  it('tests that null is not a phone number', () => {
+    let expectModule = require('../../src');
     let expectations = expectModule({
-      test: 'email'
+      test: 'phone'
     }, {
       test: null
     });
@@ -61,10 +58,10 @@ describe('Expect package (email validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('tests that undefined is not an email', () => {
-    let expectModule = require('../src');
+  it('tests that undefined is not a phone number', () => {
+    let expectModule = require('../../src');
     let expectations = expectModule({
-      test: 'email'
+      test: 'phone'
     }, {
       test: undefined
     });
@@ -72,10 +69,10 @@ describe('Expect package (email validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('tests that an array is not an email', () => {
-    let expectModule = require('../src');
+  it('tests that a array is not a phone number', () => {
+    let expectModule = require('../../src');
     let expectations = expectModule({
-      test: 'email'
+      test: 'phone'
     }, {
       test: []
     });
@@ -83,22 +80,44 @@ describe('Expect package (email validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('tests a number is not an email', () => {
-    let expectModule = require('../src');
+  it('tests that a digit is a phone number', () => {
+    let expectModule = require('../../src');
     let expectations = expectModule({
-      test: 'email'
+      test: 'phone'
     }, {
       test: 1
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that a number is a phone number', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: 'phone'
+    }, {
+      test: 948569845123466525
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('tests that a float is not a phone number', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: 'phone'
+    }, {
+      test: 13.1123
     });
 
     expect(expectations.wereMet()).toBe(false);
   });
 
   it('respects the allowNull option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
-        type: 'email',
+        type: 'phone',
         allowNull: true
       }
     }, {
@@ -109,10 +128,10 @@ describe('Expect package (email validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
-        type: 'email',
+        type: 'phone',
         errorCode: 'missing parameter'
       }
     }, {});
@@ -123,10 +142,10 @@ describe('Expect package (email validation):', () => {
   });
 
   it('is not required if another field is null', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
-        type: 'email',
+        type: 'phone',
         requiredIf: 'foo'
       },
       foo: {
@@ -136,14 +155,15 @@ describe('Expect package (email validation):', () => {
     }, {
       foo: ''
     });
+
     expect(expectations.wereMet()).toBe(true);
   });
 
   it('is required if another field is not undefined', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
-        type: 'email',
+        type: 'phone',
         requiredIf: 'foo'
       },
       foo: 'string'
@@ -155,10 +175,10 @@ describe('Expect package (email validation):', () => {
   });
 
   it('respects the nullCode option', () => {
-    let expectModule = require('../src');
+    let expectModule = require('../../src');
     let expectations = expectModule({
       test: {
-        type: 'email',
+        type: 'phone',
         nullCode: 'missing parameter',
         errorCode: 'error'
       }
