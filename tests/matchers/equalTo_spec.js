@@ -299,4 +299,34 @@ describe('Expect package (equality validation):', () => {
 
     expect(expectations.errors()).toEqual({});
   });
+
+  it('can check for equality in objects contained in arrays', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'array',
+        nullCode: 'missing parameter',
+        errorCode: 'error',
+        items: {
+          type: 'object',
+          keys: {
+            dead: {
+              type: 'string',
+              equalTo: ['foo', 0, 'bar']
+            },
+            bar: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    }, {
+      foo: [{
+        dead: 'abc',
+        bar: 'abc'
+      }]
+    });
+
+    expect(expectations.errors()).toEqual({});
+  });
 });

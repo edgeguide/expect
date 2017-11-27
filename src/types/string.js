@@ -21,7 +21,7 @@ module.exports = ({parameter, value, options}) => {
 
     if (!options.allowNull && util.isNull(value)) {
       let errorCode = options.nullCode || options.errorCode;
-      errorCode = errorCode || `Expected ${JSON.stringify(value)} to be a string but it was ${typeof value}}`;
+      errorCode = errorCode || `Expected ${JSON.stringify(value)} to be a string but it was value}`;
 
       return {
         errors: [errorCode],

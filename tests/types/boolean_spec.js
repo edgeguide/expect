@@ -307,7 +307,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('handles "true" as true if parse and allowNull options are used', () => {
-    const expectModule = require('../src');
+    const expectModule = require('../../src');
     const expectations = expectModule({
       test: {
         type: 'boolean',
@@ -324,7 +324,7 @@ describe('Expect package (boolean validation):', () => {
   });
 
   it('handles "false" as false if parse and allowNull options are used', () => {
-    const expectModule = require('../src');
+    const expectModule = require('../../src');
     const expectations = expectModule({
       test: {
         type: 'boolean',

@@ -3,6 +3,7 @@ module.exports = {
   getErrors,
   mergeErrors,
   getDeep,
+  getDeepOptions,
   parseType,
   containsUnsafe,
   sanitize
@@ -143,6 +144,30 @@ function getDeep(chain, values) {
 
   let key = chain[0];
   return getDeep(chain.slice(1), values[key]);
+}
+
+function getDeepOptions(chain, values) {
+  if (values === undefined) {
+    return undefined;
+  }
+  
+  if (!Array.isArray(chain)) {
+    return values[chain];
+  }
+
+  if (chain.length === 0) {
+    return values;
+  }
+
+  let key = chain[0];
+  let nextValues = values[key];
+  if (values.hasOwnProperty('items')) {
+    nextValues = values.items[key];
+  }
+  if (values.hasOwnProperty('keys')) {
+    nextValues = values.keys[key];
+  }
+  return getDeepOptions(chain.slice(1), nextValues);
 }
 
 function parseType(type, value) {

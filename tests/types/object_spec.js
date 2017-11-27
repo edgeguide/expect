@@ -338,316 +338,355 @@ describe('Expect package (object validation):', () => {
       ]
     });
   });
-});
 
-
-it('detects null for nested objects', () => {
-  let expectModule = require('../../src');
-  let expectations = expectModule({
-    foo: {
-      type: 'object',
-      nullCode: 'missing parameter',
-      errorCode: 'error',
-      keys: {
-        dead: {
-          type: 'object',
-          keys: {
-            beef: 'number'
-          }
-        },
-        bar: 'string'
-      }
-    }
-  }, {
-    foo: {
-      dead: {
-        beef: null
-      },
-      bar: 'festfest'
-    }
-  });
-
-  expect(expectations.errors()).toEqual({
-    'foo.dead.beef': ['Expected parameter foo.dead.beef to be a number but it was null']
-  });
-});
-
-it('allows null for nested objects', () => {
-  let expectModule = require('../../src');
-  let expectations = expectModule({
-    foo: {
-      type: 'object',
-      nullCode: 'missing parameter',
-      errorCode: 'error',
-      keys: {
-        dead: {
-          type: 'object',
-          keys: {
-            beef: {
-              type: 'number',
-              allowNull: true
+  it('detects null for nested objects', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        nullCode: 'missing parameter',
+        errorCode: 'error',
+        keys: {
+          dead: {
+            type: 'object',
+            keys: {
+              beef: 'number'
             }
-          }
-        },
-        bar: 'string'
-      }
-    }
-  }, {
-    foo: {
-      dead: {
-        beef: null
-      },
-      bar: 'festfest'
-    }
-  });
-
-  expect(expectations.errors()).toEqual({});
-});
-
-it('can parse values deep in a nested object', () => {
-  let expectModule = require('../../src');
-  let expectations = expectModule({
-    foo: {
-      type: 'object',
-      nullCode: 'missing parameter',
-      errorCode: 'error',
-      keys: {
-        dead: {
-          type: 'object',
-          keys: {
-            beef: {
-              type: 'boolean',
-              strict: true,
-              parse: true
-            }
-          }
-        },
-        bar: 'string'
-      }
-    }
-  }, {
-    foo: {
-      dead: {
-        beef: 'true'
-      },
-      bar: 'festfest'
-    }
-  });
-
-  expect(expectations.errors()).toEqual({});
-});
-
-it('can parse values deep in a nested object', () => {
-  let expectModule = require('../../src');
-  let expectations = expectModule({
-    foo: {
-      type: 'object',
-      nullCode: 'missing parameter',
-      errorCode: 'error',
-      keys: {
-        dead: {
-          type: 'object',
-          keys: {
-            beef: {
-              type: 'boolean',
-              strict: true,
-              parse: true
-            }
-          }
-        },
-        bar: 'string'
-      }
-    }
-  }, {
-    foo: {
-      dead: {
-        beef: 'true'
-      },
-      bar: 'festfest'
-    }
-  });
-
-  expect(expectations.errors()).toEqual({});
-});
-
-it('getParsed returns correct values for nested objects', () => {
-  let expectModule = require('../../src');
-  let expectations = expectModule({
-    foo: {
-      type: 'object',
-      nullCode: 'missing parameter',
-      errorCode: 'error',
-      keys: {
-        dead: {
-          type: 'object',
-          keys: {
-            beef: {
-              type: 'boolean',
-              strict: true,
-              parse: true
-            }
-          }
-        },
-        bar: {
-          type: 'number',
-          parse: true
-        },
-        bizz: {
-          type: 'array',
-          parse: true
+          },
+          bar: 'string'
         }
       }
-    }
-  }, {
-    foo: {
-      dead: {
-        beef: 'true'
-      },
-      bar: '1',
-      bizz: '[1,2,3,4,5]'
-    }
-  });
-
-  expect(expectations.wereMet()).toBe(true);
-  expect(expectations.getParsed()).toEqual({
-    foo: {
-      dead: {
-        beef: true
-      },
-      bar: 1,
-      bizz: [1,2,3,4,5]
-    }
-  });
-});
-
-it('fails if an object contains unused keys when the strictKeyCheck mode is enabled', () => {
-  let expectModule = require('../../src');
-  let expectations = expectModule({
-    foo: {
-      type: 'object',
-      strictKeyCheck: true,
-      keys: {
+    }, {
+      foo: {
         dead: {
-          type: 'object',
-          keys: {
-            beef: {
-              type: 'boolean',
-              strict: true,
-              parse: true
+          beef: null
+        },
+        bar: 'festfest'
+      }
+    });
+  
+    expect(expectations.errors()).toEqual({
+      'foo.dead.beef': ['Expected parameter foo.dead.beef to be a number but it was null']
+    });
+  });
+  
+  it('allows null for nested objects', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        nullCode: 'missing parameter',
+        errorCode: 'error',
+        keys: {
+          dead: {
+            type: 'object',
+            keys: {
+              beef: {
+                type: 'number',
+                allowNull: true
+              }
             }
-          }
-        },
-        bar: {
-          type: 'number',
-          parse: true
-        },
-        bizz: {
-          type: 'array',
-          parse: true
+          },
+          bar: 'string'
         }
       }
-    }
-  }, {
-    foo: {
-      dead: {
-        beef: 'true'
-      },
-      bar: '1',
-      bizz: '[1,2,3,4,5]',
-      buzz: '1337'
-    }
-  });
-
-  expect(expectations.wereMet()).toBe(false);
-  expect(expectations.errors()).toEqual({
-    foo: ['Object contained unchecked keys "buzz"']
-  });
-});
-
-it('fails if a nested object contains unused keys when the strictKeyCheck mode is enabled', () => {
-  let expectModule = require('../../src');
-  let expectations = expectModule({
-    foo: {
-      type: 'object',
-      keys: {
+    }, {
+      foo: {
         dead: {
-          type: 'object',
-          strictKeyCheck: true,
-          keys: {
-            beef: {
-              type: 'boolean',
-              strict: true,
-              parse: true
+          beef: null
+        },
+        bar: 'festfest'
+      }
+    });
+  
+    expect(expectations.errors()).toEqual({});
+  });
+  
+  it('can parse values deep in a nested object', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        nullCode: 'missing parameter',
+        errorCode: 'error',
+        keys: {
+          dead: {
+            type: 'object',
+            keys: {
+              beef: {
+                type: 'boolean',
+                strict: true,
+                parse: true
+              }
             }
-          }
-        },
-        bar: {
-          type: 'number',
-          parse: true
-        },
-        bizz: {
-          type: 'array',
-          parse: true
+          },
+          bar: 'string'
         }
       }
-    }
-  }, {
-    foo: {
-      dead: {
-        beef: 'true',
-        well: 'fed'
-      },
-      bar: '1',
-      bizz: '[1,2,3,4,5]',
-      buzz: '1337'
-    }
-  });
-
-  expect(expectations.wereMet()).toBe(false);
-  expect(expectations.errors()).toEqual({
-    'foo.dead': ['Object contained unchecked keys "well"']
-  });
-});
-
-it('passes if a nested object contains null keys when the strictKeyCheck mode is enabled', () => {
-  let expectModule = require('../../src');
-  let expectations = expectModule({
-    foo: {
-      type: 'object',
-      keys: {
+    }, {
+      foo: {
         dead: {
-          type: 'object',
-          strictKeyCheck: true,
-          keys: {
-            beef: {
-              type: 'boolean',
-              allowNull: true,
-              strict: true,
-              parse: true
+          beef: 'true'
+        },
+        bar: 'festfest'
+      }
+    });
+  
+    expect(expectations.errors()).toEqual({});
+  });
+  
+  it('can parse values deep in a nested object', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        nullCode: 'missing parameter',
+        errorCode: 'error',
+        keys: {
+          dead: {
+            type: 'object',
+            keys: {
+              beef: {
+                type: 'boolean',
+                strict: true,
+                parse: true
+              }
             }
-          }
-        },
-        bar: {
-          type: 'number',
-          parse: true
-        },
-        bizz: {
-          type: 'array',
-          parse: true
+          },
+          bar: 'string'
         }
       }
-    }
-  }, {
-    foo: {
-      dead: {
-        beef: null
-      },
-      bar: '1',
-      bizz: '[1,2,3,4,5]',
-      buzz: '1337'
-    }
+    }, {
+      foo: {
+        dead: {
+          beef: 'true'
+        },
+        bar: 'festfest'
+      }
+    });
+  
+    expect(expectations.errors()).toEqual({});
+  });
+  
+  it('getParsed returns correct values for nested objects', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        nullCode: 'missing parameter',
+        errorCode: 'error',
+        keys: {
+          dead: {
+            type: 'object',
+            keys: {
+              beef: {
+                type: 'boolean',
+                strict: true,
+                parse: true
+              }
+            }
+          },
+          bar: {
+            type: 'number',
+            parse: true
+          },
+          bizz: {
+            type: 'array',
+            parse: true
+          }
+        }
+      }
+    }, {
+      foo: {
+        dead: {
+          beef: 'true'
+        },
+        bar: '1',
+        bizz: '[1,2,3,4,5]'
+      }
+    });
+  
+    expect(expectations.wereMet()).toBe(true);
+    expect(expectations.getParsed()).toEqual({
+      foo: {
+        dead: {
+          beef: true
+        },
+        bar: 1,
+        bizz: [1,2,3,4,5]
+      }
+    });
+  });
+  
+  it('fails if an object contains unused keys when the strictKeyCheck mode is enabled', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        strictKeyCheck: true,
+        keys: {
+          dead: {
+            type: 'object',
+            keys: {
+              beef: {
+                type: 'boolean',
+                strict: true,
+                parse: true
+              }
+            }
+          },
+          bar: {
+            type: 'number',
+            parse: true
+          },
+          bizz: {
+            type: 'array',
+            parse: true
+          }
+        }
+      }
+    }, {
+      foo: {
+        dead: {
+          beef: 'true'
+        },
+        bar: '1',
+        bizz: '[1,2,3,4,5]',
+        buzz: '1337'
+      }
+    });
+  
+    expect(expectations.wereMet()).toBe(false);
+    expect(expectations.errors()).toEqual({
+      foo: ['Object contained unchecked keys "buzz"']
+    });
+  });
+  
+  it('fails if a nested object contains unused keys when the strictKeyCheck mode is enabled', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        keys: {
+          dead: {
+            type: 'object',
+            strictKeyCheck: true,
+            keys: {
+              beef: {
+                type: 'boolean',
+                strict: true,
+                parse: true
+              }
+            }
+          },
+          bar: {
+            type: 'number',
+            parse: true
+          },
+          bizz: {
+            type: 'array',
+            parse: true
+          }
+        }
+      }
+    }, {
+      foo: {
+        dead: {
+          beef: 'true',
+          well: 'fed'
+        },
+        bar: '1',
+        bizz: '[1,2,3,4,5]',
+        buzz: '1337'
+      }
+    });
+  
+    expect(expectations.wereMet()).toBe(false);
+    expect(expectations.errors()).toEqual({
+      'foo.dead': ['Object contained unchecked keys "well"']
+    });
+  });
+  
+  it('passes if a nested object contains null keys when the strictKeyCheck mode is enabled', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        keys: {
+          dead: {
+            type: 'object',
+            strictKeyCheck: true,
+            keys: {
+              beef: {
+                type: 'boolean',
+                allowNull: true,
+                strict: true,
+                parse: true
+              }
+            }
+          },
+          bar: {
+            type: 'number',
+            parse: true
+          },
+          bizz: {
+            type: 'array',
+            parse: true
+          }
+        }
+      }
+    }, {
+      foo: {
+        dead: {
+          beef: null
+        },
+        bar: '1',
+        bizz: '[1,2,3,4,5]',
+        buzz: '1337'
+      }
+    });
+  
+    expect(expectations.wereMet()).toBe(true);
+    expect(expectations.errors()).toEqual({});
   });
 
-  expect(expectations.wereMet()).toBe(true);
-  expect(expectations.errors()).toEqual({});
-});
+  it('allows nested requiredIf statements ', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      foo: {
+        type: 'object',
+        keys: {
+          dead: {
+            type: 'object',
+            strictKeyCheck: true,
+            keys: {
+              beef: {
+                type: 'boolean',
+                allowNull: true,
+                strict: true,
+                parse: true
+              }
+            }
+          },
+        }
+      },
+      bar: {
+        type: 'number',
+        parse: true,
+        requiredIf: ['foo', 'dead', 'beef']
+      }
+    }, {
+      foo: {
+        dead: {
+          beef: null
+        },
+        bar: '',
+      }
+    });
+  
+    expect(expectations.wereMet()).toBe(true);
+    expect(expectations.errors()).toEqual({});
+  });
+});  
+
+

@@ -66,11 +66,11 @@ app.put('/user', (req, res) => {
 ### Types
 | Type    | Available options   | Description                                                                       |
 |---------|---------------------|-----------------------------------------------------------------------------------|
-| string  | allowNull, parse, errorCode, nullCode, requiredIf | expects a string.                                                                           |
+| string  | allowNull, parse, errorCode, nullCode, requiredIf, sanitize, allowed, blockUnsafe, strictEntities | expects a string.                                                                           |
 | array   | allowNull, parse, errorCode, nullCode, requiredIf, items | expects an array.                                                                           |
 | boolean | allowNull, parse, errorCode, nullCode, strict, requiredIf | expects a boolean                                                                   |
 | date    | allowNull, parse, errorCode, nullCode, requiredIf | expects either a valid date object or date string                                           |
-| email   | allowNull, errorCode, nullCode, strict, requiredIf | expects a string formatted as an email address                                      |
+| email   | allowNull, errorCode, nullCode, strict, requiredIf, allowed, blockUnsafe, strictEntities | expects a string formatted as an email address                                      |
 | number  | allowNull, parse, errorCode, nullCode, strict, requiredIf | expects a number                                                                    |
 | object  | allowNull, errorCode, nullCode, requiredIf, keys, strictKeyCheck | expects an object. Note that arrays will __not__ count as objects                           |
 | phone   | allowNull, errorCode, nullCode, strict, requiredIf | expects a phone number                                                              |
@@ -150,40 +150,6 @@ expectations.errors(); //{ bar: ['bar is incorrectly formatted'] }
 
 #### nullCode
 Like errorCode, but only changed the returned error if it was a null error
-
-#### requiredIf
-An element is allowed to be null or undefined if another value is null
-
-```javascript
-const expect = require('@edgeguideab/expect');
-let expectations = expect({  
-  bar: {
-    type: 'string',
-    requiredIf: 'foo'
-  },
-  foo: 'string'
-}, {
-  foo: ''
-});
-
-expectations.wereMet(); //true
-
-
-const expect = require('@edgeguideab/expect');
-let expectations = expect({  
-  bar: {
-    type: 'string',
-    errorCode: 'bar is required if foo',
-    requiredIf: 'foo'
-  },
-  foo: 'string'
-}, {
-  foo: 'test'
-});
-
-expectations.wereMet(); //false
-expectations.errors(); //{ bar: ['bar is required if foo'] }
-```
 
 #### strict
 The strict option is available for email, phone and boolean types.
@@ -426,6 +392,31 @@ expectations = expect({
 expectations.wereMet(); //false
 ```
 
+Note that when using the keys/items options when nestling objects/arrays, you need to provide an array with the path to
+the other parameter.
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  foo: {
+    type: 'object',
+    keys: {
+      buzz: 'string'
+    }
+  },
+  bar: {
+    type: 'string',
+    equalTo: ['foo', 'buzz']
+  }
+}, {
+  foo: {
+    buzz: 'abc'
+  },
+  bar: 'abc
+});
+
+expectations.wereMet(); //true
+```
+
 #### regexp
 The ```regexp``` matcher will match a value against a regular expression. The ```regexp``` parameter __must__ be a regexp object.
 
@@ -454,6 +445,215 @@ let expectations = expect({
 expectations.wereMet(); //false, 'deadbeef' is not a number
 ```
 
+#### requiredIf
+An element is allowed to be null or undefined if another value is null
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'string',
+    requiredIf: 'foo'
+  },
+  foo: 'string'
+}, {
+  foo: ''
+});
+
+expectations.wereMet(); //true
+
+
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  bar: {
+    type: 'string',
+    errorCode: 'bar is required if foo',
+    requiredIf: 'foo'
+  },
+  foo: 'string'
+}, {
+  foo: 'test'
+});
+
+expectations.wereMet(); //false
+expectations.errors(); //{ bar: ['bar is required if foo'] }
+```
+
+Note that when using the keys/items options when nestling objects/arrays, you need to provide an array with the path to
+the other parameter.
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  foo: {
+    type: 'object',
+    keys: {
+      buzz: 'string'
+    }
+  },
+  bar: {
+    type: 'string',
+    requiredIf: ['foo', 'buzz']
+  }
+}, {
+  foo: {
+    buzz: ''
+  },
+  bar: null
+});
+
+expectations.wereMet(); //true
+```
+
+#### blockUnsafe
+If true, expectations will fail if the value contains unsafe characters that can be used for XSS injections. In non-strict mode, these are
+```& < > " '```, and with the strictEntities option enabled they are ```& < > " ' ! @ $ ( ) = + { } [ ]```. 
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  test: {
+    type: 'string',
+    blockUnsafe: true
+  }
+}, {
+  test: '<div>Some html</div>'
+});
+
+expectations.wereMet(); //false
+expectations.errors(); // { test: ['Parameter test contained unsafe, unescaped characters' ] }
+```
+
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  test: {
+    type: 'string',
+    blockUnsafe: true
+  }
+}, {
+  test: 'This is not so unsafe in non-strict mode!'
+});
+
+expectations.wereMet(); //true
+```
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  test: {
+    type: 'string',
+    blockUnsafe: true,
+    strictEntities: true
+  }
+}, {
+  test: 'But it is not safe in strict mode!'
+});
+
+expectations.wereMet(); //false
+```
+
+For the email-type, ```@``` is always an allowed character.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  test: {
+    type: 'email',
+    blockUnsafe: true,
+    strictEntities: true
+  }
+}, {
+  test: 'thisisok@foo.xcc'
+});
+
+expectations.wereMet(); //true
+```
+
+To explicitly allow some characters (even when in strict mode), you can pass a parameter ```allowed``` which is expected to be a list containing the allowed
+characters.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  test: {
+    type: 'string',
+    blockUnsafe: true,
+    strictEntities: true,
+    allowed: ['!']
+  }
+}, {
+  test: 'This would normally be considered unsafe!'
+});
+
+expectations.wereMet(); //true
+```
+
+#### sanitize
+If true, the value will have dangerous characters replaced with html entities. In non-strict mode, these are
+```& < > " '```, and with the strictEntities option enabled they are ```& < > " ' ! @ $ ( ) = + { } [ ]```. 
+__The original values will be kept as-is, and the sanitized value will can be retrieved using the getParsed method__.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  test: {
+    type: 'string',
+    sanitize: true
+  }
+}, {
+  test: '<div>Some html</div>'
+});
+
+expectations.wereMet(); // true
+expectations.getParsed(); // { test: '&lt;div&gt;Som html&lt;/div&gt;' }
+```
+
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  test: {
+    type: 'string',
+    sanitize: true
+  }
+}, {
+  test: 'This will be kept as-is in non-strict mode!'
+});
+
+expectations.getParsed(); // { test: 'This will be kept as-is in non-strict mode!' }
+
+expectations = expect({  
+  test: {
+    type: 'string',
+    sanitize: true,
+    strictEntities: true
+  }
+}, {
+  test: 'But sanitized in strict mode!'
+});
+
+expectations.getParsed(); // { test: 'But sanitized in strict mode&excl;' }
+```
+
+To explicitly allow some characters (even when in strict mode), you can pass a parameter ```allowed``` which is expected to be a list containing the allowed
+characters. These will not be sanitized
+
+```javascript
+const expect = require('@edgeguideab/expect');
+let expectations = expect({  
+  test: {
+    type: 'string',
+    sanitize: true,
+    strictEntities: true,
+    allowed: ['(', ')']
+  }
+}, {
+  test: 'keep (some) of this as it is [test] '
+});
+
+expectations.getParsed(); // { test: 'keep (some) of this as it is &lbrack;test&rbrack;'}
+```
 ## Author
 
  [EdgeGuide AB](http://www.edgeguide.com)
