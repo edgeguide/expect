@@ -134,7 +134,7 @@ function getDeep(chain, values) {
     return undefined;
   }
 
-  if (values.hasOwnProperty(chain)) {
+  if (Object.prototype.hasOwnProperty.call(values, chain)) {
     return values[chain];
   }
 
@@ -161,10 +161,10 @@ function getDeepOptions(chain, values) {
 
   let key = chain[0];
   let nextValues = values[key];
-  if (values.hasOwnProperty('items')) {
+  if (Object.prototype.hasOwnProperty.call(values, 'items')) {
     nextValues = values.items[key];
   }
-  if (values.hasOwnProperty('keys')) {
+  if (Object.prototype.hasOwnProperty.call(values, 'keys')) {
     nextValues = values.keys[key];
   }
   return getDeepOptions(chain.slice(1), nextValues);
