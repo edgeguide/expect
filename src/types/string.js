@@ -1,4 +1,6 @@
+const XRegExp = require('xregexp');
 const util = require('../util');
+const alphanumericRegexp = XRegExp('^[\\p{L}0-9\\s]+$');
 
 module.exports = ({parameter, value, options}) => {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
@@ -35,6 +37,16 @@ module.exports = ({parameter, value, options}) => {
 
     if (!value && !options.allowNull) {
       return typeError();
+    }
+  
+    if (options.alphanumeric && !alphanumericRegexp.test(value)) {
+      let errorCode = options.alphanumericErrorCode || options.errorCode;
+      errorCode = errorCode || `Parameter ${parameter} contained non-alphanumeric characters`;
+
+      return {
+        errors: [errorCode],
+        valid: false
+      };
     }
 
     if (options.sanitize) {

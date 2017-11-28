@@ -1,4 +1,6 @@
+const XRegExp = require('xregexp');
 const util = require('../util');
+const alphanumericRegexp = XRegExp('^[\\p{L}0-9\\s]+$');
 const EMAIL_REGEXP = /.+@.+/;
 const STRICT_EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -28,6 +30,16 @@ module.exports = ({parameter, value, options}) => {
   if (options.blockUnsafe && util.containsUnsafe({value, strict: options.strictEntities, allowed: allowedCharacters})) {
     let errorCode = options.unsafeErrorCode || options.errorCode;
     errorCode = errorCode || `Parameter ${parameter} contained unsafe, unescaped characters`;
+
+    return {
+      errors: [errorCode],
+      valid: false
+    };
+  }
+
+  if (options.alphanumeric && !alphanumericRegexp.test(value)) {
+    let errorCode = options.alphanumericErrorCode || options.errorCode;
+    errorCode = errorCode || `Parameter ${parameter} contained non-alphanumeric characters`;
 
     return {
       errors: [errorCode],

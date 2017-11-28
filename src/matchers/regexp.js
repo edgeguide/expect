@@ -1,3 +1,4 @@
+const XRegExp = require('xregexp');
 const util = require('../util');
 
 module.exports = (parameter, expected, actualValues, options) => {
@@ -5,11 +6,11 @@ module.exports = (parameter, expected, actualValues, options) => {
   let regexp = options.regexp;
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
-  if (Object.prototype.toString.apply(regexp) !== '[object RegExp]') {
-    throw new Error(`${regexp} was expected to be a regexp object but was ${Object.prototype.toString.apply(regexp)}`);
+  if (Object.prototype.toString.apply(regexp) !== '[object RegExp]' && typeof regexp !== 'string') {
+    throw new Error(`${regexp} was expected to be a regexp object or a string but was ${Object.prototype.toString.apply(regexp)}`);
   }
 
-  if (!regexp.test(actual)) {
+  if (!XRegExp(regexp).test(actual)) {
     return {
       errors: options.regexpErrorCode === undefined ? `${actual} did not match the regexp ${regexp}` : options.regexpErrorCode,
       valid: false

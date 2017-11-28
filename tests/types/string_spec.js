@@ -653,4 +653,65 @@ describe('Expect package (string validation):', () => {
       test: 'Some japanese characters &lpar;日本語&rpar; should be handled correctly'
     });
   });
+
+
+  it('fails if a string contains non-alphanumeric characters (with the alphanumeric option)', () => {
+    let testObject =  {
+      test: 'This should not pass!'
+    };
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        alphanumeric: true
+      }
+    }, testObject);
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('Accepts non-ascii characters with the alphanumeric option', () => {
+    let testObject =  {
+      test: '日本語'
+    };
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        alphanumeric: true
+      }
+    }, testObject);
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('Accepts numbers with the alphanumeric option', () => {
+    let testObject =  {
+      test: 'test123'
+    };
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        alphanumeric: true
+      }
+    }, testObject);
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('Blocks underscores with the alphanumeric option', () => {
+    let testObject =  {
+      test: 'test_123'
+    };
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: {
+        type: 'string',
+        alphanumeric: true
+      }
+    }, testObject);
+
+    expect(expectations.wereMet()).toBe(false);
+  });
 });
