@@ -1,10 +1,9 @@
 const util = require('../util');
 
-const PHONE_REGEXP = /^\D?[\d\s\(\)]+$/
-const PHONE_REGEXP_STRICT = /^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/;
+const PHONE_REGEXP = /^\+?[\d\s\(\)]+$/
 
 module.exports = ({parameter, value, options}) => {
-  let regexp = options.strict ? PHONE_REGEXP_STRICT : PHONE_REGEXP;
+  let regexp = PHONE_REGEXP;
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
   if (!options.allowNull && util.isNull(value)) {

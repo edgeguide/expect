@@ -376,4 +376,18 @@ describe('Expect package (boolean validation):', () => {
 
     expect(expectations.wereMet()).toEqual(false);
   });
+
+  it('does not accept non-parsable strings', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: {
+        type: 'boolean',
+        parse: true
+      }
+    }, {
+      test: '<false>',
+    });
+
+    expect(expectations.wereMet()).toEqual(false);
+  });
 });

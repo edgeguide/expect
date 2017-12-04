@@ -188,4 +188,17 @@ describe('Expect package (phone validation):', () => {
       test: ['missing parameter']
     });
   });
+
+  it('does not allow scary characters', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: {
+        type: 'phone'
+      }
+    }, {
+      test: '<123 321 123'
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
 });
