@@ -1,4 +1,4 @@
-const XRegExp = require('xregexp');
+const XRegExp = require('xregexp/src');
 const util = require('../util');
 const alphanumericRegexp = XRegExp('^[\\p{L}0-9\\s]+$');
 
