@@ -1,6 +1,9 @@
 const util = require('../util');
 
 module.exports = ({parameter, value, actualValues, options, validate}) => {
+  if (options.convert && !Array.isArray(value)) {
+    value = [value];
+  }
   if (options.items) {
     let validation = arrayTypeCheck(parameter, value, options);
     if (!validation.valid) {

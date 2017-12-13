@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "node_modules/.bin/jasmine",
+    "test": "jasmine",
     "test-d": "node --inspect-brk node_modules/.bin/jasmine"
   },
   "devDependencies": {

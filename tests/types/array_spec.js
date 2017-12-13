@@ -11,6 +11,21 @@ describe('Expect package (array validation):', () => {
     expect(expectations.wereMet()).toBe(true);
   });
 
+  it('can convert string to array', () => {
+    let expectModule = require('../../src');
+    let expectations = expectModule({
+      test: {
+        type: 'array',
+        convert: true
+      }
+    }, {
+      test: 'convertme'
+    });
+
+    expect(expectations.wereMet()).toBe(true);
+    expect(expectations.getParsed()).toEqual({test: ['convertme']});
+  });
+
   it('tests that an empty array validates to true', () => {
     let expectModule = require('../../src');
     let expectations = expectModule({

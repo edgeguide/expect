@@ -67,7 +67,7 @@ app.put('/user', (req, res) => {
 | Type    | Available options   | Description                                                                       |
 |---------|---------------------|-----------------------------------------------------------------------------------|
 | string  | allowNull, parse, errorCode, nullCode, requiredIf, sanitize, allowed, blockUnsafe, strictEntities | expects a string.                                                                           |
-| array   | allowNull, parse, errorCode, nullCode, requiredIf, items | expects an array.                                                                           |
+| array   | allowNull, parse, errorCode, nullCode, requiredIf, items, convert | expects an array.                                                                           |
 | boolean | allowNull, parse, errorCode, nullCode, strict, requiredIf | expects a boolean                                                                   |
 | date    | allowNull, parse, errorCode, nullCode, requiredIf | expects either a valid date object or date string                                           |
 | email   | allowNull, errorCode, nullCode, strict, requiredIf, allowed, blockUnsafe, strictEntities | expects a string formatted as an email address                                      |
@@ -153,6 +153,9 @@ Like errorCode, but only changed the returned error if it was a null error
 
 #### strict
 The strict option is available for email, phone and boolean types.
+
+#### convert
+Convert will try to convert the given value into the desired type. Typically useful for parsing arrays from `req.query` in express.
 
 ### Type explanations
 
