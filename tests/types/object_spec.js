@@ -364,12 +364,12 @@ describe('Expect package (object validation):', () => {
         bar: 'festfest'
       }
     });
-  
+
     expect(expectations.errors()).toEqual({
       'foo.dead.beef': ['Expected parameter foo.dead.beef to be a number but it was null']
     });
   });
-  
+
   it('allows null for nested objects', () => {
     let expectModule = require('../../src');
     let expectations = expectModule({
@@ -398,10 +398,10 @@ describe('Expect package (object validation):', () => {
         bar: 'festfest'
       }
     });
-  
+
     expect(expectations.errors()).toEqual({});
   });
-  
+
   it('can parse values deep in a nested object', () => {
     let expectModule = require('../../src');
     let expectations = expectModule({
@@ -431,10 +431,10 @@ describe('Expect package (object validation):', () => {
         bar: 'festfest'
       }
     });
-  
+
     expect(expectations.errors()).toEqual({});
   });
-  
+
   it('can parse values deep in a nested object', () => {
     let expectModule = require('../../src');
     let expectations = expectModule({
@@ -464,10 +464,10 @@ describe('Expect package (object validation):', () => {
         bar: 'festfest'
       }
     });
-  
+
     expect(expectations.errors()).toEqual({});
   });
-  
+
   it('getParsed returns correct values for nested objects', () => {
     let expectModule = require('../../src');
     let expectations = expectModule({
@@ -505,7 +505,7 @@ describe('Expect package (object validation):', () => {
         bizz: '[1,2,3,4,5]'
       }
     });
-  
+
     expect(expectations.wereMet()).toBe(true);
     expect(expectations.getParsed()).toEqual({
       foo: {
@@ -517,7 +517,7 @@ describe('Expect package (object validation):', () => {
       }
     });
   });
-  
+
   it('fails if an object contains unused keys when the strictKeyCheck mode is enabled', () => {
     let expectModule = require('../../src');
     let expectations = expectModule({
@@ -555,13 +555,13 @@ describe('Expect package (object validation):', () => {
         buzz: '1337'
       }
     });
-  
+
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
       foo: ['Object contained unchecked keys "buzz"']
     });
   });
-  
+
   it('fails if a nested object contains unused keys when the strictKeyCheck mode is enabled', () => {
     let expectModule = require('../../src');
     let expectations = expectModule({
@@ -600,13 +600,13 @@ describe('Expect package (object validation):', () => {
         buzz: '1337'
       }
     });
-  
+
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
       'foo.dead': ['Object contained unchecked keys "well"']
     });
   });
-  
+
   it('passes if a nested object contains null keys when the strictKeyCheck mode is enabled', () => {
     let expectModule = require('../../src');
     let expectations = expectModule({
@@ -645,7 +645,7 @@ describe('Expect package (object validation):', () => {
         buzz: '1337'
       }
     });
-  
+
     expect(expectations.wereMet()).toBe(true);
     expect(expectations.errors()).toEqual({});
   });
@@ -683,10 +683,31 @@ describe('Expect package (object validation):', () => {
         bar: '',
       }
     });
-  
+
     expect(expectations.wereMet()).toBe(true);
     expect(expectations.errors()).toEqual({});
   });
-});  
+
+  it('fail if null check is incorrect for nested keys', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule({
+      foo: {
+        type: 'object',
+        keys: {
+          bar: {
+            type: 'number',
+            allowNull: true
+          }
+        }
+      }
+    }, {
+      foo: {
+        bar: "2018-02-02"
+      }
+    });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+});
 
 

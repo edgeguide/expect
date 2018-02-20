@@ -14,7 +14,15 @@ module.exports = {
   validate
 };
 
-function validate({type, parameter, value, options, actualValues = {}, chain = [parameter], expected = {}}) {
+function validate({
+  type,
+  parameter,
+  value,
+  options,
+  actualValues = {},
+  chain = Array.isArray(parameter) ? parameter : [parameter],
+  expected = {}
+}) {
   let requiredIf = options.requiredIf || false;
   let allowNull =  options.allowNull || false;
   chain = chain || parameter;
