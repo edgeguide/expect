@@ -99,7 +99,7 @@ Allow null is available for all types. If set, an expected value can be matched 
 Some types have a ```parse``` option available. This means that expect will attempt to parse the value before checking its type. For example:
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   foo: 'string',
   bar: {
     type: 'number',
@@ -124,7 +124,7 @@ Changes the value of the returned error. Default is a string describing what wen
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   bar: 'string'
 }, {
   bar: {}
@@ -135,7 +135,7 @@ expectations.errors(); //{ bar: ['Expected parameter bar to be a string but it w
 
 
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   bar: {
     type: 'string',
     errorCode: 'bar is incorrectly formatted'
@@ -163,7 +163,7 @@ Convert will try to convert the given value into the desired type. Typically use
 Expects the value to be of type object. If the "keys" option is given, the different keys for the object can be evaluated recursively.
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   bar: {
     type: 'object',
     keys: {
@@ -186,7 +186,7 @@ Object validation can be nested with several keys-options.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   bar: {
     type: 'object',
     keys: {
@@ -218,7 +218,7 @@ if the actual object contains any keys which are not explicitly checked for.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   bar: {
     type: 'object',
     keys: {
@@ -250,7 +250,7 @@ Checks whether the parameter is an array or not. If given the "items"-option, ea
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   bar: {
     type: 'array',
     items: {
@@ -281,7 +281,7 @@ expectations.wereMet(); //true
 expectations.errors() // { }
 
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   beef: {
     type: 'array',
     items: {
@@ -331,19 +331,6 @@ For boolean values, if the strict option is specified the value __must__ be of t
 Values are generally regarded as numbers if they can be parsed to numbers (isNaN evaluates to false). With the strict mode, they have to actually be of type number in order to be regarded as numbers. Note that
 even though a string such as "11foobar" can be parsed to ```11``` using ```parseInt```, the string will not be considered a number unless the parsed numbers ```toString``` method evaluates to the original string.
 
-### Global options
-If you want to make all values optional, you can set a global ```allowNull```option.
-```javascript
-const expect = require('@edgeguideab/expect');
-let expectations = expect({
-  foo: 'string',
-  bar: 'string'
-}, {}, {
-  allowNull: true
-});
-
-expectations.wereMet(); //true
-```
 ### Matchers
 Another thing that can be added to a value are matchers. Matchers will match the value against a specific function, and only pass if it matches this function.
 
@@ -399,7 +386,7 @@ Note that when using the keys/items options when nestling objects/arrays, you ne
 the other parameter.
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   foo: {
     type: 'object',
     keys: {
@@ -453,7 +440,7 @@ An element is allowed to be null or undefined if another value is null
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   bar: {
     type: 'string',
     requiredIf: 'foo'
@@ -467,7 +454,7 @@ expectations.wereMet(); //true
 
 
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   bar: {
     type: 'string',
     errorCode: 'bar is required if foo',
@@ -486,7 +473,7 @@ Note that when using the keys/items options when nestling objects/arrays, you ne
 the other parameter.
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   foo: {
     type: 'object',
     keys: {
@@ -509,11 +496,11 @@ expectations.wereMet(); //true
 
 #### blockUnsafe
 If true, expectations will fail if the value contains unsafe characters that can be used for XSS injections. In non-strict mode, these are
-```& < > " '```, and with the strictEntities option enabled they are ```& < > " ' ! @ $ ( ) = + { } [ ]```. 
+```& < > " '```, and with the strictEntities option enabled they are ```& < > " ' ! @ $ ( ) = + { } [ ]```.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   test: {
     type: 'string',
     blockUnsafe: true
@@ -529,7 +516,7 @@ expectations.errors(); // { test: ['Parameter test contained unsafe, unescaped c
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   test: {
     type: 'string',
     blockUnsafe: true
@@ -543,7 +530,7 @@ expectations.wereMet(); //true
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   test: {
     type: 'string',
     blockUnsafe: true,
@@ -560,7 +547,7 @@ For the email-type, ```@``` is always an allowed character.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   test: {
     type: 'email',
     blockUnsafe: true,
@@ -578,7 +565,7 @@ characters.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   test: {
     type: 'string',
     blockUnsafe: true,
@@ -594,12 +581,12 @@ expectations.wereMet(); //true
 
 #### sanitize
 If true, the value will have dangerous characters replaced with html entities. In non-strict mode, these are
-```& < > " '```, and with the strictEntities option enabled they are ```& < > " ' ! @ $ ( ) = + { } [ ]```. 
+```& < > " '```, and with the strictEntities option enabled they are ```& < > " ' ! @ $ ( ) = + { } [ ]```.
 __The original values will be kept as-is, and the sanitized value will can be retrieved using the getParsed method__.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   test: {
     type: 'string',
     sanitize: true
@@ -615,7 +602,7 @@ expectations.getParsed(); // { test: '&lt;div&gt;Som html&lt;/div&gt;' }
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   test: {
     type: 'string',
     sanitize: true
@@ -626,7 +613,7 @@ let expectations = expect({
 
 expectations.getParsed(); // { test: 'This will be kept as-is in non-strict mode!' }
 
-expectations = expect({  
+expectations = expect({
   test: {
     type: 'string',
     sanitize: true,
@@ -644,7 +631,7 @@ characters. These will not be sanitized
 
 ```javascript
 const expect = require('@edgeguideab/expect');
-let expectations = expect({  
+let expectations = expect({
   test: {
     type: 'string',
     sanitize: true,

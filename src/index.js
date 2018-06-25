@@ -1,17 +1,16 @@
 const types = require('./types');
 const util = require('./util');
 
-module.exports = function(expected, actualValues, options) {
-  options = options || {};
+module.exports = function(expected, actualValues) {
   actualValues = actualValues || {};
+  const parsedValues = {};
   let errors = {};
-  let parsedValues = {};
   let valid = true;
 
   Object.keys(expected).forEach(parameter => {
-    let options = typeof expected[parameter] === 'object' ? expected[parameter] : {};
-    let actual = actualValues[parameter];
-    let type = options.type || expected[parameter];
+    const options = typeof expected[parameter] === 'object' ? expected[parameter] : {};
+    const actual = actualValues[parameter];
+    const type = options.type || expected[parameter];
 
     let validation = types.validate({
       type,
