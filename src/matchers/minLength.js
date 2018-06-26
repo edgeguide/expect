@@ -5,17 +5,21 @@ module.exports = (parameter, expected, actualValues, options) => {
   let length = getLength();
 
   if (isNaN(options.minLength)) {
-    throw new Error(`maxLength options for parameter ${parameter} was not a number`);
+    throw new Error(
+      `maxLength options for parameter ${parameter} was not a number`
+    );
   }
 
   if (length < options.minLength) {
     return {
-      errors: options.minLengthErrorCode === undefined ? `${actual} was shorter than ${options.minLength} (it was ${length})` : options.minLengthErrorCode,
-      valid: false
+      valid: false,
+      errors:
+        options.minLengthErrorCode ||
+        `${actual} was shorter than ${options.minLength} (it was ${length})`
     };
   }
 
-  return { valid : true, errors: [] };
+  return { valid: true, errors: [] };
 
   function getLength() {
     if (Array.isArray(actual)) {
@@ -32,4 +36,4 @@ module.exports = (parameter, expected, actualValues, options) => {
 
     return undefined;
   }
-}
+};

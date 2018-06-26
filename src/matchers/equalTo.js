@@ -6,7 +6,6 @@ module.exports = (parameter, expected, actualValues, options, expectations = {})
   let equalValue = util.getDeep(equalField, actualValues);
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
-
   if (options.type === 'date') {
     let error = '';
     if (!isDate(equalValue)) {
@@ -24,7 +23,10 @@ module.exports = (parameter, expected, actualValues, options, expectations = {})
     actual = new Date(actual).getTime();
     equalValue = new Date(equalValue).getTime();
   } else {
-    if (typeof expectations[equalField] === 'object' && expectations[equalField].parse) {
+    if (
+      typeof expectations[equalField] === 'object' &&
+      expectations[equalField].parse
+    ) {
       equalValue = util.parseType(expectations[equalField].type, equalValue);
     }
 
@@ -35,16 +37,18 @@ module.exports = (parameter, expected, actualValues, options, expectations = {})
 
   if (actual !== equalValue) {
     return {
-      errors: options.equalToErrorCode === undefined ? `Expected ${actual} to be equal to ${equalValue} but it was not.` : options.equalToErrorCode,
-      valid: false
+      valid: false,
+      errors:
+        options.equalToErrorCode ||
+        `Expected ${actual} to be equal to ${equalValue} but it was not.`
     };
   }
 
-  return { valid : true };
-}
+  return { valid: true };
+};
 
 function isDate(value) {
-  if (value === null || value === undefined) {
+  if (value === null || value === undefined) {
     return false;
   }
 

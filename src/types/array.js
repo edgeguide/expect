@@ -1,6 +1,6 @@
 const util = require('../util');
 
-module.exports = ({parameter, value, actualValues, options, validate}) => {
+module.exports = ({ parameter, value, actualValues, options, validate }) => {
   if (options.convert && !Array.isArray(value)) {
     value = [value];
   }
@@ -10,19 +10,24 @@ module.exports = ({parameter, value, actualValues, options, validate}) => {
       return validation;
     }
     let itemOptions = typeof options.items === 'object' ? options.items : {};
-    let itemType = typeof options.items === 'object' ? options.items.type : options.items;
+    let itemType =
+      typeof options.items === 'object' ? options.items.type : options.items;
     let errors = {};
     let parsed = [];
     let hasInvalidItems = value.filter((item, index) => {
       let validation = validate({
         type: itemType,
-        parameter: Array.isArray(parameter) ? parameter.concat(index) : [parameter, index],
+        parameter: Array.isArray(parameter)
+          ? parameter.concat(index)
+          : [parameter, index],
         value: item,
         options: itemOptions,
         actualValues
       });
       if (validation.errors) {
-        let errorKey = Array.isArray(parameter) ? parameter.concat(index).join('.') : `${parameter}.${index}`;
+        let errorKey = Array.isArray(parameter)
+          ? parameter.concat(index).join('.')
+          : `${parameter}.${index}`;
         errors[errorKey] = validation.errors;
       }
       parsed.push(validation.parsed ? validation.parsed : item);
@@ -34,12 +39,12 @@ module.exports = ({parameter, value, actualValues, options, validate}) => {
         errors: [errors]
       };
     } else {
-      return {valid: true, parsed: parsed};
+      return { valid: true, parsed };
     }
   }
 
   return arrayTypeCheck(parameter, value, options);
-}
+};
 
 function arrayTypeCheck(parameter, value, options) {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
@@ -60,28 +65,42 @@ function arrayTypeCheck(parameter, value, options) {
 
   function checkValue() {
     if (!options.allowNull && util.isNull(value)) {
-      let errorCode = options.nullCode || options.errorCode;
-      errorCode = errorCode ||  `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(value)}`;
       return {
-        errors: [errorCode],
-        valid: false
+        valid: false,
+        errors: [
+          options.nullCode ||
+            options.errorCode ||
+            `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(
+              value
+            )}`
+        ]
       };
     }
 
     if (!Array.isArray(value)) {
       return {
-        errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(value)}` : options.errorCode],
-        valid: false
+        valid: false,
+        errors: [
+          options.errorCode ||
+            `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(
+              value
+            )}`
+        ]
       };
     }
 
     if (options.strict && value.length === 0) {
       return {
-        errors: [options.emptyErrorCode === undefined ? `Empty arrays are not allowed in strict mode (${parameter} was ${JSON.stringify(value)})` : options.emptyErrorCode],
-        valid: false
+        valid: false,
+        errors: [
+          options.emptyErrorCode ||
+            `Empty arrays are not allowed in strict mode (${JSON.stringify(
+              parameter
+            )} was ${JSON.stringify(value)})`
+        ]
       };
     }
 
-    return { valid: true, parsed: value, errors: []};
+    return { valid: true, parsed: value, errors: [] };
   }
 }

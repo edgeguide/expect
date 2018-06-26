@@ -1,34 +1,30 @@
 const util = require('../util');
 
-module.exports = ({parameter, value, options}) => {
+module.exports = ({ parameter, value, options }) => {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
   if (options.parse) {
     value = util.parseType('date', value);
   }
 
+  const errorCode =
+    options.errorCode ||
+    `Expected parameter ${parameter} to be a date but it was ${JSON.stringify(
+      value
+    )}`;
+
   if (!options.allowNull && util.isNull(value)) {
-    let errorCode = options.nullCode || options.errorCode;
-    errorCode = errorCode ||  `Expected parameter ${parameter} to be a date but it was ${JSON.stringify(value)}`;
-
-    return error(errorCode);
+    return { valid: false, errors: [options.nullCode || errorCode] };
   }
-  let errorCode = options.errorCode ||  `Expected parameter ${parameter} to be a date but it was ${JSON.stringify(value)}`;
+
   if (typeof value === 'number') {
-    return error(errorCode);
+    return { valid: false, errors: [errorCode] };
   }
 
-  var testDate = new Date(value);
+  const testDate = new Date(value);
   if (testDate.toString() === 'Invalid Date') {
-    return error(errorCode);
+    return { valid: false, errors: [errorCode] };
   }
 
   return { valid: true, parsed: value, errors: [] };
-
-  function error(errorCode) {
-    return {
-      errors: [errorCode],
-      valid: false
-    };
-  }
-}
+};

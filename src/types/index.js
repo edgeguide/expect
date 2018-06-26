@@ -24,19 +24,29 @@ function validate({
   expected = {}
 }) {
   let requiredIf = options.requiredIf || false;
-  let allowNull =  options.allowNull || false;
+  let allowNull = options.allowNull || false;
   chain = chain || parameter;
 
   if (requiredIf && util.isNull(value)) {
     let requiredFieldValue = util.getDeep(requiredIf, actualValues);
     let requiredFieldOptions = util.getDeepOptions(requiredIf, expected);
-    let requiredFieldType = typeof requiredFieldOptions === 'string' ? requiredFieldOptions : requiredFieldOptions.type;
+    let requiredFieldType =
+      typeof requiredFieldOptions === 'string'
+        ? requiredFieldOptions
+        : requiredFieldOptions && requiredFieldOptions.type;
 
-    if (requiredFieldType === 'boolean' && requiredFieldOptions.parse) {
+    if (
+      requiredFieldType === 'boolean' &&
+      requiredFieldOptions &&
+      requiredFieldOptions.parse
+    ) {
       requiredFieldValue = JSON.parse(requiredFieldValue);
     }
 
-    if (util.isNull(requiredFieldValue) || (requiredFieldType === 'boolean' && !requiredFieldValue)) {
+    if (
+      util.isNull(requiredFieldValue) ||
+      (requiredFieldType === 'boolean' && !requiredFieldValue)
+    ) {
       return {
         errors: [],
         valid: true
@@ -44,7 +54,10 @@ function validate({
     }
   }
 
-  if ((allowNull || options.allowNull) && util.isNull(util.getDeep(chain, actualValues))) {
+  if (
+    (allowNull || options.allowNull) &&
+    util.isNull(util.getDeep(chain, actualValues))
+  ) {
     return {
       errors: [],
       valid: true
@@ -53,43 +66,96 @@ function validate({
   let validation;
   switch (type) {
     case 'phone': {
-      validation = phoneValidation({parameter, value, options});
+      validation = phoneValidation({ parameter, value, options });
       break;
-    } case 'email': {
-      validation = emailValidation({parameter, value, options});
+    }
+    case 'email': {
+      validation = emailValidation({ parameter, value, options });
       break;
-    } case 'number': {
-      validation = numberValidation({parameter, value, options});
+    }
+    case 'number': {
+      validation = numberValidation({ parameter, value, options });
       break;
-    } case 'object': {
-      validation = objectValidation({parameter, value, actualValues, options, validate});
+    }
+    case 'object': {
+      validation = objectValidation({
+        parameter,
+        value,
+        actualValues,
+        options,
+        validate
+      });
       break;
-    } case 'date': {
-      validation = dateValidation({parameter, value, options});
+    }
+    case 'date': {
+      validation = dateValidation({ parameter, value, options });
       break;
-    } case 'string': {
-      validation = stringValidation({parameter, value, options});
+    }
+    case 'string': {
+      validation = stringValidation({ parameter, value, options });
       break;
-    } case 'array': {
-      validation = arrayValidation({parameter, value, actualValues, options, validate});
+    }
+    case 'array': {
+      validation = arrayValidation({
+        parameter,
+        value,
+        actualValues,
+        options,
+        validate
+      });
       break;
-    } case 'boolean': {
-      validation = booleanValidation({parameter, value, options});
+    }
+    case 'boolean': {
+      validation = booleanValidation({ parameter, value, options });
       break;
-    } case 'identityNumber': {
-      validation = identityNumberValidation({parameter, value, options});
+    }
+    case 'identityNumber': {
+      validation = identityNumberValidation({ parameter, value, options });
       break;
-    } default: {
-      throw new Error(`${parameter} could not be validated against type "${type}": it has not been defined`);
+    }
+    default: {
+      throw new Error(
+        `${parameter} could not be validated against type "${type}": it has not been defined`
+      );
       return;
     }
   }
 
-  return applyMatchers(validation, actualValues, parameter, value, options, expected);
-};
+  if (typeof options.condition === 'function' && !options.condition(value)) {
+    validation = {
+      valid: false,
+      errors: [
+        options.errorCode ||
+          `Expected parameter ${JSON.stringify(value)} to meet condition`
+      ]
+    };
+  }
 
-function applyMatchers(validation, actualValues, parameter, value, options, expected) {
-  let matches = matchers.match(parameter, value, actualValues, options, expected);
+  return applyMatchers(
+    validation,
+    actualValues,
+    parameter,
+    value,
+    options,
+    expected
+  );
+}
+
+function applyMatchers(
+  validation,
+  actualValues,
+  parameter,
+  value,
+  options,
+  expected
+) {
+  let matches = matchers.match(
+    parameter,
+    value,
+    actualValues,
+    options,
+    expected
+  );
   if (!matches.valid) {
     let matchErrors = util.mergeErrors(parameter, {}, matches.errors);
     validation.valid = false;

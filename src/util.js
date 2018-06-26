@@ -14,10 +14,10 @@ const htmlEntityMap = {
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
-  '\'': '&apos;',
+  "'": '&apos;',
   '!': '&excl;',
   '@': '&commat;',
-  '$': '&dollar;',
+  $: '&dollar;',
   '(': '&lpar;',
   ')': '&rpar;',
   '=': '&equals;',
@@ -28,9 +28,9 @@ const htmlEntityMap = {
   ']': '&rbrack;'
 };
 
-const nonStrictSubset = ['&', '<', '>', '"', '\''];
+const nonStrictSubset = ['&', '<', '>', '"', "'"];
 
-function containsUnsafe({value, strict, allowed = []}) {
+function containsUnsafe({ value, strict, allowed = [] }) {
   if (typeof value !== 'string') {
     throw new Error('Non-strings cannot be checked for unsafe values');
   }
@@ -49,8 +49,7 @@ function containsUnsafe({value, strict, allowed = []}) {
   });
 }
 
-function sanitize({value, strict, allowed = []}) {
-
+function sanitize({ value, strict, allowed = [] }) {
   if (typeof value !== 'string') {
     throw new Error('Non-strings cannot be sanitized');
   }
@@ -70,7 +69,7 @@ function sanitize({value, strict, allowed = []}) {
     const entity = htmlEntityMap[character];
     sanitizedValue += entity ? entity : character;
   });
-  
+
   return sanitizedValue;
 }
 
@@ -108,7 +107,6 @@ function getErrors(chain, errors) {
   return errorPart;
 }
 
-
 function mergeErrors(parameter, allErrors, newErrors) {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
@@ -122,7 +120,9 @@ function mergeErrors(parameter, allErrors, newErrors) {
         return mergeErrors(key, allErrors, error[key]);
       });
     } else {
-      allErrors[parameter] = Array.isArray(allErrors[parameter]) ? allErrors[parameter].concat(error) : [error];
+      allErrors[parameter] = Array.isArray(allErrors[parameter])
+        ? allErrors[parameter].concat(error)
+        : [error];
     }
   });
 
@@ -150,7 +150,7 @@ function getDeepOptions(chain, values) {
   if (values === undefined) {
     return undefined;
   }
-  
+
   if (!Array.isArray(chain)) {
     return values[chain];
   }

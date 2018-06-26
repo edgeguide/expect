@@ -1,6 +1,6 @@
 const util = require('../util');
 
-module.exports = ({parameter, value, actualValues, options, validate}) => {
+module.exports = ({ parameter, value, actualValues, options, validate }) => {
   if (!options.keys) {
     return objectTypeCheck(parameter, value, options);
   }
@@ -23,23 +23,34 @@ module.exports = ({parameter, value, actualValues, options, validate}) => {
     if (uncheckedKeys.length > 0) {
       valid = false;
       let errorKey = Array.isArray(parameter) ? parameter.join('.') : parameter;
-      errors[errorKey] = [options.errorCode || `Object contained unchecked keys "${uncheckedKeys.join(', ')}"`]
+      errors[errorKey] = [
+        options.errorCode ||
+          `Object contained unchecked keys "${uncheckedKeys.join(', ')}"`
+      ];
     }
   }
 
   let invalidKeys = Object.keys(options.keys).filter(key => {
-    let keyOptions = typeof options.keys[key] === 'object' ? options.keys[key] : {};
-    let keyType = typeof options.keys[key] === 'object' ? options.keys[key].type : options.keys[key];
+    let keyOptions =
+      typeof options.keys[key] === 'object' ? options.keys[key] : {};
+    let keyType =
+      typeof options.keys[key] === 'object'
+        ? options.keys[key].type
+        : options.keys[key];
 
     let validation = validate({
       type: keyType,
-      parameter: Array.isArray(parameter) ? parameter.concat(key) : [parameter, key],
+      parameter: Array.isArray(parameter)
+        ? parameter.concat(key)
+        : [parameter, key],
       value: value[key],
       actualValues,
       options: keyOptions
     });
     if (validation.errors && validation.errors.length > 0) {
-      let errorKey = Array.isArray(parameter) ? parameter.concat(key).join('.') : `${parameter}.${key}`;
+      let errorKey = Array.isArray(parameter)
+        ? parameter.concat(key).join('.')
+        : `${parameter}.${key}`;
       errors[errorKey] = validation.errors;
     }
     parsed[key] = validation.parsed ? validation.parsed : value[key];
@@ -47,7 +58,10 @@ module.exports = ({parameter, value, actualValues, options, validate}) => {
   });
 
   let errorKey = Array.isArray(parameter) ? parameter.join('.') : parameter;
-  if (invalidKeys.length > 0 || errors[errorKey] && errors[errorKey].length > 0) {
+  if (
+    invalidKeys.length > 0 ||
+    (errors[errorKey] && errors[errorKey].length > 0)
+  ) {
     valid = false;
 
     return {
@@ -55,9 +69,9 @@ module.exports = ({parameter, value, actualValues, options, validate}) => {
       errors: [errors]
     };
   } else {
-    return {valid, parsed: parsed};
+    return { valid, parsed };
   }
-}
+};
 
 function objectTypeCheck(parameter, value, options) {
   if (Array.isArray(value)) {
@@ -66,12 +80,15 @@ function objectTypeCheck(parameter, value, options) {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
   if (!options.allowNull && util.isNull(value)) {
-    let errorCode = options.nullCode || options.errorCode;
-    errorCode = errorCode || `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(value)}`;
-
     return {
-      errors: [errorCode],
-      valid: false
+      valid: false,
+      errors: [
+        options.nullCode ||
+          options.errorCode ||
+          `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(
+            value
+          )}`
+      ]
     };
   }
 
@@ -83,8 +100,13 @@ function objectTypeCheck(parameter, value, options) {
 
   function error() {
     return {
-      errors: [options.errorCode === undefined ? `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(value)}` : options.errorCode],
-      valid: false
+      valid: false,
+      errors: [
+        options.errorCode ||
+          `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(
+            value
+          )}`
+      ]
     };
   }
 }
