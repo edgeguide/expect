@@ -2,7 +2,8 @@
   "scripts": {
     "test": "jasmine",
     "test-d": "node --inspect-brk node_modules/.bin/jasmine",
-    "build": "gulp"
+    "build": "gulp",
+    "prepublish": "gulp"
   },
   "devDependencies": {
     "babel-polyfill": "^6.23.0",
