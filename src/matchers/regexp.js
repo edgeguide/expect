@@ -1,4 +1,4 @@
-const XRegExp = require('xregexp/src');
+const XRegExp = require('xregexp');
 const util = require('../util');
 
 module.exports = (parameter, expected, actualValues, options) => {
