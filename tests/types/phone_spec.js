@@ -1,7 +1,7 @@
 describe('Expect package (phone validation):', () => {
   it('tests for phone number type correctly', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -14,8 +14,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that a phone number with a country code is valid', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -28,8 +28,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that a invalid phone number is invalid', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -42,8 +42,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that a phone number is valid in strict mode', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'phone',
@@ -59,8 +59,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that null is not a phone number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -73,8 +73,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that undefined is not a phone number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -87,8 +87,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that a array is not a phone number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -101,8 +101,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that a digit is a phone number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -115,8 +115,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that a number is a phone number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -129,8 +129,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('tests that a float is not a phone number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'phone'
       },
@@ -143,8 +143,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('respects the allowNull option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'phone',
@@ -160,8 +160,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'phone',
@@ -177,8 +177,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('is not required if another field is null', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'phone',
@@ -198,8 +198,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('is required if another field is not undefined', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'phone',
@@ -216,8 +216,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('respects the nullCode option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'phone',
@@ -234,8 +234,8 @@ describe('Expect package (phone validation):', () => {
   });
 
   it('does not allow scary characters', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'phone'

@@ -1,7 +1,7 @@
 describe('Expect package (number validation):', () => {
   it('tests for number type correctly', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -14,8 +14,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that NaN is not a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -28,8 +28,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that NaN is not a number in strict mode', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -45,8 +45,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that 0 is a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -59,8 +59,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that 12300001 is a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -73,8 +73,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that "12300001" is a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -87,8 +87,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that "1230 0001" is not a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -101,8 +101,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that "1230 0001" is a number with the parse option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -118,8 +118,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that the parsed "1230 0001" is 12300001', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -135,8 +135,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that "1230.0001" is a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -149,8 +149,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that "1230.0001" is a number with the parse option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -166,8 +166,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that the parsed "1230.0001" is 1230.0001', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -183,8 +183,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that Infinity is a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -197,8 +197,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that an array is not a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -211,8 +211,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that null is not a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -225,8 +225,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that undefined is not a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -239,8 +239,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that an object is not a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -253,8 +253,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that a string with non-numerical characters is not a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -267,8 +267,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('tests that a string containing non-numerical characters is not a number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'number'
       },
@@ -281,8 +281,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('respects the allowNull option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -298,8 +298,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('test that "1" is not a number with the strict option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -315,8 +315,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -332,8 +332,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('is not required if another field is null', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -353,8 +353,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('is required if another field is not undefined', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -371,8 +371,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('respects the nullCode option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -389,8 +389,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it('parses the actual value if the parse option is specified', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -406,11 +406,11 @@ describe('Expect package (number validation):', () => {
   });
 
   it("doesn't mutate the input value when parsing", () => {
-    let testObject = {
+    const testObject = {
       test: '1337'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -425,11 +425,11 @@ describe('Expect package (number validation):', () => {
   });
 
   it('correctly returns the parsed value', () => {
-    let testObject = {
+    const testObject = {
       test: '1337'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -445,11 +445,11 @@ describe('Expect package (number validation):', () => {
   });
 
   it('correctly returns the parsed falsy value', () => {
-    let testObject = {
+    const testObject = {
       test: '0'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',
@@ -465,11 +465,11 @@ describe('Expect package (number validation):', () => {
   });
 
   it('returns the initial if no parsing is specified', () => {
-    let testObject = {
+    const testObject = {
       test: '1337'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'date'
@@ -484,8 +484,8 @@ describe('Expect package (number validation):', () => {
   });
 
   it("doesn't destroy correct values when parsing", () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'number',

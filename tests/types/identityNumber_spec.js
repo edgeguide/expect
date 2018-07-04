@@ -1,7 +1,7 @@
 describe('Expect package (identityNumber validation):', () => {
   it('tests for identityNumber type correctly', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -14,8 +14,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('an object is not an identity number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -28,8 +28,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('an array is not an identity number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -42,8 +42,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('a number is not an identity number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -56,8 +56,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('a boolean is not an identity number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -70,8 +70,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('null is not an identity number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -84,8 +84,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('undefined is not an identity number', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -98,8 +98,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('allows identity numbers with a plus', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -112,8 +112,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('allows identity numbers without a plus or minus', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -126,8 +126,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('rejects identity numbers which are too long', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -140,8 +140,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('allows full 1900 years to be specified', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -154,8 +154,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('allows full 2000 years to be specified', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -168,8 +168,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('rejects badly formatted identity number 1101286141', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -182,8 +182,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('rejects badly formatted identity number 0101286149', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -196,8 +196,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('rejects badly formatted identity number 1901286149', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },
@@ -210,8 +210,8 @@ describe('Expect package (identityNumber validation):', () => {
   });
 
   it('acceptes identity number 0101286144', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'identityNumber'
       },

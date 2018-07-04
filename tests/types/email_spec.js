@@ -1,7 +1,7 @@
 describe('Expect package (email validation):', () => {
   it('tests for email type correctly', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'email'
       },
@@ -14,8 +14,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('tests that an invalid email is invalid', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'email'
       },
@@ -28,8 +28,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('tests that an email is invalid in strict mode', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -45,8 +45,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('tests that an email is valid in strict mode', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -62,8 +62,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('tests that null is not an email', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'email'
       },
@@ -76,8 +76,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('tests that undefined is not an email', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'email'
       },
@@ -90,8 +90,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('tests that an array is not an email', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'email'
       },
@@ -104,8 +104,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('tests a number is not an email', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: 'email'
       },
@@ -118,8 +118,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('respects the allowNull option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -135,8 +135,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('respects the errorCode option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -152,8 +152,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('is not required if another field is null', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -172,8 +172,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('is required if another field is not undefined', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -190,8 +190,8 @@ describe('Expect package (email validation):', () => {
   });
 
   it('respects the nullCode option', () => {
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -208,11 +208,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('blocks unsafe input with the blockUnsafe flag', () => {
-    let testObject = {
+    const testObject = {
       test: 'hello@unsafeinput.<div>some html</div>'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -226,11 +226,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('returns a correct error message when blocking unsafe characters', () => {
-    let testObject = {
+    const testObject = {
       test: 'hello@unsafeinput.<div>some html</div>'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -246,11 +246,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('allows safe input with the blockUnsafe flag', () => {
-    let testObject = {
+    const testObject = {
       test: 'hello@safeinput.xcc'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -264,11 +264,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('always allows @ for the email type, even in strict mode', () => {
-    let testObject = {
+    const testObject = {
       test: 'hello@safeinput.xcc'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -283,11 +283,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('allows some unsafe input with the blockUnsafe flag when not in strict mode', () => {
-    let testObject = {
+    const testObject = {
       test: 'hello@(kind of)safe.xcc!'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -301,11 +301,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('blocks assitional unsafe input with the blockUnsafe flag when in strict mode', () => {
-    let testObject = {
+    const testObject = {
       test: 'hello@(kind of)safe.xcc!'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -320,11 +320,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('allows some specified characters in strict mode', () => {
-    let testObject = {
+    const testObject = {
       test: 'hello@(kind of)safe.xcc!'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -340,11 +340,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('allows several specified characters in strict mode', () => {
-    let testObject = {
+    const testObject = {
       test: 'foo[should]@bar(yay).xcc'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -360,11 +360,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('blocks input even with several specified characters in strict mode', () => {
-    let testObject = {
+    const testObject = {
       test: 'foo[should]@bar(yay).xcc'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
@@ -380,11 +380,11 @@ describe('Expect package (email validation):', () => {
   });
 
   it('blocks input with surrogate pairs', () => {
-    let testObject = {
+    const testObject = {
       test: '日本語(japanese)@unsafe.xcc'
     };
-    let expectModule = require('../../src');
-    let expectations = expectModule(
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
         test: {
           type: 'email',
