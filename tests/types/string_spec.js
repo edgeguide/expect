@@ -165,6 +165,33 @@ describe('Expect package (string validation):', () => {
     });
   });
 
+  it('not required if function evaluates to falsy', () => {
+    const expectModule = require('../../src');
+    expect(
+      expectModule(
+        { test: { type: 'string', requiredIf: () => 0 } },
+        {}
+      ).wereMet()
+    ).toBe(true);
+  });
+
+  it('required if function evaluates to truthy', () => {
+    const expectModule = require('../../src');
+    expect(
+      expectModule(
+        { test: { type: 'string', requiredIf: () => 1 } },
+        {}
+      ).wereMet()
+    ).toBe(false);
+
+    expect(
+      expectModule(
+        { test: { type: 'string', requiredIf: () => 1 } },
+        { test: 'test' }
+      ).wereMet()
+    ).toBe(true);
+  });
+
   it('is not required if another field is null', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(

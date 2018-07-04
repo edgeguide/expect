@@ -23,34 +23,37 @@ function validate({
   chain = Array.isArray(parameter) ? parameter : [parameter],
   expected = {}
 }) {
-  let requiredIf = options.requiredIf || false;
-  let allowNull = options.allowNull || false;
+  const requiredIf = options.requiredIf || false;
+  const allowNull = options.allowNull || false;
   chain = chain || parameter;
 
   if (requiredIf && util.isNull(value)) {
-    let requiredFieldValue = util.getDeep(requiredIf, actualValues);
-    let requiredFieldOptions = util.getDeepOptions(requiredIf, expected);
-    let requiredFieldType =
-      typeof requiredFieldOptions === 'string'
-        ? requiredFieldOptions
-        : requiredFieldOptions && requiredFieldOptions.type;
+    if (typeof requiredIf === 'function') {
+      if (!requiredIf()) {
+        return { valid: true, errors: [] };
+      }
+    } else {
+      let requiredFieldValue = util.getDeep(requiredIf, actualValues);
+      let requiredFieldOptions = util.getDeepOptions(requiredIf, expected);
+      let requiredFieldType =
+        typeof requiredFieldOptions === 'string'
+          ? requiredFieldOptions
+          : requiredFieldOptions && requiredFieldOptions.type;
 
-    if (
-      requiredFieldType === 'boolean' &&
-      requiredFieldOptions &&
-      requiredFieldOptions.parse
-    ) {
-      requiredFieldValue = JSON.parse(requiredFieldValue);
-    }
+      if (
+        requiredFieldType === 'boolean' &&
+        requiredFieldOptions &&
+        requiredFieldOptions.parse
+      ) {
+        requiredFieldValue = JSON.parse(requiredFieldValue);
+      }
 
-    if (
-      util.isNull(requiredFieldValue) ||
-      (requiredFieldType === 'boolean' && !requiredFieldValue)
-    ) {
-      return {
-        errors: [],
-        valid: true
-      };
+      if (
+        util.isNull(requiredFieldValue) ||
+        (requiredFieldType === 'boolean' && !requiredFieldValue)
+      ) {
+        return { valid: true, errors: [] };
+      }
     }
   }
 
@@ -58,10 +61,7 @@ function validate({
     (allowNull || options.allowNull) &&
     util.isNull(util.getDeep(chain, actualValues))
   ) {
-    return {
-      errors: [],
-      valid: true
-    };
+    return { valid: true, errors: [] };
   }
   let validation;
   switch (type) {

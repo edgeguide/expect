@@ -104,10 +104,20 @@ expect(
 
 ### requiredIf
 
-Similar to `allowNull`, the `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_.
+Similar to `allowNull`, the `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_ or if `requiredIf` is passed a function which evaluates to a _falsy_ value.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
+
+expect(
+  {
+    bar: {
+      type: 'string',
+      requiredIf: () => false
+    }
+  },
+  {}
+).wereMet(); // true
 
 expect(
   {
@@ -137,7 +147,7 @@ expectations.wereMet(); // false
 expectations.errors(); // { bar: ['bar is required if foo'] }
 ```
 
-Note that when using `requiredIf` on nested objects or arrays, you need to pass an array to  `requiredIf` with the path to the target parameter.
+Note that when using `requiredIf` on nested objects or arrays, you need to pass an array to `requiredIf` with the path to the target parameter.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -156,7 +166,7 @@ expect(
 
 ### condition
 
-The `condition` option is available for all types. Passing a function as a `condition` option  will test that the function evaluates to a _truthy_ value with the matched value as its parameter.
+The `condition` option is available for all types. Passing a function as a `condition` option will test that the function evaluates to a _truthy_ value with the matched value as its parameter.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -168,7 +178,7 @@ expect(
       condition: test => test.length
     }
   },
-  { foo: [] }
+  { foo: [1] }
 ).wereMet(); // false
 ```
 
