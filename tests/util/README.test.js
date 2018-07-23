@@ -2,15 +2,23 @@ describe('Expect package (README examples):', () => {
   it('Usage - Validate parameters on the server', () => {
     const expectModule = require('../../src');
 
-    expect(expectModule({ foo: 'string' }, { foo: 'test' }).wereMet()).toBe(
-      true
-    );
+    const schema = { foo: 'string' };
+    const validInput = { foo: 'test' };
+    const invalidInput = {};
 
-    const expectations = expectModule({ foo: 'string' }, {});
-    expect(expectations.wereMet()).toBe(false);
-    expect(expectations.errors()).toEqual({
+    const valid = expectModule(schema, validInput);
+    const invalid = expectModule(schema, invalidInput);
+
+    expect(valid.wereMet()).toBe(true);
+    expect(invalid.wereMet()).toBe(false);
+
+    expect(valid.errors()).toEqual({});
+    expect(invalid.errors()).toEqual({
       foo: ['Expected parameter foo to be of type string but it was undefined']
     });
+
+    expect(valid.getParsed()).toEqual({ foo: 'test' });
+    expect(invalid.getParsed()).toEqual({});
   });
 
   it('Options', () => {
@@ -118,10 +126,10 @@ describe('Expect package (README examples):', () => {
 
     expect(
       expectModule(
-        { test: { type: 'string', parse: test => `test${test}` } },
+        { test: { type: 'number', parse: test => Number(test) } },
         { test: '123' }
       ).getParsed()
-    ).toEqual({ test: 'test123' });
+    ).toEqual({ test: 123 });
 
     const invalidExpectations = expectModule(
       { test: { type: 'string', parse: true } },

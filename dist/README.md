@@ -1,3 +1,11 @@
+## Breaking changes in version 3
+
+- The `strict` option has been removed
+  - Default type validation is now "stricter". Use the `parse` option for more lenient validation
+  - NOTE: `number` no longer allows string numbers by default (e.g. "123")
+- `maxLength`, `minLength` and `regexp` options have been removed. Replaced by `condition`
+- The customized `date` type no longer allows "Invalid Date" when using the `parse` option
+
 ## Installation
 
 ### Using NPM
@@ -12,35 +20,58 @@ You will need to require the module and then package your scripts using a bundle
 
 ## Usage
 
-Expect will expose a function with the signature `function expect(expected, actualValues, options)`.
-All arguments are expected to be objects, and the values will be matched based on equal keys in `expected` and `actualValues`.
+`expect` exposes a function with the signature `function (schema: Object, input: Object): Object`.
 
-### Validate parameters on the server
+The `schema` object contains a validation schema to be used for validating the `input` object.
+
+The function returns an object exposing three method definitions:
+
+```javascript
+{
+  wereMet(): Boolean, // Returns whether the input object was validated correctly
+  errors(): Object,   // Returns errors for each property in the input object
+  getParsed(): Object // Returns a subset of the input, containing parts that were specified in the schema
+}
+```
+
+### Code examples
 
 ```javascript
 const expect = require('@edgeguideab/expect');
 
-expect({ foo: 'string' }, { foo: 'test' }).wereMet(); // true
+const schema = { foo: 'string' };
+const validInput = { foo: 'test' };
+const invalidInput = {};
 
-const expectations = expect({ foo: 'string' }, {});
-expectations.wereMet(); // false
-expectations.errors(); // { foo: ['Expected parameter foo to be of type string but it was undefined'] }
+const valid = expect(schema, validInput);
+const invalid = expect(schema, invalidInput);
+
+valid.wereMet(); // true
+invalid.wereMet(); // false
+
+valid.errors(); // {}
+invalid.errors(); // { foo: ['Expected parameter foo to be of type string but it was undefined'] }
+
+valid.getParsed(); // { foo: 'test' }
+invalid.getParsed(); // {}
 ```
 
-### Validate several parameters, example with Express.js
+#### Example validating user input in backend for Express.js
 
 ```javascript
 const expect = require('@edgeguideab/expect');
 
 app.put('/user', function addUser(req, res) {
   const expectations = expect(
-    { name: 'string', age: 'number', admin: 'boolean' },
+    { username: 'string', age: 'number', isAdmin: 'boolean' },
     req.body
   );
 
   if (!expectations.wereMet()) {
     return res.status(400).send();
   }
+
+  const { username, age, isAdmin } = expectations.getParsed();
 
   // Our parameters were correct, add the user to our application
 });
@@ -50,13 +81,13 @@ app.put('/user', function addUser(req, res) {
 
 ### Standard types
 
-| Type    | Options                                               | Description                                                          |
-| ------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
-| string  | parse, sanitize, allowed, blockUnsafe, strictEntities | expects a `string`                                                   |
-| number  | parse                                                 | expects a `number`                                                   |
-| boolean | parse                                                 | expects a `boolean`                                                  |
-| array   | parse, items, convert                                 | expects an `array`                                                   |
-| object  | parse, keys, strictKeyCheck                           | expects an `object` (note that arrays will **not** count as objects) |
+| Type    | Custom options                                 | Description                                                          |
+| ------- | ---------------------------------------------- | -------------------------------------------------------------------- |
+| number  | N/A                                            | expects a `number`                                                   |
+| boolean | N/A                                            | expects a `boolean`
+| string  | sanitize, allowed, blockUnsafe, strictEntities | expects a `string`                                                   |                        |
+| array   | items, convert                                 | expects an `array`                                                   |
+| object  | keys, strictKeyCheck                           | expects an `object` (note that arrays will **not** count as objects) |
 
 ### Customized types
 
@@ -164,7 +195,7 @@ expect(
 ).wereMet(); // false
 ```
 
-Note that `allowNull` and `requiredIf` have a higher priority than `condition`, which might result in unexpected behavior as shown in the example below.
+Note that the `condition` option has a lower priority than `allowNull` and `requiredIf`.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -183,44 +214,47 @@ expect(
 
 ### parse
 
-The `parse` option is available to all standard types.
+The `parse` option is available to all standard types, as well as the custom `date` type. This option allows the user to mutate input values before they are validated and returned by `getParsed()`.
 
-By passing a function to the `parse` option, the type checker will attempt to call the `parse` function with the current input value before validating the type of the returned value. If the function throws an error, the type checker will use the initial input value.
+Similar to the `condition` option, a function can be passed as a `parse` option with the input value as its parameter. The function's return value will then be used as the parsed value. If an error is thrown when calling the function, the type checker will proceed using the initial input value.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
 expect(
-  { test: { type: 'string', parse: test => `test${test}` } },
+  { test: { type: 'number', parse: test => Number(test) } },
   { test: '123' }
-).getParsed(); // { test: 'test123' }
+).getParsed(); // { test: 123 }
 ```
 
-Setting the `parse` option to true will attempt to use the folllowing default functions:
+Instead of passing a function, setting the `parse` option to _true_ will use the folllowing default type conversions:
 
-- `string` - `JSON.stringify()`
 - `number` - `Number()`
 - `boolean` - `JSON.parse()` followed by coercion for _falsy_ and _truthy_ values.
   - Fallback on coercing the initial value if `JSON.parse()` fails.
   - Strings _"undefined"_ and _"NaN"_ are also parsed to _false_
+- `string` - `JSON.stringify()`
+- `array` - `JSON.parse()`
+- `object` - `JSON.parse()`
+- `date` - `new Date()`
 
-Note that the `parse` option has a lower priority than `allowNull`.
+Note that the `parse` option has a lower priority than `allowNull` and `requiredIf`.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
 
-const invalidExpectations = expect(
-  { test: { type: 'string', parse: true } },
+const invalid = expect(
+  { test: { type: 'string', allowNull: false, parse: true } },
   { test: null }
 );
-invalidExpectations.wereMet(); // false
-invalidExpectations.getParsed(); // { test: null }
+invalid.wereMet(); // false
+invalid.getParsed(); // { test: null }
 
-const validExpectations = expect(
+const valid = expect(
   { test: { type: 'string', allowNull: true, parse: true } },
   { test: null }
 );
-validExpectations.wereMet(); // true
-validExpectations.getParsed(); // { test: 'null' }
+valid.wereMet(); // true
+valid.getParsed(); // { test: 'null' }
 ```
 
 ### errorCode
