@@ -20,7 +20,11 @@ You will need to require the module and then package your scripts using a bundle
 
 ## Usage
 
-`expect` exposes a function with the signature `function (schema: Object, input: Object): Object`.
+`expect` exposes a function with the following signature:
+
+```
+function (schema: Object, input: Object): Object
+```
 
 The `schema` object contains a validation schema to be used for validating the `input` object.
 
