@@ -1,17 +1,19 @@
 {
   "scripts": {
-    "test": "jasmine",
-    "test-d": "node --inspect-brk node_modules/.bin/jasmine",
+    "test": "jest",
+    "test-d": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "build": "gulp",
     "prepublish": "gulp"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.5",
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-stage-2": "^6.22.0",
+    "eslint": "^5.0.1",
     "gulp": "^3.9.1",
-    "jasmine": "^2.99.0",
-    "gulp-babel": "^6.1.3"
+    "gulp-babel": "^6.1.3",
+    "jest": "^23.3.0"
   },
   "dependencies": {
     "xregexp": "^4.2.0"

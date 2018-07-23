@@ -7,12 +7,17 @@ const phoneValidation = require('./phone');
 const stringValidation = require('./string');
 const dateValidation = require('./date');
 const identityNumberValidation = require('./identityNumber');
-const util = require('../util');
-const matchers = require('../matchers');
+const {
+  equalTo,
+  isNull,
+  getDeep,
+  getDeepOptions,
+  parseType,
+  parseFunctionWrapper,
+  mergeErrors
+} = require('../util');
 
-module.exports = {
-  validate
-};
+module.exports = { validate };
 
 function validate({
   type,
@@ -20,49 +25,10 @@ function validate({
   value,
   options,
   actualValues = {},
-  chain = Array.isArray(parameter) ? parameter : [parameter],
   expected = {}
 }) {
-  const requiredIf = options.requiredIf || false;
-  const allowNull = options.allowNull || false;
-  chain = chain || parameter;
+  const { requiredIf, allowNull, condition, nullCode, errorCode } = options;
 
-  if (requiredIf && util.isNull(value)) {
-    if (typeof requiredIf === 'function') {
-      if (!requiredIf()) {
-        return { valid: true, errors: [] };
-      }
-    } else {
-      let requiredFieldValue = util.getDeep(requiredIf, actualValues);
-      let requiredFieldOptions = util.getDeepOptions(requiredIf, expected);
-      let requiredFieldType =
-        typeof requiredFieldOptions === 'string'
-          ? requiredFieldOptions
-          : requiredFieldOptions && requiredFieldOptions.type;
-
-      if (
-        requiredFieldType === 'boolean' &&
-        requiredFieldOptions &&
-        requiredFieldOptions.parse
-      ) {
-        requiredFieldValue = JSON.parse(requiredFieldValue);
-      }
-
-      if (
-        util.isNull(requiredFieldValue) ||
-        (requiredFieldType === 'boolean' && !requiredFieldValue)
-      ) {
-        return { valid: true, errors: [] };
-      }
-    }
-  }
-
-  if (
-    (allowNull || options.allowNull) &&
-    util.isNull(util.getDeep(chain, actualValues))
-  ) {
-    return { valid: true, errors: [] };
-  }
   let validation;
   switch (type) {
     case 'phone': {
@@ -117,49 +83,84 @@ function validate({
       throw new Error(
         `${parameter} could not be validated against type "${type}": it has not been defined`
       );
-      return;
     }
   }
 
-  if (typeof options.condition === 'function' && !options.condition(value)) {
+  if (requiredIf && isNull(value)) {
+    let requiredFieldValue = getDeep(requiredIf, actualValues);
+    const requiredFieldOptions = getDeepOptions(requiredIf, expected);
+    const requiredFieldType =
+      typeof requiredFieldOptions === 'string'
+        ? requiredFieldOptions
+        : requiredFieldOptions && requiredFieldOptions.type;
+
+    if (
+      requiredFieldType === 'boolean' &&
+      requiredFieldOptions &&
+      requiredFieldOptions.parse
+    ) {
+      requiredFieldValue =
+        typeof requiredFieldOptions.parse === 'function'
+          ? parseFunctionWrapper({ value, parse: requiredFieldOptions.parse })
+          : parseType({ value: requiredFieldValue, type: requiredFieldType });
+    }
+
+    if (
+      isNull(requiredFieldValue) ||
+      (requiredFieldType === 'boolean' && !requiredFieldValue)
+    ) {
+      return { valid: true, errors: [] };
+    }
+  }
+
+  if (!allowNull && isNull(value)) {
     validation = {
       valid: false,
       errors: [
-        options.errorCode ||
-          `Expected parameter ${JSON.stringify(value)} to meet condition`
+        nullCode ||
+          errorCode ||
+          `Expected parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } to be of type ${type} but it was ${JSON.stringify(value)}`
       ]
     };
   }
 
-  return applyMatchers(
-    validation,
-    actualValues,
-    parameter,
-    value,
-    options,
-    expected
-  );
-}
+  if (typeof condition === 'function') {
+    let valid = false;
+    try {
+      valid = condition(value);
+    } catch (error) {}
 
-function applyMatchers(
-  validation,
-  actualValues,
-  parameter,
-  value,
-  options,
-  expected
-) {
-  let matches = matchers.match(
-    parameter,
-    value,
-    actualValues,
-    options,
-    expected
-  );
-  if (!matches.valid) {
-    let matchErrors = util.mergeErrors(parameter, {}, matches.errors);
-    validation.valid = false;
-    validation.errors = validation.errors.concat(matchErrors);
+    if (!valid) {
+      validation = {
+        valid: false,
+        errors: [
+          errorCode ||
+            `Expected parameter ${JSON.stringify(value)} to meet condition`
+        ]
+      };
+    }
+  }
+
+  if (!validation.valid && allowNull && isNull(value)) {
+    validation = { valid: true, errors: [] };
+  }
+
+  if (options.equalTo) {
+    const matches = equalTo({
+      value,
+      actualValues,
+      options,
+      expected
+    });
+
+    if (!matches.valid) {
+      validation.valid = false;
+      validation.errors = validation.errors.concat(
+        mergeErrors(parameter, {}, matches.errors)
+      );
+    }
   }
 
   return validation;

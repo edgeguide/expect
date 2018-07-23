@@ -234,7 +234,7 @@ describe('Expect package (identityNumber validation):', () => {
       },
       { test: '550128-6149' }
     );
-    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.wereMet()).toBe(true);
   });
 
   it('condition not met', () => {
@@ -248,6 +248,6 @@ describe('Expect package (identityNumber validation):', () => {
       },
       { test: '0101286144' }
     );
-    expect(expectations.wereMet()).toEqual(false);
+    expect(expectations.wereMet()).toBe(false);
   });
 });

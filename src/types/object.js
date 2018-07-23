@@ -1,4 +1,4 @@
-const util = require('../util');
+const { parseType, parseFunctionWrapper, isNull } = require('../util');
 
 module.exports = ({ parameter, value, actualValues, options, validate }) => {
   if (!options.keys) {
@@ -6,23 +6,25 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
   }
 
   let valid = true;
-  let validation = objectTypeCheck(parameter, value, options);
+  const validation = objectTypeCheck(parameter, value, options);
   if (!validation.valid) {
     return validation;
   }
 
-  let parsed = {};
-  let errors = {};
+  const parsed = {};
+  const errors = {};
 
   if (options.strictKeyCheck) {
-    let checkedKeys = Object.keys(options.keys);
-    let uncheckedKeys = Object.keys(value).filter(key => {
+    const checkedKeys = Object.keys(options.keys);
+    const uncheckedKeys = Object.keys(value).filter(key => {
       return !checkedKeys.includes(key);
     });
 
-    if (uncheckedKeys.length > 0) {
+    if (uncheckedKeys.length) {
       valid = false;
-      let errorKey = Array.isArray(parameter) ? parameter.join('.') : parameter;
+      const errorKey = Array.isArray(parameter)
+        ? parameter.join('.')
+        : parameter;
       errors[errorKey] = [
         options.errorCode ||
           `Object contained unchecked keys "${uncheckedKeys.join(', ')}"`
@@ -30,15 +32,15 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
     }
   }
 
-  let invalidKeys = Object.keys(options.keys).filter(key => {
-    let keyOptions =
+  const invalidKeys = Object.keys(options.keys).filter(key => {
+    const keyOptions =
       typeof options.keys[key] === 'object' ? options.keys[key] : {};
-    let keyType =
+    const keyType =
       typeof options.keys[key] === 'object'
         ? options.keys[key].type
         : options.keys[key];
 
-    let validation = validate({
+    const validation = validate({
       type: keyType,
       parameter: Array.isArray(parameter)
         ? parameter.concat(key)
@@ -47,8 +49,8 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
       actualValues,
       options: keyOptions
     });
-    if (validation.errors && validation.errors.length > 0) {
-      let errorKey = Array.isArray(parameter)
+    if (validation.errors && validation.errors.length) {
+      const errorKey = Array.isArray(parameter)
         ? parameter.concat(key).join('.')
         : `${parameter}.${key}`;
       errors[errorKey] = validation.errors;
@@ -57,11 +59,8 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
     return !validation.valid;
   });
 
-  let errorKey = Array.isArray(parameter) ? parameter.join('.') : parameter;
-  if (
-    invalidKeys.length > 0 ||
-    (errors[errorKey] && errors[errorKey].length > 0)
-  ) {
+  const errorKey = Array.isArray(parameter) ? parameter.join('.') : parameter;
+  if (invalidKeys.length || (errors[errorKey] && errors[errorKey].length)) {
     valid = false;
 
     return {
@@ -74,18 +73,25 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
 };
 
 function objectTypeCheck(parameter, value, options) {
+  if (options.parse) {
+    value =
+      typeof options.parse === 'function'
+        ? parseFunctionWrapper({ value, parse: options.parse })
+        : parseType({ value, type: 'object' });
+  }
+
   if (Array.isArray(value)) {
     return error();
   }
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
-  if (!options.allowNull && util.isNull(value)) {
+  if (!options.allowNull && isNull(value)) {
     return {
       valid: false,
       errors: [
         options.nullCode ||
           options.errorCode ||
-          `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(
+          `Expected parameter ${parameter} to be of type object but it was ${JSON.stringify(
             value
           )}`
       ]
@@ -103,7 +109,7 @@ function objectTypeCheck(parameter, value, options) {
       valid: false,
       errors: [
         options.errorCode ||
-          `Expected parameter ${parameter} to be an object but it was ${JSON.stringify(
+          `Expected parameter ${parameter} to be of type object but it was ${JSON.stringify(
             value
           )}`
       ]

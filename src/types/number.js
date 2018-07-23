@@ -1,45 +1,22 @@
-const util = require('../util');
+const { parseType, parseFunctionWrapper, isNull } = require('../util');
 
 module.exports = ({ parameter, value, options }) => {
-  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-  if (options.parse && typeof value === 'string') {
-    value = util.parseType('number', value);
+  if (options.parse) {
+    value =
+      typeof options.parse === 'function'
+        ? parseFunctionWrapper({ value, parse: options.parse })
+        : parseType({ value, type: 'number' });
   }
 
-  if (!options.allowNull && util.isNull(value)) {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
     return {
       valid: false,
       errors: [
-        options.nullCode ||
+        (isNull(value) && options.nullCode) ||
           options.errorCode ||
-          `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(
-            value
-          )}`
-      ]
-    };
-  }
-
-  if ((options.strict && typeof value !== 'number') || isNaN(value)) {
-    return {
-      valid: false,
-      errors: [
-        options.errorCode ||
-          `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(
-            value
-          )}`
-      ]
-    };
-  }
-
-  let parsed = parseFloat(value);
-  if (isNaN(parsed) || parsed.toString() !== value.toString()) {
-    return {
-      valid: false,
-      errors: [
-        options.errorCode ||
-          `Expected parameter ${parameter} to be a number but it was ${JSON.stringify(
-            value
-          )}`
+          `Expected parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } to be of type number but it was ${JSON.stringify(value)}`
       ]
     };
   }

@@ -159,9 +159,14 @@ describe('Expect package (email validation):', () => {
           type: 'email',
           requiredIf: 'foo'
         },
-        foo: { type: 'email', allowNull: true }
+        foo: {
+          type: 'email',
+          allowNull: true
+        }
       },
-      {}
+      {
+        foo: ''
+      }
     );
     expect(expectations.wereMet()).toBe(true);
   });

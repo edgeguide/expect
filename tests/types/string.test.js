@@ -1,131 +1,60 @@
 describe('Expect package (string validation):', () => {
-  it('tests for string type correctly', () => {
+  it('accepts non-empty string', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule({ test: 'string' }, { test: 'batman' });
+
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('rejects empty string', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule({ test: 'string' }, { test: '' });
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('rejects other data types', () => {
+    const expectModule = require('../../src');
+    const tests = [null, undefined, true, 1, NaN, Infinity, [], {}, Symbol()];
+    tests.forEach(test => {
+      const expectations = expectModule({ test: 'string' }, { test });
+      expect(expectations.wereMet()).toBe(false);
+    });
+  });
+
+  it('respects allowNull', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: 'string'
-      },
-      {
-        test: 'batman'
-      }
+      { test: { type: 'string', allowNull: true } },
+      {}
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('tests that null is not a string', () => {
+  it('allowNull has higher priority than parse', () => {
     const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'string'
-      },
-      {
-        test: null
-      }
+    const validExpectations = expectModule(
+      { foo: { type: 'string', allowNull: true, parse: true } },
+      { foo: null }
+    );
+    const invalidExpectations = expectModule(
+      { foo: { type: 'string', parse: true } },
+      { foo: null }
     );
 
-    expect(expectations.wereMet()).toBe(false);
-  });
+    expect(validExpectations.wereMet()).toBe(true);
+    expect(validExpectations.getParsed()).toEqual({ foo: 'null' });
 
-  it('tests that undefined is not a string', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'string'
-      },
-      {
-        test: undefined
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('tests that an array is not a string', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'string'
-      },
-      {
-        test: []
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('tests that an object is not a string', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'string'
-      },
-      {
-        test: {}
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('tests a number is not a string', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'string'
-      },
-      {
-        test: 1
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('empty string should not be a string', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'string'
-      },
-      {
-        test: ''
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('respects the allowNull option', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          allowNull: true
-        }
-      },
-      {
-        test: null
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
+    expect(invalidExpectations.wereMet()).toBe(false);
+    expect(invalidExpectations.getParsed()).toEqual({ foo: null });
   });
 
   it('a string should be counted as a string even if allowed to be null', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          allowNull: true
-        }
-      },
-      {
-        test: 'test'
-      }
+      { test: { type: 'string', allowNull: true } },
+      { test: 'test' }
     );
 
     expect(expectations.wereMet()).toBe(true);
@@ -134,15 +63,8 @@ describe('Expect package (string validation):', () => {
   it('empty string should be allowed with the allowNull options', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          allowNull: true
-        }
-      },
-      {
-        test: ''
-      }
+      { test: { type: 'string', allowNull: true } },
+      { test: '' }
     );
 
     expect(expectations.wereMet()).toBe(true);
@@ -151,354 +73,191 @@ describe('Expect package (string validation):', () => {
   it('respects the errorCode option', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          errorCode: 'missing parameter'
-        }
-      },
+      { test: { type: 'string', errorCode: 'missing' } },
       {}
     );
 
-    expect(expectations.errors()).toEqual({
-      test: ['missing parameter']
-    });
+    expect(expectations.errors()).toEqual({ test: ['missing'] });
   });
 
-  it('not required if function evaluates to falsy', () => {
-    const expectModule = require('../../src');
-    expect(
-      expectModule(
-        { test: { type: 'string', requiredIf: () => 0 } },
-        {}
-      ).wereMet()
-    ).toBe(true);
-  });
-
-  it('required if function evaluates to truthy', () => {
-    const expectModule = require('../../src');
-    expect(
-      expectModule(
-        { test: { type: 'string', requiredIf: () => 1 } },
-        {}
-      ).wereMet()
-    ).toBe(false);
-
-    expect(
-      expectModule(
-        { test: { type: 'string', requiredIf: () => 1 } },
-        { test: 'test' }
-      ).wereMet()
-    ).toBe(true);
-  });
-
-  it('is not required if another field is null', () => {
+  it('respects requiredIf', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
       {
-        test: {
-          type: 'string',
-          requiredIf: 'foo'
-        },
-        foo: {
-          type: 'string',
-          allowNull: true
-        }
+        test: { type: 'string', requiredIf: 'foo' },
+        foo: { type: 'string', allowNull: true }
       },
-      {
-        foo: ''
-      }
+      {}
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('is not required if another field is null, even if matchers fail', () => {
+  it('respects requiredIf, even if matchers fail', () => {
     const expectModule = require('../../src');
-    const expectations = expectModule(
+    const validExpectations = expectModule(
       {
         test: {
           type: 'string',
           requiredIf: 'foo',
           regexp: /^testfest$/
         },
-        foo: {
-          type: 'string',
-          allowNull: true
-        }
+        foo: { type: 'string', allowNull: true }
       },
-      {
-        foo: ''
-      }
+      {}
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    const invalidExpectations = expectModule(
+      {
+        test: { type: 'string', requiredIf: 'foo' },
+        foo: { type: 'string', allowNull: true }
+      },
+      { foo: '123' }
+    );
+
+    expect(validExpectations.wereMet()).toBe(true);
+    expect(invalidExpectations.wereMet()).toBe(false);
   });
 
-  it('is required if another field is not undefined', () => {
+  it('nullCode has higher priority than errorCode', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
       {
         test: {
           type: 'string',
-          requiredIf: 'foo'
-        },
-        foo: 'string'
-      },
-      {
-        foo: '123'
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('respects the nullCode option', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          nullCode: 'missing parameter',
+          nullCode: 'missing',
           errorCode: 'error'
         }
       },
       {}
     );
 
-    expect(expectations.errors()).toEqual({
-      test: ['missing parameter']
-    });
+    expect(expectations.errors()).toEqual({ test: ['missing'] });
   });
 
-  it('parses numbers if the parse option is specified', () => {
+  it('parse numbers', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          parse: true
-        }
-      },
-      {
-        test: 1
-      }
+      { test: { type: 'string', parse: true } },
+      { test: 1 }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('parses dates if the parse option is specified', () => {
+  it('parse dates', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          parse: true
-        }
-      },
-      {
-        test: new Date('2017-01-01')
-      }
+      { test: { type: 'string', parse: true } },
+      { test: new Date('2017-01-01') }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('parses arrays if the parse option is specified', () => {
+  it('parse arrays', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          parse: true
-        }
-      },
-      {
-        test: [1, 2, 3]
-      }
+      { test: { type: 'string', parse: true } },
+      { test: [1, 2, 3] }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('parses objects if the parse option is specified', () => {
+  it('parse objects', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          parse: true
-        }
-      },
-      {
-        test: { foo: 'bar' }
-      }
+      { test: { type: 'string', parse: true } },
+      { test: { foo: 'bar' } }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('parses booleans if the parse option is specified', () => {
+  it('parse booleans', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          parse: true
-        }
-      },
-      {
-        test: false
-      }
+      { test: { type: 'string', parse: true } },
+      { test: false }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it("doesn't mutate the input value when parsing", () => {
-    const testObject = {
-      test: 1337
-    };
+  it('does not mutate the input value when parsing', () => {
+    const testObject = { test: 1337 };
     const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          parse: true
-        }
-      },
-      testObject
-    );
+    expectModule({ test: { type: 'string', parse: true } }, testObject);
 
     expect(testObject.test).toEqual(jasmine.any(Number));
     expect(testObject.test).toEqual(testObject.test);
   });
 
   it('correctly returns the parsed value', () => {
-    const testObject = {
-      test: 1337
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          parse: true
-        }
-      },
-      testObject
+      { test: { type: 'string', parse: true } },
+      { test: 1337 }
     );
 
-    expect(expectations.getParsed()).toEqual({
-      test: '1337'
-    });
+    expect(expectations.getParsed()).toEqual({ test: '1337' });
   });
 
   it('returns the initial if no parsing is specified', () => {
-    const testObject = {
-      test: '1337'
-    };
+    const testObject = { test: '1337' };
     const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string'
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.getParsed()).toEqual({
-      test: '1337'
-    });
+    const expectations = expectModule({ test: 'string' }, testObject);
+    expect(expectations.getParsed()).toEqual(testObject);
   });
 
-  it('can parse null', () => {
-    const testObject = {
-      test: null
-    };
+  it('parse null', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
       {
         test: {
           type: 'string',
+          allowNull: true,
           parse: true
         }
       },
-      testObject
+      { test: null }
     );
 
-    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.wereMet()).toBe(true);
   });
 
-  it("doesn't destroy correct values when parsing", () => {
+  it('does not destroy correct values when parsing', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          parse: true
-        }
-      },
-      {
-        test: 'hello world'
-      }
+      { test: { type: 'string', parse: true } },
+      { test: 'hello world' }
     );
 
-    expect(expectations.getParsed()).toEqual({
-      test: 'hello world'
-    });
+    expect(expectations.getParsed()).toEqual({ test: 'hello world' });
   });
 
   it('fails to parse undefined', () => {
-    const testObject = {
-      test: undefined
-    };
     const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string'
-        }
-      },
-      testObject
-    );
+    const expectations = expectModule({ test: { type: 'string' } }, {});
 
-    expect(expectations.wereMet()).toEqual(false);
+    expect(expectations.wereMet()).toBe(false);
   });
 
   it('blocks unsafe input with the blockUnsafe flag', () => {
-    const testObject = {
-      test: '<div>I am unsafe</div>'
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          blockUnsafe: true
-        }
-      },
-      testObject
+      { test: { type: 'string', blockUnsafe: true } },
+      { test: '<div>I am unsafe</div>' }
     );
-
-    expect(expectations.wereMet()).toEqual(false);
+    expect(expectations.wereMet()).toBe(false);
   });
 
   it('returns a correct error message when blocking unsafe characters', () => {
-    const testObject = {
-      test: '<div>I am unsafe</div>'
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          blockUnsafe: true
-        }
-      },
-      testObject
+      { test: { type: 'string', blockUnsafe: true } },
+      { test: '<div>I am unsafe</div>' }
     );
 
     expect(expectations.errors()).toEqual({
@@ -507,65 +266,36 @@ describe('Expect package (string validation):', () => {
   });
 
   it('allows safe input with the blockUnsafe flag', () => {
-    const testObject = {
-      test: 'I am so very safe'
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          blockUnsafe: true
-        }
-      },
-      testObject
+      { test: { type: 'string', blockUnsafe: true } },
+      { test: 'I am so very safe' }
     );
 
-    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.wereMet()).toBe(true);
   });
 
   it('allows some unsafe input with the blockUnsafe flag when not in strict mode', () => {
-    const testObject = {
-      test:
-        'I am so very safe (Even though I contain some questionable characters)!'
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          blockUnsafe: true
-        }
-      },
-      testObject
+      { test: { type: 'string', blockUnsafe: true } },
+      { test: 'I am safe (though I contain some questionable characters)!' }
     );
 
-    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.wereMet()).toBe(true);
   });
 
   it('blocks assitional unsafe input with the blockUnsafe flag when in strict mode', () => {
-    const testObject = {
-      test: "I am not exactly safe (though it's hard to evert be)!"
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          blockUnsafe: true,
-          strictEntities: true
-        }
-      },
-      testObject
+      { test: { type: 'string', blockUnsafe: true, strictEntities: true } },
+      { test: 'I am not exactly safe (though it is hard to ever be)!' }
     );
 
-    expect(expectations.wereMet()).toEqual(false);
+    expect(expectations.wereMet()).toBe(false);
   });
 
   it('allows some specified characters in strict mode', () => {
-    const testObject = {
-      test: 'This is not strictly safe, but whatever: foo@bar.xcc'
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
       {
@@ -576,16 +306,13 @@ describe('Expect package (string validation):', () => {
           allowed: ['@']
         }
       },
-      testObject
+      { test: 'This is not strictly safe, but whatever: foo@bar.xcc' }
     );
 
-    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.wereMet()).toBe(true);
   });
 
   it('allows several specified characters in strict mode', () => {
-    const testObject = {
-      test: 'This [should] get a pass even in strict mode (yay)'
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
       {
@@ -596,16 +323,13 @@ describe('Expect package (string validation):', () => {
           allowed: ['(', ')', '[', ']']
         }
       },
-      testObject
+      { test: 'This [should] get a pass even in strict mode (yay)' }
     );
 
-    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.wereMet()).toBe(true);
   });
 
   it('blocks input even with several specified characters in strict mode', () => {
-    const testObject = {
-      test: 'This [should] NOT get a pass in strict mode (aaaww)'
-    };
     const expectModule = require('../../src');
     const expectations = expectModule(
       {
@@ -616,10 +340,10 @@ describe('Expect package (string validation):', () => {
           allowed: ['(', ')', '[']
         }
       },
-      testObject
+      { test: 'This [should] NOT get a pass in strict mode (aaaww)' }
     );
 
-    expect(expectations.wereMet()).toEqual(false);
+    expect(expectations.wereMet()).toBe(false);
   });
 
   it('blocks input with surrogate pairs', () => {
@@ -639,7 +363,7 @@ describe('Expect package (string validation):', () => {
       testObject
     );
 
-    expect(expectations.wereMet()).toEqual(false);
+    expect(expectations.wereMet()).toBe(false);
   });
 
   it('sanitized strings and put them in the parsed field', () => {
@@ -773,7 +497,7 @@ describe('Expect package (string validation):', () => {
       test: '<p>sanitize this</p>Sanitize this (not so) dangerous input!'
     };
     const expectModule = require('../../src');
-    const expectations = expectModule(
+    expectModule(
       {
         test: {
           type: 'string',
@@ -812,78 +536,6 @@ describe('Expect package (string validation):', () => {
     });
   });
 
-  it('fails if a string contains non-alphanumeric characters (with the alphanumeric option)', () => {
-    const testObject = {
-      test: 'This should not pass!'
-    };
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          alphanumeric: true
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('Accepts non-ascii characters with the alphanumeric option', () => {
-    const testObject = {
-      test: '日本語'
-    };
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          alphanumeric: true
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('Accepts numbers with the alphanumeric option', () => {
-    const testObject = {
-      test: 'test123'
-    };
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          alphanumeric: true
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('Blocks underscores with the alphanumeric option', () => {
-    const testObject = {
-      test: 'test_123'
-    };
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          alphanumeric: true
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
   it('condition lower priority than requiredIf', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
@@ -896,7 +548,7 @@ describe('Expect package (string validation):', () => {
       },
       {}
     );
-    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.wereMet()).toBe(true);
   });
 
   it('condition lower priority than allowNull', () => {
@@ -911,6 +563,6 @@ describe('Expect package (string validation):', () => {
       },
       {}
     );
-    expect(expectations.wereMet()).toEqual(true);
+    expect(expectations.wereMet()).toBe(true);
   });
 });

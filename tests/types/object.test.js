@@ -1,42 +1,86 @@
 describe('Expect package (object validation):', () => {
-  it('accepts object', () => {
+  it('tests for object type correctly', () => {
     const expectModule = require('../../src');
-    const expectations = expectModule({ test: 'object' }, { test: {} });
+    const expectations = expectModule(
+      {
+        test: 'object'
+      },
+      {
+        test: {}
+      }
+    );
+
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('rejects other data types', () => {
-    const expectModule = require('../../src');
-    const tests = [null, undefined, true, 1, NaN, Infinity, '', [], Symbol()];
-    tests.forEach(test => {
-      const expectations = expectModule({ test: 'object' }, { test });
-      expect(expectations.wereMet()).toBe(false);
-    });
-  });
-
-  it('parse object', () => {
+  it('tests that null is not an object', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      { test: { type: 'object', parse: true } },
-      { test: {} }
+      {
+        test: 'object'
+      },
+      {
+        test: null
+      }
     );
-    expect(expectations.getParsed()).toEqual({ test: {} });
+
+    expect(expectations.wereMet()).toBe(false);
   });
 
-  it('parse stringified object', () => {
+  it('tests that undefined is not an object', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      { test: { type: 'object', parse: true } },
-      { test: '{}' }
+      {
+        test: 'object'
+      },
+      {
+        test: undefined
+      }
     );
-    expect(expectations.getParsed()).toEqual({ test: {} });
+
+    expect(expectations.wereMet()).toBe(false);
   });
 
-  it('respects allowNull', () => {
+  it('tests that an array is not an object', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      { test: { type: 'object', allowNull: true } },
-      { test: null }
+      {
+        test: 'object'
+      },
+      {
+        test: []
+      }
+    );
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('tests a number is not an object', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule(
+      {
+        test: 'object'
+      },
+      {
+        test: 1
+      }
+    );
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
+  it('respects the allowNull option', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule(
+      {
+        test: {
+          type: 'object',
+          allowNull: true
+        }
+      },
+      {
+        test: null
+      }
     );
 
     expect(expectations.wereMet()).toBe(true);
@@ -45,33 +89,57 @@ describe('Expect package (object validation):', () => {
   it('respects the errorCode option', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      { test: { type: 'object', errorCode: 'missing' } },
+      {
+        test: {
+          type: 'object',
+          errorCode: 'missing'
+        }
+      },
       {}
     );
 
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
+    expect(expectations.errors()).toEqual({
+      test: ['missing']
+    });
   });
 
   it('respects requiredIf', () => {
     const expectModule = require('../../src');
-    const validExpectations = expectModule(
+    const expectations = expectModule(
       {
-        test: { type: 'object', requiredIf: 'test' },
-        foo: { type: 'string', allowNull: true }
+        test: {
+          type: 'object',
+          requiredIf: 'test'
+        },
+        foo: {
+          type: 'string',
+          allowNull: true
+        }
       },
-      {}
+      {
+        foo: ''
+      }
     );
 
-    const invalidExpectations = expectModule(
+    expect(expectations.wereMet()).toBe(true);
+  });
+
+  it('is required if another field is not undefined', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule(
       {
-        test: { type: 'object', requiredIf: 'foo' },
-        foo: { type: 'string', allowNull: true }
+        test: {
+          type: 'object',
+          requiredIf: 'foo'
+        },
+        foo: 'string'
       },
-      { foo: '123' }
+      {
+        foo: '123'
+      }
     );
 
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(invalidExpectations.wereMet()).toBe(false);
+    expect(expectations.wereMet()).toBe(false);
   });
 
   it('nullCode has higher priority than errorCode', () => {

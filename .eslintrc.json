@@ -3,5 +3,31 @@
     "es6": true,
     "node": true,
     "jasmine": true
+  },
+  "parser": "babel-eslint",
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": { "experimentalObjectRestSpread": true },
+    "sourceType": "module"
+  },
+  "globals": {},
+  "rules": {
+    "no-empty": ["error", { "allowEmptyCatch": true }],
+    "array-element-newline": "off",
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "no-use-before-define": ["error", { "functions": false }],
+    "prefer-const": "error",
+    "no-warning-comments": "warn",
+    "require-await": "error",
+    "space-infix-ops": "error",
+    "space-before-blocks": ["error", "always"],
+    "keyword-spacing": ["error", { "before": true, "after": true }],
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"],
+    "array-bracket-spacing": ["error", "never"],
+    "space-in-parens": ["error", "never"],
+    "no-console": ["warn", { "allow": ["warn", "error"] }]
   }
 }

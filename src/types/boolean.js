@@ -1,35 +1,22 @@
-const util = require('../util');
+const { parseType, parseFunctionWrapper, isNull } = require('../util');
 
 module.exports = ({ parameter, value, options }) => {
-  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-
   if (options.parse) {
-    value = util.parseType('boolean', value);
+    value =
+      typeof options.parse === 'function'
+        ? parseFunctionWrapper({ value, parse: options.parse })
+        : parseType({ value, type: 'boolean' });
   }
 
-  if (options.strict ? util.isNull(value) : false) {
+  if (typeof value !== 'boolean') {
     return {
       valid: false,
       errors: [
-        options.nullCode ||
+        (isNull(value) && options.nullCode) ||
           options.errorCode ||
-          `Expected parameter ${parameter} to be a boolean but it was ${JSON.stringify(
-            value
-          )}`
-      ]
-    };
-  }
-  if (
-    typeof value !== 'boolean' &&
-    (!options.strict ? typeof value !== 'undefined' : true)
-  ) {
-    return {
-      valid: false,
-      errors: [
-        options.errorCode ||
-          `Expected parameter ${parameter} to be a boolean but it was ${JSON.stringify(
-            value
-          )}`
+          `Expected parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } to be of type boolean but it was ${JSON.stringify(value)}`
       ]
     };
   }

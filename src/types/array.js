@@ -1,21 +1,21 @@
-const util = require('../util');
+const { parseType, parseFunctionWrapper, isNull } = require('../util');
 
 module.exports = ({ parameter, value, actualValues, options, validate }) => {
   if (options.convert && !Array.isArray(value)) {
     value = [value];
   }
   if (options.items) {
-    let validation = arrayTypeCheck(parameter, value, options);
+    const validation = arrayTypeCheck(parameter, value, options);
     if (!validation.valid) {
       return validation;
     }
-    let itemOptions = typeof options.items === 'object' ? options.items : {};
-    let itemType =
+    const itemOptions = typeof options.items === 'object' ? options.items : {};
+    const itemType =
       typeof options.items === 'object' ? options.items.type : options.items;
-    let errors = {};
-    let parsed = [];
-    let hasInvalidItems = value.filter((item, index) => {
-      let validation = validate({
+    const errors = {};
+    const parsed = [];
+    const hasInvalidItems = value.filter((item, index) => {
+      const validation = validate({
         type: itemType,
         parameter: Array.isArray(parameter)
           ? parameter.concat(index)
@@ -25,7 +25,7 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
         actualValues
       });
       if (validation.errors) {
-        let errorKey = Array.isArray(parameter)
+        const errorKey = Array.isArray(parameter)
           ? parameter.concat(index).join('.')
           : `${parameter}.${index}`;
         errors[errorKey] = validation.errors;
@@ -33,7 +33,7 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
       parsed.push(validation.parsed ? validation.parsed : item);
       return !validation.valid;
     });
-    if (hasInvalidItems.length > 0) {
+    if (hasInvalidItems.length) {
       return {
         valid: false,
         errors: [errors]
@@ -49,13 +49,16 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
 function arrayTypeCheck(parameter, value, options) {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
 
-  let result = checkValue();
+  const result = checkValue();
   if (result.valid) {
     return result;
   }
 
   if (options.parse) {
-    value = util.parseType('array', value);
+    value =
+      typeof options.parse === 'function'
+        ? parseFunctionWrapper({ value, parse: options.parse })
+        : parseType({ value, type: 'array' });
     return Object.assign({}, checkValue(value), {
       parsed: value
     });
@@ -64,13 +67,13 @@ function arrayTypeCheck(parameter, value, options) {
   }
 
   function checkValue() {
-    if (!options.allowNull && util.isNull(value)) {
+    if (!options.allowNull && isNull(value)) {
       return {
         valid: false,
         errors: [
           options.nullCode ||
             options.errorCode ||
-            `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(
+            `Expected parameter ${parameter} to be of type array but it was ${JSON.stringify(
               value
             )}`
         ]
@@ -82,21 +85,9 @@ function arrayTypeCheck(parameter, value, options) {
         valid: false,
         errors: [
           options.errorCode ||
-            `Expected parameter ${parameter} to be an array but it was ${JSON.stringify(
+            `Expected parameter ${parameter} to be of type array but it was ${JSON.stringify(
               value
             )}`
-        ]
-      };
-    }
-
-    if (options.strict && value.length === 0) {
-      return {
-        valid: false,
-        errors: [
-          options.emptyErrorCode ||
-            `Empty arrays are not allowed in strict mode (${JSON.stringify(
-              parameter
-            )} was ${JSON.stringify(value)})`
         ]
       };
     }

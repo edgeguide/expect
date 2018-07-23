@@ -1,97 +1,59 @@
-const XRegExp = require('xregexp');
-const util = require('../util');
-const alphanumericRegexp = XRegExp('^[\\p{L}0-9\\s]+$');
+const {
+  parseType,
+  parseFunctionWrapper,
+  sanitize,
+  containsUnsafe
+} = require('../util');
 
 module.exports = ({ parameter, value, options }) => {
-  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-
-  let result = checkValue(value);
-  if (result.valid) {
-    return result;
-  }
   if (options.parse) {
-    value = util.parseType('string', value);
-    return Object.assign({}, checkValue(value), {
-      parsed: value
-    });
-  } else {
-    return result;
+    value =
+      typeof options.parse === 'function'
+        ? parseFunctionWrapper({ value, parse: options.parse })
+        : parseType({ value, type: 'string' });
   }
 
-  function checkValue() {
-    let result = { valid: true, errors: [] };
-
-    if (!options.allowNull && util.isNull(value)) {
-      return {
-        valid: false,
-        errors: [
-          options.nullCode ||
-            options.errorCode ||
-            `Expected parameter ${parameter} to be a string but it was value ${JSON.stringify(
-              value
-            )}`
-        ]
-      };
-    }
-
-    if (typeof value !== 'string') {
-      return typeError();
-    }
-
-    if (!value && !options.allowNull) {
-      return typeError();
-    }
-
-    if (options.alphanumeric && !alphanumericRegexp.test(value)) {
-      return {
-        valid: false,
-        errors: [
-          options.alphanumericErrorCode ||
-            options.errorCode ||
-            `Parameter ${parameter} contained non-alphanumeric characters`
-        ]
-      };
-    }
-
-    if (options.sanitize) {
-      let sanitized = util.sanitize({
-        value,
-        strict: options.strictEntities,
-        allowed: options.allowed
-      });
-      result.parsed = sanitized;
-    }
-
-    if (
-      options.blockUnsafe &&
-      util.containsUnsafe({
-        value,
-        strict: options.strictEntities,
-        allowed: options.allowed
-      })
-    ) {
-      return {
-        valid: false,
-        errors: [
-          options.unsafeErrorCode ||
-            options.errorCode ||
-            `Parameter ${parameter} contained unsafe, unescaped characters`
-        ]
-      };
-    }
-
-    return result;
-  }
-
-  function typeError() {
+  if (typeof value !== 'string') {
     return {
       valid: false,
       errors: [
         options.errorCode ||
-          `Expected parameter ${parameter} to be a string but it was ${JSON.stringify(
-            value
-          )}`
+          `Expected parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } to be of type string but it was ${JSON.stringify(value)}`
       ]
     };
   }
+
+  if (
+    options.blockUnsafe &&
+    containsUnsafe({
+      value,
+      strict: options.strictEntities,
+      allowed: options.allowed
+    })
+  ) {
+    return {
+      valid: false,
+      errors: [
+        options.unsafeErrorCode ||
+          options.errorCode ||
+          `Parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } contained unsafe, unescaped characters`
+      ]
+    };
+  }
+
+  return {
+    valid: true,
+    errors: [],
+    parsed: options.sanitize
+      ? sanitize({
+        value,
+        strict: options.strictEntities,
+        allowed: options.allowed
+      })
+      : value
+  };
 };
