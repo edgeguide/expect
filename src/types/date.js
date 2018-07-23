@@ -10,8 +10,8 @@ module.exports = ({ parameter, value, options }) => {
         : parseType({ value, type: 'date' });
   }
 
-  return value instanceof Date ||
-    (typeof value === 'string' && new Date(value).toString() !== 'Invalid Date')
+  return (value instanceof Date || typeof value === 'string') &&
+    new Date(value).toString() !== 'Invalid Date'
     ? { valid: true, parsed: value, errors: [] }
     : {
       valid: false,

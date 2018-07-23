@@ -35,6 +35,16 @@ describe('Expect package (date validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
+  it('rejects incorrectly formatted string with parse', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule(
+      { test: { type: 'date', parse: true } },
+      { test: '2017-01ab-01 23:59:59' }
+    );
+
+    expect(expectations.wereMet()).toBe(false);
+  });
+
   it('respects allowNull', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
