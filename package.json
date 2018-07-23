@@ -1,21 +1,30 @@
 {
+  "name": "@edgeguideab/expect",
+  "version": "3.0.1",
+  "description": "Check for user input in a consistent way and generate error messages for missings ",
+  "main": "dist/index.js",
+  "keywords": [
+    "input",
+    "arguments",
+    "validation"
+  ],
+  "author": "EdgeGuide AB",
+  "license": "UNLICENSED",
   "scripts": {
     "test": "jest",
     "test-d": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "build": "gulp",
-    "prepublish": "gulp"
-  },
-  "devDependencies": {
-    "babel-eslint": "^8.2.5",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.24.0",
-    "babel-preset-stage-2": "^6.22.0",
-    "eslint": "^5.0.1",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.3",
-    "jest": "^23.3.0"
+    "build": "babel --presets es2015,stage-2 -d dist/ src/",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "xregexp": "^4.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.6",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "eslint": "^5.2.0",
+    "jest": "^23.4.1"
   }
 }
