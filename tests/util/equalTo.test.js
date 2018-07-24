@@ -9,6 +9,18 @@ describe('equalTo option', () => {
     expect(expectations.wereMet()).toBe(true);
   });
 
+  it('nested equality', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule(
+      {
+        foo: { type: 'object', keys: { buzz: 'string' } },
+        bar: { type: 'string', equalTo: ['foo', 'buzz'] }
+      },
+      { foo: { buzz: 'abc' }, bar: 'cba' }
+    );
+    expect(expectations.wereMet()).toBe(false);
+  });
+
   it('tests that numbers and string types are not equal', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
