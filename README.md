@@ -6,7 +6,7 @@
     - [In a browser](#in-a-browser)
 3.  [Usage](#usage)
     - [Example of each method definition](#example-of-each-method-definition)
-    - [Example validating input with Express.js](#example-validating-input-with-express.js)
+    - [Example validating input with Express.js](#example-validating-input-with-expressjs)
 4.  [Types](#types)
     - [Standard types](#standard-types)
     - [Customized types](#customized-types)
@@ -20,12 +20,13 @@
     - [requiredIf](#requiredif)
     - [condition](#condition)
     - [parse](#parse)
-    - [equalTo](#equalTo)
+    - [equalTo](#equalto)
     - [errorCode](#errorcode)
     - [nullCode](#nullcode)
     - [convert](#convert)
     - [blockUnsafe](#blockunsafe)
-
+    - [sanitize](#sanitize)
+    
 ## Breaking changes in version 3
 
 - The `strict` option has been removed
