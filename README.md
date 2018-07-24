@@ -1,3 +1,31 @@
+## Contents
+
+1.  [Breaking changes in version 3](#breaking-changes-in-version-3)
+2.  [Installation](#installation)
+    1.  [Using NPM](#using-npm)
+    2.  [In a browser](#in-a-browser)
+3.  [Usage](#usage)
+    1.  [Example of each method definition](#example-of-each-method-definition)
+    2.  [Example validating input with Express.js](#example-validating-input-with-express.js)
+4.  [Types](#types)
+    1.  [Standard types](#standard-types)
+    2.  [Customized types](#customized-types)
+5.  [Type explanations](#type-explanations)
+    1.  [object](#object)
+    2.  [array](#array)
+    3.  [email](#email)
+    4.  [phone](#phone)
+6.  [Options](#options)
+    1.  [allowNull](#allowNull)
+    2.  [requiredIf](#requiredIf)
+    3.  [condition](#condition)
+    4.  [parse](#parse)
+    5.  [equalTo](#equalTo)
+    6.  [errorCode](#errorCode)
+    7.  [nullCode](#nullCode)
+    8.  [convert](#convert)
+    9.  [blockUnsafe](#blockUnsafe)
+
 ## Breaking changes in version 3
 
 - The `strict` option has been removed
@@ -38,7 +66,7 @@ The function returns an object exposing three method definitions:
 }
 ```
 
-### Code examples
+### Example of each method definition
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -60,7 +88,7 @@ valid.getParsed(); // { foo: 'test' }
 invalid.getParsed(); // {}
 ```
 
-#### Example validating user input in backend for Express.js
+### Example validating input with Express.js
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -87,9 +115,10 @@ app.put('/user', function addUser(req, res) {
 
 | Type    | Custom options                                 | Description                                                          |
 | ------- | ---------------------------------------------- | -------------------------------------------------------------------- |
+| any     | N/A                                            | expects any type except for _undefined_, _null_ or empty string ('') |
 | number  | N/A                                            | expects a `number`                                                   |
 | boolean | N/A                                            | expects a `boolean`                                                  |
-| string  | sanitize, allowed, blockUnsafe, strictEntities | expects a `string`                                                   |  |
+| string  | sanitize, allowed, blockUnsafe, strictEntities | expects a `string`                                                   |
 | array   | items, convert                                 | expects an `array`                                                   |
 | object  | keys, strictKeyCheck                           | expects an `object` (note that arrays will **not** count as objects) |
 
@@ -97,10 +126,127 @@ app.put('/user', function addUser(req, res) {
 
 | Type           | Options                                      | Description                                                        |
 | -------------- | -------------------------------------------- | ------------------------------------------------------------------ |
-| date           | parse                                        | expects a `string` formatted as a date or a `Date` instance        |
+| date           | N/A                                          | expects a `string` formatted as a date or a `Date` instance        |
 | phone          | strict                                       | expects a `string` or a `number` formatted as a phone number       |
 | email          | strict, allowed, blockUnsafe, strictEntities | expects a `string` formatted as an email address                   |
 | identityNumber | N/A                                          | expects a `string` formatted as a Swedish personal identity number |
+
+## Type explanations
+
+### object
+
+Expects the value to be of type object. If the `keys` option is provided, the different keys for the object can be evaluated recursively.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+expect(
+  {
+    bar: {
+      type: 'object',
+      keys: { fizz: 'number', buzz: 'string' }
+    }
+  },
+  { bar: { fizz: 1, buzz: 1 } }
+).errors(); // { 'bar.buzz': ['Expected parameter bar.buzz to be of type string but it was 1'] }
+```
+
+Object validation can be nested with several keys-options.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+expect(
+  {
+    bar: {
+      type: 'object',
+      keys: {
+        fizz: 'number',
+        buzz: { type: 'object', keys: { bizz: 'number' } }
+      }
+    }
+  },
+  { bar: { fizz: 1, buzz: { bizz: 'hello' } } }
+).errors(); // { 'bar.buzz.bizz': ['Expected parameter bar.buzz.bizz to be of type number but it was "hello"] }
+```
+
+Unlike top-level validation, when evaluating deeper in an object the error-key will be a path to the parameter which failed (as a string). If the `keys`-option is combined with `strictKeyCheck`, object validation will fail
+if the actual object contains any keys which are not explicitly checked for.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+expect(
+  {
+    bar: {
+      type: 'object',
+      strictKeyCheck: true,
+      keys: {
+        fizz: 'number',
+        buzz: { type: 'object', keys: { bizz: 'number' } }
+      }
+    }
+  },
+  {
+    bar: {
+      fizz: 1,
+      buzz: { bizz: 2 },
+      kizz: 3
+    }
+  }
+).errors(); // { 'bar': ['Object contained unchecked keys "kizz"'] }
+```
+
+### array
+
+Checks whether the parameter is an array or not. Each child in the array can be further validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+
+expect(
+  {
+    beef: {
+      type: 'array',
+      items: {
+        type: 'object',
+        keys: { foo: 'number', bar: 'string' }
+      }
+    }
+  },
+  {
+    beef: [
+      { foo: 1, bar: '1' },
+      { foo: 2, bar: '2' },
+      { foo: 3, bar: '3' },
+      { foo: 4, bar: '4' }
+    ]
+  }
+).wereMet(); // true
+```
+
+### email
+
+A customized type for _strings_ which can be used to check if the value is correctly formatted as an email address. Regular expression used to validate emails:
+
+- Without `strict` option
+  ```
+  /.+@.+/
+  ```
+- With `strict` option
+  ```
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  ```
+
+### phone
+
+A customized type for _strings_ and _numbers_ which can be used to check if the value is correctly formatted as a phone number. Regular expression used to validate phone numbers:
+
+- Without `strict` option
+  ```
+  /^\D?[\d\s\(\)]+$/
+  ```
+- With `strict` option
+  ```
+  /^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/
+  ```
 
 ## Options
 
@@ -218,7 +364,7 @@ expect(
 
 ### parse
 
-The `parse` option is available to all standard types, as well as the custom `date` type. This option allows the user to mutate input values before they are validated and returned by `getParsed()`.
+The `parse` option is available to all types. This option allows the user to mutate input values before they are validated and returned by `getParsed()`.
 
 Similar to the `condition` option, a function can be passed as a `parse` option with the input value as its parameter. The function's return value will then be used as the parsed value. If an error is thrown when calling the function, the type checker will proceed using the initial input value.
 
@@ -230,7 +376,7 @@ expect(
 ).getParsed(); // { test: 123 }
 ```
 
-Instead of passing a function, setting the `parse` option to _true_ will use the folllowing default type conversions:
+Some types support setting the `parse` option to _true_ which will instead use the following default type conversions:
 
 - `number` - `Number()`
 - `boolean` - `JSON.parse()` followed by coercion for _falsy_ and _truthy_ values.
@@ -261,164 +407,9 @@ valid.wereMet(); // true
 valid.getParsed(); // { test: 'null' }
 ```
 
-### errorCode
-
-Changes the value of the returned error. Default is a string describing what went wrong, but if you specify an error code it will be returned instead
-
-```javascript
-const expect = require('@edgeguideab/expect');
-
-expect(
-  {
-    bar: { type: 'string' }
-  },
-  { bar: {} }
-).errors(); // { bar: ['Expected parameter bar to be of type string but it was {}'] }
-
-expect(
-  {
-    bar: { type: 'string', errorCode: 'Invalid format' }
-  },
-  { bar: {} }
-).errors(); // { bar: ['Invalid format'] }
-```
-
-### nullCode
-
-Same as `errorCode`, changes the returned error if it was a null error
-
-### convert
-
-Similar to `parse`, this option will try to parse the given value into the desired type. Typically useful for parsing arrays from the request query in Express.js.
-
-## Type explanations
-
-### object
-
-Expects the value to be of type object. If the `keys` option is provided, the different keys for the object can be evaluated recursively.
-
-```javascript
-const expect = require('@edgeguideab/expect');
-expect(
-  {
-    bar: {
-      type: 'object',
-      keys: { fizz: 'number', buzz: 'string' }
-    }
-  },
-  { bar: { fizz: 1, buzz: 1 } }
-).errors(); // { 'bar.buzz': ['Expected parameter bar.buzz to be of type string but it was 1'] }
-```
-
-Object validation can be nested with several keys-options.
-
-```javascript
-const expect = require('@edgeguideab/expect');
-expect(
-  {
-    bar: {
-      type: 'object',
-      keys: {
-        fizz: 'number',
-        buzz: { type: 'object', keys: { bizz: 'number' } }
-      }
-    }
-  },
-  { bar: { fizz: 1, buzz: { bizz: 'hello' } } }
-).errors(); // { 'bar.buzz.bizz': ['Expected parameter bar.buzz.bizz to be of type number but it was "hello"] }
-```
-
-Unlike top-level validation, when evaluating deeper in an object the error-key will be a path to the parameter which failed (as a string). If the `keys`-option is combined with `strictKeyCheck`, object validation will fail
-if the actual object contains any keys which are not explicitly checked for.
-
-```javascript
-const expect = require('@edgeguideab/expect');
-expect(
-  {
-    bar: {
-      type: 'object',
-      strictKeyCheck: true,
-      keys: {
-        fizz: 'number',
-        buzz: { type: 'object', keys: { bizz: 'number' } }
-      }
-    }
-  },
-  {
-    bar: {
-      fizz: 1,
-      buzz: { bizz: 2 },
-      kizz: 3
-    }
-  }
-).errors(); // { 'bar': ['Object contained unchecked keys "kizz"'] }
-```
-
-### array
-
-Checks whether the parameter is an array or not. Each child in the array can be further validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
-
-```javascript
-const expect = require('@edgeguideab/expect');
-
-expect(
-  {
-    beef: {
-      type: 'array',
-      items: {
-        type: 'object',
-        keys: { foo: 'number', bar: 'string' }
-      }
-    }
-  },
-  {
-    beef: [
-      { foo: 1, bar: '1' },
-      { foo: 2, bar: '2' },
-      { foo: 3, bar: '3' },
-      { foo: 4, bar: '4' }
-    ]
-  }
-).wereMet(); // true
-```
-
-### email
-
-A customized type for _strings_ which can be used to check if the value is correctly formatted as an email address. Regular expression used to validate emails:
-
-- Without `strict` option
-  ```
-  /.+@.+/
-  ```
-- With `strict` option
-
-```
-/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-```
-
-### phone
-
-A customized type for _strings_ and _numbers_ which can be used to check if the value is correctly formatted as a phone number. Regular expression used to validate phone numbers:
-
-- Without `strict` option
-  ```
-  /^\D?[\d\s\(\)]+$/
-  ```
-- With `strict` option
-
-```
-/^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/
-```
-
-## Matchers
-
-Another thing that can be added to a value are matchers. Matchers will match the value against a specific function, and only pass if it matches this function.
-
-Note that if the `parse` option is set, the matcher will compare the parsed value and not the initial input value.
-
 ### equalTo
 
-The `equalTo` matcher will match another value specified by a key.
+`equalTo` is another option available to all types. It ensures that the input value matches another value specified by a key.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -473,6 +464,36 @@ expect(
   }
 ).wereMet(); // true
 ```
+
+### errorCode
+
+Changes the value of the returned error. Default is a string describing what went wrong, but if you specify an error code it will be returned instead
+
+```javascript
+const expect = require('@edgeguideab/expect');
+
+expect(
+  {
+    bar: { type: 'string' }
+  },
+  { bar: {} }
+).errors(); // { bar: ['Expected parameter bar to be of type string but it was {}'] }
+
+expect(
+  {
+    bar: { type: 'string', errorCode: 'Invalid format' }
+  },
+  { bar: {} }
+).errors(); // { bar: ['Invalid format'] }
+```
+
+### nullCode
+
+Same as `errorCode`, changes the returned error if it was a null error
+
+### convert
+
+Similar to `parse`, this option will try to parse the given value into the desired type. Typically useful for parsing arrays from the request query in Express.js.
 
 ### blockUnsafe
 
