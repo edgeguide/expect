@@ -1,4 +1,4 @@
-const types = require('./types');
+const validateTypes = require('./types');
 const { mergeErrors } = require('./util');
 
 module.exports = function(expected, actualValues) {
@@ -13,7 +13,7 @@ module.exports = function(expected, actualValues) {
     const actual = actualValues[parameter];
     const type = options.type || expected[parameter];
 
-    const validation = types.validate({
+    const validation = validateTypes({
       type,
       parameter,
       value: actual,

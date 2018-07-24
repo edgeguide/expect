@@ -9,7 +9,6 @@ describe('Expect package (string validation):', () => {
   it('rejects empty string', () => {
     const expectModule = require('../../src');
     const expectations = expectModule({ test: 'string' }, { test: '' });
-
     expect(expectations.wereMet()).toBe(false);
   });
 

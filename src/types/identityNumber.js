@@ -1,22 +1,18 @@
-const util = require('../util');
 const IDENTITY_NUMBER_REGEXP = /^(?:19|20)?(\d{6}(?:-|\+)?\d{4})$/;
 const IDENTITY_NUMBER_REGEXP_STRICT = /^(\d{6}(?:-|\+)?\d{4})$/;
 
 module.exports = ({ parameter, value, options }) => {
-  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
   const regexp = options.strict
     ? IDENTITY_NUMBER_REGEXP_STRICT
     : IDENTITY_NUMBER_REGEXP;
 
   const errorCode =
     options.errorCode ||
-    `Expected parameter ${parameter} to be of type personal identity number but it was ${JSON.stringify(
+    `Expected parameter ${
+      Array.isArray(parameter) ? parameter.join('.') : parameter
+    } to be of type personal identity number but it was ${JSON.stringify(
       value
     )}`;
-
-  if (!options.allowNull && util.isNull(value)) {
-    return { valid: false, errors: [options.nullCode || errorCode] };
-  }
 
   if (typeof value !== 'string') {
     return { valid: false, errors: [errorCode] };

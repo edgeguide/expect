@@ -1,14 +1,5 @@
-const arrayValidation = require('./array');
-const booleanValidation = require('./boolean');
-const emailValidation = require('./email');
-const numberValidation = require('./number');
-const objectValidation = require('./object');
-const phoneValidation = require('./phone');
-const stringValidation = require('./string');
-const dateValidation = require('./date');
-const identityNumberValidation = require('./identityNumber');
 const {
-  equalTo,
+  isEqualTo,
   isNull,
   getDeep,
   getDeepOptions,
@@ -17,9 +8,19 @@ const {
   mergeErrors
 } = require('../util');
 
-module.exports = { validate };
+const mapTypeValidations = {
+  array: require('./array'),
+  boolean: require('./boolean'),
+  email: require('./email'),
+  number: require('./number'),
+  object: require('./object'),
+  phone: require('./phone'),
+  string: require('./string'),
+  date: require('./date'),
+  identityNumber: require('./identityNumber')
+};
 
-function validate({
+module.exports = function validate({
   type,
   parameter,
   value,
@@ -27,66 +28,45 @@ function validate({
   actualValues = {},
   expected = {}
 }) {
-  const { requiredIf, allowNull, condition, nullCode, errorCode } = options;
+  const {
+    parse,
+    equalTo,
+    requiredIf,
+    allowNull,
+    condition,
+    nullCode,
+    errorCode,
+    equalToErrorCode
+  } = options;
+  const validation = { valid: true, errors: [] };
+  const initialValue = value;
 
-  let validation;
-  switch (type) {
-    case 'phone': {
-      validation = phoneValidation({ parameter, value, options });
-      break;
-    }
-    case 'email': {
-      validation = emailValidation({ parameter, value, options });
-      break;
-    }
-    case 'number': {
-      validation = numberValidation({ parameter, value, options });
-      break;
-    }
-    case 'object': {
-      validation = objectValidation({
-        parameter,
-        value,
-        actualValues,
-        options,
-        validate
-      });
-      break;
-    }
-    case 'date': {
-      validation = dateValidation({ parameter, value, options });
-      break;
-    }
-    case 'string': {
-      validation = stringValidation({ parameter, value, options });
-      break;
-    }
-    case 'array': {
-      validation = arrayValidation({
-        parameter,
-        value,
-        actualValues,
-        options,
-        validate
-      });
-      break;
-    }
-    case 'boolean': {
-      validation = booleanValidation({ parameter, value, options });
-      break;
-    }
-    case 'identityNumber': {
-      validation = identityNumberValidation({ parameter, value, options });
-      break;
-    }
-    default: {
-      throw new Error(
-        `${parameter} could not be validated against type "${type}": it has not been defined`
-      );
-    }
+  if (parse) {
+    value =
+      typeof parse === 'function'
+        ? parseFunctionWrapper({ value, parse })
+        : parseType({ value, type });
+    validation.parsed = value;
   }
 
-  if (requiredIf && isNull(value)) {
+  if (mapTypeValidations[type]) {
+    Object.assign(
+      validation,
+      mapTypeValidations[type]({
+        parameter,
+        value,
+        actualValues,
+        options,
+        validate
+      })
+    );
+  } else if (type !== 'any') {
+    throw new Error(
+      `${parameter} could not be validated against type "${type}": it has not been defined`
+    );
+  }
+
+  if (requiredIf && isNull(initialValue)) {
     let requiredFieldValue = getDeep(requiredIf, actualValues);
     const requiredFieldOptions = getDeepOptions(requiredIf, expected);
     const requiredFieldType =
@@ -113,8 +93,8 @@ function validate({
     }
   }
 
-  if (!allowNull && isNull(value)) {
-    validation = {
+  if (!allowNull && isNull(initialValue)) {
+    return {
       valid: false,
       errors: [
         nullCode ||
@@ -127,41 +107,36 @@ function validate({
   }
 
   if (typeof condition === 'function') {
-    let valid = false;
+    let valid;
     try {
       valid = condition(value);
     } catch (error) {}
 
     if (!valid) {
-      validation = {
-        valid: false,
-        errors: [
-          errorCode ||
-            `Expected parameter ${JSON.stringify(value)} to meet condition`
-        ]
-      };
-    }
-  }
-
-  if (!validation.valid && allowNull && isNull(value)) {
-    validation = { valid: true, errors: [] };
-  }
-
-  if (options.equalTo) {
-    const matches = equalTo({
-      value,
-      actualValues,
-      options,
-      expected
-    });
-
-    if (!matches.valid) {
       validation.valid = false;
-      validation.errors = validation.errors.concat(
-        mergeErrors(parameter, {}, matches.errors)
-      );
+      validation.errors = [
+        errorCode ||
+          `Expected parameter ${JSON.stringify(value)} to meet condition`
+      ];
     }
+  }
+
+  if (allowNull && isNull(initialValue)) {
+    validation.valid = true;
+    validation.errors = [];
+  }
+
+  if (equalTo && !isEqualTo({ value, type, equalTo, actualValues, expected })) {
+    validation.valid = false;
+    validation.errors = validation.errors.concat(
+      mergeErrors(parameter, {}, [
+        equalToErrorCode ||
+          `Expected parameter ${JSON.stringify(
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          )} to be equal to ${JSON.stringify(equalTo)}.`
+      ])
+    );
   }
 
   return validation;
-}
+};

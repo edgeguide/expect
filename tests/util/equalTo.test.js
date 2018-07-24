@@ -19,21 +19,6 @@ describe('equalTo option', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('tests that numbers without specified type will not get parsed to dates', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        foo: { type: 'number', parse: true, equalTo: 'bar' },
-        bar: { type: 'number', parse: true }
-      },
-      { foo: '123', bar: '321' }
-    );
-
-    expect(expectations.errors().foo[0]).toBe(
-      'Expected 123 to be equal to 321 but it was not.'
-    );
-  });
-
   it('tests that numbers can be intepreted as dates', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(

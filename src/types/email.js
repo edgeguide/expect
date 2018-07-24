@@ -6,20 +6,8 @@ const STRICT_EMAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)
 
 module.exports = ({ parameter, value, options }) => {
   parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-  const regexp = options.strict ? STRICT_EMAIL_REGEXP : EMAIL_REGEXP;
-  if (!options.allowNull && util.isNull(value)) {
-    return {
-      valid: false,
-      errors: [
-        options.nullCode ||
-          options.errorCode ||
-          `Expected parameter ${parameter} to be of type email address but it was ${JSON.stringify(
-            value
-          )}`
-      ]
-    };
-  }
 
+  const regexp = options.strict ? STRICT_EMAIL_REGEXP : EMAIL_REGEXP;
   if (!regexp.test(value)) {
     return {
       valid: false,

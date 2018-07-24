@@ -25,6 +25,8 @@ function parseType({ value, type }) {
       case 'date': {
         return new Date(value);
       }
+      default:
+        return value;
     }
   } catch (error) {
     return value;

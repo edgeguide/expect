@@ -123,7 +123,6 @@ describe('Expect package (README examples):', () => {
 
   it('Options - parse', () => {
     const expectModule = require('../../src');
-
     expect(
       expectModule(
         { test: { type: 'number', parse: test => Number(test) } },
@@ -131,19 +130,19 @@ describe('Expect package (README examples):', () => {
       ).getParsed()
     ).toEqual({ test: 123 });
 
-    const invalidExpectations = expectModule(
-      { test: { type: 'string', parse: true } },
+    const invalid = expectModule(
+      { test: { type: 'string', allowNull: false, parse: true } },
       { test: null }
     );
-    expect(invalidExpectations.wereMet()).toBe(false);
-    expect(invalidExpectations.getParsed()).toEqual({ test: null });
+    expect(invalid.wereMet()).toBe(false);
+    expect(invalid.getParsed()).toEqual({ test: null });
 
-    const validExpectations = expectModule(
+    const valid = expectModule(
       { test: { type: 'string', allowNull: true, parse: true } },
       { test: null }
     );
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(validExpectations.getParsed()).toEqual({ test: 'null' });
+    expect(valid.wereMet()).toBe(true);
+    expect(valid.getParsed()).toEqual({ test: 'null' });
   });
 
   it('Options - errorCode', () => {

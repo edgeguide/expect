@@ -1,13 +1,6 @@
-const { parseType, parseFunctionWrapper, isNull } = require('../util');
+const { isNull } = require('../util');
 
 module.exports = ({ parameter, value, options }) => {
-  if (options.parse) {
-    value =
-      typeof options.parse === 'function'
-        ? parseFunctionWrapper({ value, parse: options.parse })
-        : parseType({ value, type: 'number' });
-  }
-
   if (typeof value !== 'number' || Number.isNaN(value)) {
     return {
       valid: false,

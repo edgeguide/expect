@@ -1,18 +1,6 @@
-const {
-  parseType,
-  parseFunctionWrapper,
-  sanitize,
-  containsUnsafe
-} = require('../util');
+const { sanitize, containsUnsafe } = require('../util');
 
 module.exports = ({ parameter, value, options }) => {
-  if (options.parse) {
-    value =
-      typeof options.parse === 'function'
-        ? parseFunctionWrapper({ value, parse: options.parse })
-        : parseType({ value, type: 'string' });
-  }
-
   if (typeof value !== 'string') {
     return {
       valid: false,

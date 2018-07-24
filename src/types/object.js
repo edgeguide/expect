@@ -1,5 +1,3 @@
-const { parseType, parseFunctionWrapper, isNull } = require('../util');
-
 module.exports = ({ parameter, value, actualValues, options, validate }) => {
   if (!options.keys) {
     return objectTypeCheck(parameter, value, options);
@@ -73,46 +71,15 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
 };
 
 function objectTypeCheck(parameter, value, options) {
-  if (options.parse) {
-    value =
-      typeof options.parse === 'function'
-        ? parseFunctionWrapper({ value, parse: options.parse })
-        : parseType({ value, type: 'object' });
-  }
-
-  if (Array.isArray(value)) {
-    return error();
-  }
-  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-
-  if (!options.allowNull && isNull(value)) {
-    return {
-      valid: false,
-      errors: [
-        options.nullCode ||
-          options.errorCode ||
-          `Expected parameter ${parameter} to be of type object but it was ${JSON.stringify(
-            value
-          )}`
-      ]
-    };
-  }
-
-  if (typeof value !== 'object') {
-    return error();
-  }
-
-  return { valid: true, errors: [] };
-
-  function error() {
-    return {
+  return typeof value === 'object' && !Array.isArray(value)
+    ? { valid: true, errors: [] }
+    : {
       valid: false,
       errors: [
         options.errorCode ||
-          `Expected parameter ${parameter} to be of type object but it was ${JSON.stringify(
-            value
-          )}`
+            `Expected parameter ${
+              Array.isArray(parameter) ? parameter.join('.') : parameter
+            } to be of type object but it was ${JSON.stringify(value)}`
       ]
     };
-  }
 }

@@ -1,9 +1,9 @@
-const equalTo = require('./equalTo');
+const isEqualTo = require('./isEqualTo');
 const { getDeep, getDeepOptions } = require('./getDeep');
 const { parseType, parseFunctionWrapper } = require('./parse');
 
 module.exports = {
-  equalTo,
+  isEqualTo,
   getDeep,
   getDeepOptions,
   parseType,
