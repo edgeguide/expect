@@ -192,20 +192,11 @@ describe('Expect package (boolean validation):', () => {
   it('does not destroy correct values when parsing', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'boolean',
-          parse: true
-        }
-      },
-      {
-        test: true
-      }
+      { test: { type: 'boolean', parse: true } },
+      { test: true }
     );
 
-    expect(expectations.getParsed()).toEqual({
-      test: true
-    });
+    expect(expectations.getParsed()).toEqual({ test: true });
   });
 
   it('handles exceptions when parsing non-JSON values', () => {
@@ -221,21 +212,11 @@ describe('Expect package (boolean validation):', () => {
   it('handles "true" as true if parse and allowNull options are used', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
-      {
-        test: {
-          type: 'boolean',
-          parse: true,
-          allowNull: true
-        }
-      },
-      {
-        test: 'true'
-      }
+      { test: { type: 'boolean', parse: true, allowNull: true } },
+      { test: 'true' }
     );
     expect(expectations.wereMet()).toBe(true);
-    expect(expectations.getParsed()).toEqual({
-      test: true
-    });
+    expect(expectations.getParsed()).toEqual({ test: true });
   });
 
   it('handles "false" as false if parse and allowNull options are used', () => {
