@@ -18,15 +18,15 @@
 6.  [Options](#options)
     - [allowNull](#allownull)
     - [requiredIf](#requiredif)
-    - [condition](#condition)
     - [parse](#parse)
+    - [condition](#condition)
     - [equalTo](#equalto)
     - [errorCode](#errorcode)
     - [nullCode](#nullcode)
     - [convert](#convert)
     - [blockUnsafe](#blockunsafe)
     - [sanitize](#sanitize)
-    
+
 ## Breaking changes in version 3
 
 - The `strict` option has been removed
@@ -328,46 +328,11 @@ expect(
 ).wereMet(); // true
 ```
 
-### condition
-
-The `condition` option is available for all types. Passing a function as a `condition` option will test that the function evaluates to a _truthy_ value with the input value as its parameter.
-
-```javascript
-const expect = require('@edgeguideab/expect');
-
-expect(
-  {
-    foo: {
-      type: 'array',
-      condition: test => test.length
-    }
-  },
-  { foo: [] }
-).wereMet(); // false
-```
-
-Note that the `condition` option has a lower priority than `allowNull` and `requiredIf`.
-
-```javascript
-const expect = require('@edgeguideab/expect');
-
-expect(
-  {
-    foo: {
-      type: 'array',
-      condition: test => test !== null,
-      allowNull: true
-    }
-  },
-  { foo: null }
-).wereMet(); // true
-```
-
 ### parse
 
 The `parse` option is available to all types. This option allows the user to mutate input values before they are validated and returned by `getParsed()`.
 
-Similar to the `condition` option, a function can be passed as a `parse` option with the input value as its parameter. The function's return value will then be used as the parsed value. If an error is thrown when calling the function, the type checker will proceed using the initial input value.
+If a function is passed as the `parse` option, the type checker will attempt to call the `parse` function with the input value as its parameter. The function's return value will then be used for type checking instead of the input value. If an error is thrown when calling the function, the type checker will proceed using the initial input value.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -406,6 +371,52 @@ const valid = expect(
 );
 valid.wereMet(); // true
 valid.getParsed(); // { test: 'null' }
+```
+
+### condition
+
+The `condition` option is available for all types. Passing a function as a `condition` option will test that the function evaluates to a _truthy_ value with the input value as its parameter.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+
+expect(
+  {
+    foo: {
+      type: 'array',
+      condition: test => test.length
+    }
+  },
+  { foo: [] }
+).wereMet(); // false
+```
+
+Note that the `condition` option has a lower priority than `allowNull`, `requiredIf` and `parse`.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+
+expect(
+  {
+    foo: {
+      type: 'array',
+      condition: test => test !== null,
+      allowNull: true
+    }
+  },
+  { foo: null }
+).wereMet(); // true
+
+expect(
+  {
+    foo: {
+      type: 'boolean',
+      parse: foo => !!foo,
+      condition: foo => typeof foo !== 'string'
+    }
+  },
+  { foo: 'bar' }
+).wereMet(); // true
 ```
 
 ### equalTo

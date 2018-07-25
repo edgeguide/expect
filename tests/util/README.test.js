@@ -92,6 +92,30 @@ describe('Expect package (README examples):', () => {
     ).toBe(true);
   });
 
+  it('Options - parse', () => {
+    const expectModule = require('../../src');
+    expect(
+      expectModule(
+        { test: { type: 'number', parse: test => Number(test) } },
+        { test: '123' }
+      ).getParsed()
+    ).toEqual({ test: 123 });
+
+    const invalid = expectModule(
+      { test: { type: 'string', allowNull: false, parse: true } },
+      { test: null }
+    );
+    expect(invalid.wereMet()).toBe(false);
+    expect(invalid.getParsed()).toEqual({ test: null });
+
+    const valid = expectModule(
+      { test: { type: 'string', allowNull: true, parse: true } },
+      { test: null }
+    );
+    expect(valid.wereMet()).toBe(true);
+    expect(valid.getParsed()).toEqual({ test: 'null' });
+  });
+
   it('Options - condition', () => {
     const expectModule = require('../../src');
 
@@ -119,30 +143,19 @@ describe('Expect package (README examples):', () => {
         { foo: null }
       ).wereMet()
     ).toBe(true);
-  });
 
-  it('Options - parse', () => {
-    const expectModule = require('../../src');
     expect(
       expectModule(
-        { test: { type: 'number', parse: test => Number(test) } },
-        { test: '123' }
-      ).getParsed()
-    ).toEqual({ test: 123 });
-
-    const invalid = expectModule(
-      { test: { type: 'string', allowNull: false, parse: true } },
-      { test: null }
-    );
-    expect(invalid.wereMet()).toBe(false);
-    expect(invalid.getParsed()).toEqual({ test: null });
-
-    const valid = expectModule(
-      { test: { type: 'string', allowNull: true, parse: true } },
-      { test: null }
-    );
-    expect(valid.wereMet()).toBe(true);
-    expect(valid.getParsed()).toEqual({ test: 'null' });
+        {
+          foo: {
+            type: 'boolean',
+            parse: foo => !!foo,
+            condition: foo => typeof foo !== 'string'
+          }
+        },
+        { foo: 'bar' }
+      ).wereMet()
+    ).toBe(true);
   });
 
   it('Options - errorCode', () => {
