@@ -34,8 +34,9 @@ module.exports = function validate({
     requiredIf,
     allowNull,
     condition,
-    nullCode,
     errorCode,
+    nullCode,
+    conditionErrorCode,
     equalToErrorCode
   } = options;
   const validation = { valid: true, errors: [] };
@@ -115,7 +116,8 @@ module.exports = function validate({
     if (!valid) {
       validation.valid = false;
       validation.errors = [
-        errorCode ||
+        conditionErrorCode ||
+          errorCode ||
           `Expected parameter ${JSON.stringify(value)} to meet condition`
       ];
     }

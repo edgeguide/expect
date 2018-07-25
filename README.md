@@ -23,6 +23,7 @@
     - [equalTo](#equalto)
     - [errorCode](#errorcode)
     - [nullCode](#nullcode)
+    - [conditionErrorCode](#conditionerrorcode)
     - [convert](#convert)
     - [blockUnsafe](#blockunsafe)
     - [sanitize](#sanitize)
@@ -479,7 +480,9 @@ expect(
 
 ### errorCode
 
-Changes the value of the returned error. Default is a string describing what went wrong, but if you specify an error code it will be returned instead
+Changes the value of the returned error.
+
+Default errorCode is a string describing what went wrong, this option allows for customized error codes.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -501,7 +504,11 @@ expect(
 
 ### nullCode
 
-Same as `errorCode`, changes the returned error if it was a null error
+Similar to `errorCode`, this option changes the returned error if it was a null error.
+
+### conditionErrorCode
+
+Similar to `errorCode` and `nullCode`, this option changes the returned error if it was a condition error.
 
 ### convert
 
