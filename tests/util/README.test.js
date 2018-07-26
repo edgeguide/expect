@@ -253,20 +253,51 @@ describe('Expect package (README examples):', () => {
             type: 'array',
             items: {
               type: 'object',
-              keys: { foo: 'number', bar: 'string' }
+              keys: { foo: 'number', bar: 'boolean' }
             }
           }
         },
         {
           beef: [
-            { foo: 1, bar: '1' },
-            { foo: 2, bar: '2' },
-            { foo: 3, bar: '3' },
-            { foo: 4, bar: '4' }
+            { foo: 1, bar: true },
+            { foo: 2, bar: true },
+            { foo: 3, bar: false },
+            { foo: 4, bar: false }
           ]
         }
       ).wereMet()
     ).toBe(true);
+
+    const schema = {
+      beef: {
+        type: 'array',
+        items: item => ({
+          type: 'object',
+          keys: {
+            foo: item.bar ? 'number' : 'string',
+            bar: 'boolean'
+          }
+        })
+      }
+    };
+
+    expect(
+      expectModule(schema, {
+        beef: [{ foo: 1, bar: true }, { foo: 2, bar: true }]
+      }).wereMet()
+    ).toBe(true);
+
+    expect(
+      expectModule(schema, {
+        beef: [{ foo: '1', bar: false }, { foo: '2', bar: false }]
+      }).wereMet()
+    ).toBe(true);
+
+    expect(
+      expectModule(schema, {
+        beef: [{ foo: '1', bar: true }, { foo: '2', bar: true }]
+      }).wereMet()
+    ).toBe(false);
   });
 
   it('Matchers - equalTo', () => {

@@ -1,15 +1,36 @@
+function itemsFunctionWrapper(itemsFunction, item) {
+  try {
+    return itemsFunction(item);
+  } catch (error) {
+    return item;
+  }
+}
+
 module.exports = ({ parameter, value, actualValues, options, validate }) => {
-  if (options.convert && !Array.isArray(value)) {
+  const { convert, items, errorCode } = options;
+
+  if (convert && !Array.isArray(value)) {
     value = [value];
   }
 
-  if (options.items) {
-    const itemOptions = typeof options.items === 'object' ? options.items : {};
-    const itemType =
-      typeof options.items === 'object' ? options.items.type : options.items;
+  if (items) {
     const errors = {};
     const parsed = [];
     const hasInvalidItems = value.filter((item, index) => {
+      const itemOptions =
+        typeof items === 'function'
+          ? itemsFunctionWrapper(items, item)
+          : typeof items === 'object'
+            ? items
+            : {};
+
+      const itemType =
+        typeof items === 'string'
+          ? items
+          : typeof itemOptions === 'object'
+            ? itemOptions.type
+            : itemOptions;
+
       const validation = validate({
         type: itemType,
         parameter: Array.isArray(parameter)
@@ -40,7 +61,7 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
     : {
       valid: false,
       errors: [
-        options.errorCode ||
+        errorCode ||
             `Expected parameter ${parameter} to be of type array but it was ${JSON.stringify(
               value
             )}`

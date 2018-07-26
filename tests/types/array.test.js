@@ -147,6 +147,44 @@ describe('Expect package (array validation):', () => {
     expect(invalidExpectations.wereMet()).toBe(false);
   });
 
+  it('items function', () => {
+    const expectModule = require('../../src');
+    const expected = {
+      test: {
+        type: 'array',
+        items: user => ({
+          type: 'object',
+          keys: user.isLoggedIn
+            ? {
+              username: 'string',
+              password: 'string',
+              isLoggedIn: { type: 'boolean', allowNull: true }
+            }
+            : {
+              temporaryUuid: 'number',
+              isLoggedIn: { type: 'boolean', allowNull: true }
+            }
+        })
+      }
+    };
+
+    const validExpectations = expectModule(expected, {
+      test: [
+        { isLoggedIn: true, username: 'John', password: 'Snow' },
+        { isLogged: false, temporaryUuid: 123 }
+      ]
+    });
+    const invalidExpectations = expectModule(expected, {
+      test: [
+        { isLoggedIn: true, username: 'John', password: 'Snow' },
+        { isLoggedIn: true, temporaryUuid: 123 }
+      ]
+    });
+
+    expect(validExpectations.wereMet()).toBe(true);
+    expect(invalidExpectations.wereMet()).toBe(false);
+  });
+
   it('item validation error format', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(

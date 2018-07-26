@@ -224,6 +224,37 @@ expect(
 ).wereMet(); // true
 ```
 
+A function may be passed as an `items` option, taking the input array as its parameter and returning a validation schema.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+
+const schema = {
+  beef: {
+    type: 'array',
+    items: item => ({
+      type: 'object',
+      keys: {
+        foo: item.bar ? 'number' : 'string',
+        bar: 'boolean'
+      }
+    })
+  }
+};
+
+expect(schema, {
+  beef: [{ foo: 1, bar: true }, { foo: 2, bar: true }]
+}).wereMet(); // true
+
+expect(schema, {
+  beef: [{ foo: '1', bar: false }, { foo: '2', bar: false }]
+}).wereMet(); // true
+
+expect(schema, {
+  beef: [{ foo: '1', bar: true }, { foo: '2', bar: true }]
+}).wereMet(); // false
+```
+
 ### email
 
 A customized type for _strings_ which can be used to check if the value is correctly formatted as an email address. Regular expression used to validate emails:
