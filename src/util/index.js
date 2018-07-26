@@ -36,10 +36,6 @@ const htmlEntityMap = {
 const nonStrictSubset = ['&', '<', '>', '"', '\''];
 
 function containsUnsafe({ value, strict, allowed = [] }) {
-  if (typeof value !== 'string') {
-    throw new Error('Non-strings cannot be checked for unsafe values');
-  }
-
   const characters = Array.from(value);
 
   return characters.some(character => {
@@ -55,10 +51,6 @@ function containsUnsafe({ value, strict, allowed = [] }) {
 }
 
 function sanitize({ value, strict, allowed = [] }) {
-  if (typeof value !== 'string') {
-    throw new Error('Non-strings cannot be sanitized');
-  }
-
   let sanitizedValue = '';
   const characters = Array.from(value);
 

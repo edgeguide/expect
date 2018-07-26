@@ -62,9 +62,12 @@ module.exports = function validate({
       })
     );
   } else if (type !== 'any') {
-    throw new Error(
-      `${parameter} could not be validated against type "${type}": it has not been defined`
-    );
+    return {
+      valid: false,
+      errors: [
+        `${parameter} could not be validated against type "${type}": it has not been defined`
+      ]
+    };
   }
 
   if (requiredIf && isNull(initialValue)) {
