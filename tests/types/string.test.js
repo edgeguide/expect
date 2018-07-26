@@ -92,32 +92,6 @@ describe('Expect package (string validation):', () => {
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('respects requiredIf, even if matchers fail', () => {
-    const expectModule = require('../../src');
-    const validExpectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          requiredIf: 'foo',
-          regexp: /^testfest$/
-        },
-        foo: { type: 'string', allowNull: true }
-      },
-      {}
-    );
-
-    const invalidExpectations = expectModule(
-      {
-        test: { type: 'string', requiredIf: 'foo' },
-        foo: { type: 'string', allowNull: true }
-      },
-      { foo: '123' }
-    );
-
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(invalidExpectations.wereMet()).toBe(false);
-  });
-
   it('nullCode has higher priority than errorCode', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
