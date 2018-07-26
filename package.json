@@ -1,6 +1,6 @@
 {
   "name": "@edgeguideab/expect",
-  "version": "3.1.5",
+  "version": "3.2.0",
   "description": "Check for user input in a consistent way and generate error messages for missings ",
   "main": "dist/index.js",
   "keywords": [
