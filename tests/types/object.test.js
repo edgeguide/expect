@@ -565,43 +565,27 @@ describe('Expect package (object validation):', () => {
     expect(expectations.errors()).toEqual({});
   });
 
-  it('getParsed returns correct values for nested objects', () => {
+  it('getParsed returns correct values for valid nested objects', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
       {
         foo: {
           type: 'object',
-          nullCode: 'missing',
-          errorCode: 'error',
           keys: {
             dead: {
               type: 'object',
-              keys: {
-                beef: {
-                  type: 'boolean',
-                  strict: true,
-                  parse: true
-                }
-              }
+              keys: { beef: { type: 'boolean', parse: true } }
             },
-            bar: {
-              type: 'number',
-              parse: true
-            },
-            bizz: {
-              type: 'array',
-              parse: true
-            }
+            bar: { type: 'number', parse: true },
+            bizz: { type: 'array', parse: true }
           }
         }
       },
       {
         foo: {
-          dead: {
-            beef: 'true'
-          },
+          dead: { beef: 'true' },
           bar: '1',
-          bizz: '[1,2,3,4,5]'
+          bizz: '[1, 2, 3]'
         }
       }
     );
@@ -609,11 +593,47 @@ describe('Expect package (object validation):', () => {
     expect(expectations.wereMet()).toBe(true);
     expect(expectations.getParsed()).toEqual({
       foo: {
-        dead: {
-          beef: true
-        },
+        dead: { beef: true },
         bar: 1,
-        bizz: [1, 2, 3, 4, 5]
+        bizz: [1, 2, 3]
+      }
+    });
+  });
+
+  it('errors for invalid nested objects', () => {
+    const expectModule = require('../../src');
+    const expectations = expectModule(
+      {
+        foo: {
+          type: 'object',
+          keys: {
+            dead: {
+              type: 'object',
+              keys: { beef: 'boolean' }
+            },
+            bar: { type: 'string', allowNull: true },
+            bizz: 'array'
+          }
+        }
+      },
+      {
+        foo: {
+          dead: { beef: 'true' },
+          bar: '',
+          bizz: [1, 2, 3]
+        }
+      }
+    );
+
+    expect(expectations.wereMet()).toBe(false);
+    expect(expectations.getParsed()).toEqual({});
+    expect(expectations.errors()).toEqual({
+      foo: {
+        dead: {
+          beef: [
+            'Expected parameter foo.dead.beef to be of type boolean but it was "true"'
+          ]
+        }
       }
     });
   });

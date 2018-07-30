@@ -52,11 +52,14 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
       options: keyOptions
     });
 
-    if (validation.errors) {
+    if (validation.valid) {
+      parsed[key] = validation.hasOwnProperty('parsed')
+        ? validation.parsed
+        : value[key];
+    } else {
       errors[key] = validation.errors;
     }
 
-    parsed[key] = validation.parsed ? validation.parsed : value[key];
     return !validation.valid;
   });
 
