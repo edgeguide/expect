@@ -1,21 +1,20 @@
 ## Contents
 
-1.  [Breaking changes in version 3](#breaking-changes-in-version-3)
-2.  [Installation](#installation)
+1.  [Installation](#installation)
     - [Using NPM](#using-npm)
     - [In a browser](#in-a-browser)
-3.  [Usage](#usage)
+2.  [Usage](#usage)
     - [Example of each method definition](#example-of-each-method-definition)
     - [Example validating input with Express.js](#example-validating-input-with-expressjs)
-4.  [Types](#types)
+3.  [Types](#types)
     - [Standard types](#standard-types)
     - [Customized types](#customized-types)
-5.  [Type explanations](#type-explanations)
+4.  [Type explanations](#type-explanations)
     - [object](#object)
     - [array](#array)
     - [email](#email)
     - [phone](#phone)
-6.  [Options](#options)
+5.  [Options](#options)
     - [allowNull](#allownull)
     - [requiredIf](#requiredif)
     - [parse](#parse)
@@ -27,14 +26,6 @@
     - [convert](#convert)
     - [blockUnsafe](#blockunsafe)
     - [sanitize](#sanitize)
-
-## Breaking changes in version 3
-
-- The `strict` option has been removed
-  - Default type validation is now "stricter". Use the `parse` option for more lenient validation
-  - NOTE: `number` no longer allows string numbers by default (e.g. "123")
-- `maxLength`, `minLength` and `regexp` options have been removed. Replaced by `condition`
-- The customized `date` type no longer allows "Invalid Date" when using the `parse` option
 
 ## Installation
 
