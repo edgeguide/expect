@@ -2,7 +2,7 @@ const PHONE_REGEXP = /^\+?[\d\s()]+$/;
 
 module.exports = ({ parameter, value, options }) => {
   return PHONE_REGEXP.test(value)
-    ? { valid: true, errors: [] }
+    ? { valid: true }
     : {
       valid: false,
       errors: [

@@ -1,6 +1,6 @@
 module.exports = ({ parameter, value, options }) => {
   return typeof value === 'boolean'
-    ? { valid: true, parsed: value, errors: [] }
+    ? { valid: true, parsed: value }
     : {
       valid: false,
       errors: [

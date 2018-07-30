@@ -184,7 +184,6 @@ describe('Expect package (README examples):', () => {
 
   it('Type explanations - object', () => {
     const expectModule = require('../../src');
-
     expect(
       expectModule(
         {
@@ -196,9 +195,9 @@ describe('Expect package (README examples):', () => {
         { bar: { fizz: 1, buzz: 1 } }
       ).errors()
     ).toEqual({
-      'bar.buzz': [
-        'Expected parameter bar.buzz to be of type string but it was 1'
-      ]
+      bar: {
+        buzz: ['Expected parameter bar.buzz to be of type string but it was 1']
+      }
     });
 
     expect(
@@ -215,9 +214,13 @@ describe('Expect package (README examples):', () => {
         { bar: { fizz: 1, buzz: { bizz: 'hello' } } }
       ).errors()
     ).toEqual({
-      'bar.buzz.bizz': [
-        'Expected parameter bar.buzz.bizz to be of type number but it was "hello"'
-      ]
+      bar: {
+        buzz: {
+          bizz: [
+            'Expected parameter bar.buzz.bizz to be of type number but it was "hello"'
+          ]
+        }
+      }
     });
 
     expect(

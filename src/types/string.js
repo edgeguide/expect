@@ -35,7 +35,6 @@ module.exports = ({ parameter, value, options }) => {
 
   return {
     valid: true,
-    errors: [],
     parsed: options.sanitize
       ? sanitize({
         value,

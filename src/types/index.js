@@ -4,8 +4,7 @@ const {
   getDeep,
   getDeepOptions,
   parseType,
-  parseFunctionWrapper,
-  mergeErrors
+  parseFunctionWrapper
 } = require('../util');
 
 const mapTypeValidations = {
@@ -39,7 +38,7 @@ module.exports = function validate({
     conditionErrorCode,
     equalToErrorCode
   } = options;
-  const validation = { valid: true, errors: [] };
+  const validation = { valid: true };
   const initialValue = value;
 
   if (parse) {
@@ -93,7 +92,7 @@ module.exports = function validate({
       isNull(requiredFieldValue) ||
       (requiredFieldType === 'boolean' && !requiredFieldValue)
     ) {
-      return { valid: true, errors: [] };
+      return { valid: true };
     }
   }
 
@@ -133,13 +132,11 @@ module.exports = function validate({
 
   if (equalTo && !isEqualTo({ value, type, equalTo, actualValues, expected })) {
     validation.valid = false;
-    validation.errors = validation.errors.concat(
-      mergeErrors(parameter, {}, [
-        equalToErrorCode ||
-          `Expected parameter ${JSON.stringify(
-            Array.isArray(parameter) ? parameter.join('.') : parameter
-          )} to be equal to ${JSON.stringify(equalTo)}.`
-      ])
+    validation.errors = (validation.errors || []).concat(
+      equalToErrorCode ||
+        `Expected parameter ${JSON.stringify(
+          Array.isArray(parameter) ? parameter.join('.') : parameter
+        )} to be equal to ${JSON.stringify(equalTo)}.`
     );
   }
 

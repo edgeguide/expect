@@ -193,9 +193,9 @@ describe('Expect package (array validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      'test.2': [
-        'Expected parameter test.2 to be of type number but it was "3"'
-      ]
+      test: {
+        2: ['Expected parameter test.2 to be of type number but it was "3"']
+      }
     });
   });
 
@@ -215,7 +215,7 @@ describe('Expect package (array validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      'test.2': ['incorrect.item.format']
+      test: { 2: ['incorrect.item.format'] }
     });
   });
 

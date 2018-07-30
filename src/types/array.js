@@ -10,7 +10,19 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
   const { convert, items, errorCode } = options;
 
   if (convert && !Array.isArray(value)) {
-    value = [value];
+    value = value === undefined ? [] : [value];
+  }
+
+  if (!Array.isArray(value)) {
+    return {
+      valid: false,
+      errors: [
+        errorCode ||
+          `Expected parameter ${parameter} to be of type array but it was ${JSON.stringify(
+            value
+          )}`
+      ]
+    };
   }
 
   if (items) {
@@ -42,29 +54,16 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
       });
 
       if (validation.errors) {
-        const errorKey = Array.isArray(parameter)
-          ? parameter.concat(index).join('.')
-          : `${parameter}.${index}`;
-        errors[errorKey] = validation.errors;
+        errors[index] = validation.errors;
       }
       parsed.push(validation.parsed ? validation.parsed : item);
       return !validation.valid;
     });
 
     return hasInvalidItems.length
-      ? { valid: false, errors: [errors] }
+      ? { valid: false, errors }
       : { valid: true, parsed };
   }
 
-  return Array.isArray(value)
-    ? { valid: true, parsed: value, errors: [] }
-    : {
-      valid: false,
-      errors: [
-        errorCode ||
-            `Expected parameter ${parameter} to be of type array but it was ${JSON.stringify(
-              value
-            )}`
-      ]
-    };
+  return { valid: true, parsed: value };
 };

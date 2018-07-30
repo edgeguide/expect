@@ -14,5 +14,5 @@ module.exports = ({ parameter, value, options }) => {
     };
   }
 
-  return { valid: true, parsed: value, errors: [] };
+  return { valid: true, parsed: value };
 };

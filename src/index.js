@@ -1,10 +1,9 @@
 const validateTypes = require('./types');
-const { mergeErrors } = require('./util');
 
 module.exports = function(expected, actualValues) {
   actualValues = actualValues || {};
   const parsedValues = {};
-  let errors = {};
+  const errors = {};
   let valid = true;
 
   Object.keys(expected).forEach(parameter => {
@@ -24,7 +23,7 @@ module.exports = function(expected, actualValues) {
 
     if (!validation.valid) {
       valid = false;
-      errors = mergeErrors(parameter, errors, validation.errors);
+      errors[parameter] = validation.errors;
     }
 
     if (validation.parsed === null || validation.parsed === undefined) {

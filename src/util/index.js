@@ -10,7 +10,6 @@ module.exports = {
   parseFunctionWrapper,
   isNull,
   sanitize,
-  mergeErrors,
   containsUnsafe
 };
 
@@ -71,26 +70,4 @@ function sanitize({ value, strict, allowed = [] }) {
 
 function isNull(value) {
   return value === undefined || value === null || value === '';
-}
-
-function mergeErrors(parameter, allErrors, newErrors) {
-  parameter = Array.isArray(parameter) ? parameter.join('.') : parameter;
-
-  if (!Array.isArray(newErrors)) {
-    return allErrors;
-  }
-
-  newErrors.forEach(error => {
-    if (typeof error === 'object') {
-      Object.keys(error).forEach(key => {
-        return mergeErrors(key, allErrors, error[key]);
-      });
-    } else {
-      allErrors[parameter] = Array.isArray(allErrors[parameter])
-        ? allErrors[parameter].concat(error)
-        : [error];
-    }
-  });
-
-  return allErrors;
 }

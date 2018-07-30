@@ -186,7 +186,7 @@ describe('Expect package (object validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      'foo.bar': ['invalid type']
+      foo: { bar: ['invalid type'] }
     });
   });
 
@@ -220,9 +220,13 @@ describe('Expect package (object validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      'foo.dead.beef': [
-        'Expected parameter foo.dead.beef to be of type number but it was "fail"'
-      ]
+      foo: {
+        dead: {
+          beef: [
+            'Expected parameter foo.dead.beef to be of type number but it was "fail"'
+          ]
+        }
+      }
     });
   });
 
@@ -258,12 +262,16 @@ describe('Expect package (object validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      'foo.bizz': [
-        'Expected parameter foo.bizz to be of type number but it was "1a"'
-      ],
-      'foo.dead.beef': [
-        'Expected parameter foo.dead.beef to be of type number but it was "fail"'
-      ]
+      foo: {
+        bizz: [
+          'Expected parameter foo.bizz to be of type number but it was "1a"'
+        ],
+        dead: {
+          beef: [
+            'Expected parameter foo.dead.beef to be of type number but it was "fail"'
+          ]
+        }
+      }
     });
   });
 
@@ -400,9 +408,13 @@ describe('Expect package (object validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      'foo.2.beef': [
-        'Expected parameter foo.2.beef to be of type number but it was "hello"'
-      ]
+      foo: {
+        2: {
+          beef: [
+            'Expected parameter foo.2.beef to be of type number but it was "hello"'
+          ]
+        }
+      }
     });
   });
 
@@ -436,9 +448,13 @@ describe('Expect package (object validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      'foo.dead.beef': [
-        'Expected parameter foo.dead.beef to be of type number but it was null'
-      ]
+      foo: {
+        dead: {
+          beef: [
+            'Expected parameter foo.dead.beef to be of type number but it was null'
+          ]
+        }
+      }
     });
   });
 
@@ -693,7 +709,7 @@ describe('Expect package (object validation):', () => {
 
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
-      'foo.dead': ['Object contained unchecked keys "well"']
+      foo: { dead: ['Object contained unchecked keys "well"'] }
     });
   });
 

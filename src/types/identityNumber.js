@@ -27,10 +27,7 @@ module.exports = ({ parameter, value, options }) => {
     return { valid: false, errors: [errorCode] };
   }
 
-  return {
-    valid: true,
-    errors: []
-  };
+  return { valid: true };
 
   function verifyLuhn(value) {
     const lastDigit = parseInt(value[value.length - 1]);

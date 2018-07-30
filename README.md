@@ -149,7 +149,7 @@ expect(
     }
   },
   { bar: { fizz: 1, buzz: 1 } }
-).errors(); // { 'bar.buzz': ['Expected parameter bar.buzz to be of type string but it was 1'] }
+).errors(); // { bar: { buzz: ['Expected parameter bar.buzz to be of type string but it was 1'] } }
 ```
 
 Object validation can be nested with several keys-options.
@@ -167,7 +167,7 @@ expect(
     }
   },
   { bar: { fizz: 1, buzz: { bizz: 'hello' } } }
-).errors(); // { 'bar.buzz.bizz': ['Expected parameter bar.buzz.bizz to be of type number but it was "hello"] }
+).errors(); // { bar: { buzz: { bizz: ['Expected parameter bar.buzz.bizz to be of type number but it was "hello"] } } }
 ```
 
 Unlike top-level validation, when evaluating deeper in an object the error-key will be a path to the parameter which failed (as a string). If the `keys`-option is combined with `strictKeyCheck`, object validation will fail
@@ -193,7 +193,7 @@ expect(
       kizz: 3
     }
   }
-).errors(); // { 'bar': ['Object contained unchecked keys "kizz"'] }
+).errors(); // { bar: ['Object contained unchecked keys "kizz"'] }
 ```
 
 ### array
