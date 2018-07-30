@@ -106,7 +106,7 @@ describe('Expect package (README examples):', () => {
       { test: null }
     );
     expect(invalid.wereMet()).toBe(false);
-    expect(invalid.getParsed()).toEqual({ test: null });
+    expect(invalid.getParsed()).toEqual({});
 
     const valid = expectModule(
       { test: { type: 'string', allowNull: true, parse: true } },

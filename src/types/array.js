@@ -25,45 +25,45 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
     };
   }
 
-  if (items) {
-    const errors = {};
-    const parsed = [];
-    const hasInvalidItems = value.filter((item, index) => {
-      const itemOptions =
-        typeof items === 'function'
-          ? itemsFunctionWrapper(items, item)
-          : typeof items === 'object'
-            ? items
-            : {};
-
-      const itemType =
-        typeof items === 'string'
-          ? items
-          : typeof itemOptions === 'object'
-            ? itemOptions.type
-            : itemOptions;
-
-      const validation = validate({
-        type: itemType,
-        parameter: Array.isArray(parameter)
-          ? parameter.concat(index)
-          : [parameter, index],
-        value: item,
-        options: itemOptions,
-        actualValues
-      });
-
-      if (validation.errors) {
-        errors[index] = validation.errors;
-      }
-      parsed.push(validation.parsed ? validation.parsed : item);
-      return !validation.valid;
-    });
-
-    return hasInvalidItems.length
-      ? { valid: false, errors }
-      : { valid: true, parsed };
+  if (!items) {
+    return { valid: true, parsed: value };
   }
 
-  return { valid: true, parsed: value };
+  const errors = {};
+  const parsed = [];
+  const hasInvalidItems = value.filter((item, index) => {
+    const itemOptions =
+      typeof items === 'function'
+        ? itemsFunctionWrapper(items, item)
+        : typeof items === 'object'
+          ? items
+          : {};
+
+    const itemType =
+      typeof items === 'string'
+        ? items
+        : typeof itemOptions === 'object'
+          ? itemOptions.type
+          : itemOptions;
+
+    const validation = validate({
+      type: itemType,
+      parameter: Array.isArray(parameter)
+        ? parameter.concat(index)
+        : [parameter, index],
+      value: item,
+      options: itemOptions,
+      actualValues
+    });
+
+    if (validation.errors) {
+      errors[index] = validation.errors;
+    }
+    parsed.push(validation.parsed ? validation.parsed : item);
+    return !validation.valid;
+  });
+
+  return hasInvalidItems.length
+    ? { valid: false, errors }
+    : { valid: true, parsed };
 };

@@ -46,7 +46,7 @@ describe('Expect package (string validation):', () => {
     expect(validExpectations.getParsed()).toEqual({ foo: 'null' });
 
     expect(invalidExpectations.wereMet()).toBe(false);
-    expect(invalidExpectations.getParsed()).toEqual({ foo: null });
+    expect(invalidExpectations.getParsed()).toEqual({});
   });
 
   it('a string should be counted as a string even if allowed to be null', () => {

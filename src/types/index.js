@@ -46,7 +46,6 @@ module.exports = function validate({
       typeof parse === 'function'
         ? parseFunctionWrapper({ value, parse })
         : parseType({ value, type });
-    validation.parsed = value;
   }
 
   if (mapTypeValidations[type]) {
@@ -67,6 +66,10 @@ module.exports = function validate({
         `${parameter} could not be validated against type "${type}": it has not been defined`
       ]
     };
+  }
+
+  if (!validation.hasOwnProperty('parsed')) {
+    validation.parsed = value;
   }
 
   if (requiredIf && isNull(initialValue)) {
@@ -92,7 +95,7 @@ module.exports = function validate({
       isNull(requiredFieldValue) ||
       (requiredFieldType === 'boolean' && !requiredFieldValue)
     ) {
-      return { valid: true };
+      return { valid: true, parsed: validation.parsed };
     }
   }
 
@@ -127,7 +130,7 @@ module.exports = function validate({
 
   if (allowNull && isNull(initialValue)) {
     validation.valid = true;
-    validation.errors = [];
+    delete validation.errors;
   }
 
   if (equalTo && !isEqualTo({ value, type, equalTo, actualValues, expected })) {
@@ -138,6 +141,10 @@ module.exports = function validate({
           Array.isArray(parameter) ? parameter.join('.') : parameter
         )} to be equal to ${JSON.stringify(equalTo)}.`
     );
+  }
+
+  if (!validation.valid) {
+    delete validation.parsed;
   }
 
   return validation;

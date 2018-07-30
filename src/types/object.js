@@ -1,22 +1,27 @@
 module.exports = ({ parameter, value, actualValues, options, validate }) => {
-  if (!options.keys) {
-    return objectTypeCheck(parameter, value, options);
+  if (typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      valid: false,
+      errors: [
+        options.errorCode ||
+          `Expected parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } to be of type object but it was ${JSON.stringify(value)}`
+      ]
+    };
   }
 
-  const valid = true;
-  const validation = objectTypeCheck(parameter, value, options);
-  if (!validation.valid) {
-    return validation;
+  if (!options.keys) {
+    return { valid: true };
   }
 
   const parsed = {};
   const errors = {};
-
   if (options.strictKeyCheck) {
     const checkedKeys = Object.keys(options.keys);
-    const uncheckedKeys = Object.keys(value).filter(key => {
-      return !checkedKeys.includes(key);
-    });
+    const uncheckedKeys = Object.keys(value).filter(
+      key => !checkedKeys.includes(key)
+    );
 
     if (uncheckedKeys.length) {
       return {
@@ -46,26 +51,16 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
       actualValues,
       options: keyOptions
     });
+
     if (validation.errors) {
       errors[key] = validation.errors;
     }
+
     parsed[key] = validation.parsed ? validation.parsed : value[key];
     return !validation.valid;
   });
 
-  return invalidKeys.length ? { valid: false, errors } : { valid, parsed };
+  return invalidKeys.length
+    ? { valid: false, errors }
+    : { valid: true, parsed };
 };
-
-function objectTypeCheck(parameter, value, options) {
-  return typeof value === 'object' && !Array.isArray(value)
-    ? { valid: true }
-    : {
-      valid: false,
-      errors: [
-        options.errorCode ||
-            `Expected parameter ${
-              Array.isArray(parameter) ? parameter.join('.') : parameter
-            } to be of type object but it was ${JSON.stringify(value)}`
-      ]
-    };
-}

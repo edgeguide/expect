@@ -28,22 +28,22 @@ module.exports = ({ parameter, value, options }) => {
   }
 
   return { valid: true };
-
-  function verifyLuhn(value) {
-    const lastDigit = parseInt(value[value.length - 1]);
-    let calculatedLastDigit = 0;
-    for (var i = 0; i < 9; i++) {
-      if (i % 2 === 0) {
-        const result = 2 * parseInt(value[i]);
-        const firstDigit = Math.floor(result / 10);
-        const secondDigit = result % 10;
-        calculatedLastDigit += +(firstDigit + secondDigit);
-      } else {
-        calculatedLastDigit += parseInt(value[i]);
-      }
-    }
-    calculatedLastDigit = (10 - (calculatedLastDigit % 10)) % 10;
-
-    return lastDigit === calculatedLastDigit;
-  }
 };
+
+function verifyLuhn(value) {
+  const lastDigit = parseInt(value[value.length - 1]);
+  let calculatedLastDigit = 0;
+  for (var i = 0; i < 9; i++) {
+    if (i % 2 === 0) {
+      const result = 2 * parseInt(value[i]);
+      const firstDigit = Math.floor(result / 10);
+      const secondDigit = result % 10;
+      calculatedLastDigit += +(firstDigit + secondDigit);
+    } else {
+      calculatedLastDigit += parseInt(value[i]);
+    }
+  }
+  calculatedLastDigit = (10 - (calculatedLastDigit % 10)) % 10;
+
+  return lastDigit === calculatedLastDigit;
+}

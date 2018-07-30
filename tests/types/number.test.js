@@ -243,10 +243,9 @@ describe('Expect package (number validation):', () => {
   });
 
   it('returns the initial value if not parsing', () => {
-    const testObject = { test: '1337' };
     const expectModule = require('../../src');
-    const expectations = expectModule({ test: 'number' }, testObject);
-    expect(expectations.getParsed()).toEqual({ test: '1337' });
+    const expectations = expectModule({ test: 'number' }, { test: 1337 });
+    expect(expectations.getParsed()).toEqual({ test: 1337 });
   });
 
   it('condition met', () => {

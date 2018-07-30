@@ -386,7 +386,7 @@ const invalid = expect(
   { test: null }
 );
 invalid.wereMet(); // false
-invalid.getParsed(); // { test: null }
+invalid.getParsed(); // {}
 
 const valid = expect(
   { test: { type: 'string', allowNull: true, parse: true } },

@@ -1,7 +1,7 @@
 module.exports = ({ parameter, value, options }) => {
   return (value instanceof Date || typeof value === 'string') &&
     new Date(value).toString() !== 'Invalid Date'
-    ? { valid: true, parsed: value }
+    ? { valid: true }
     : {
       valid: false,
       errors: [
