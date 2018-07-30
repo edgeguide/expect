@@ -56,10 +56,14 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
       actualValues
     });
 
-    if (validation.errors) {
+    if (validation.valid) {
+      parsed.push(
+        validation.hasOwnProperty('parsed') ? validation.parsed : item
+      );
+    } else {
       errors[index] = validation.errors;
     }
-    parsed.push(validation.parsed ? validation.parsed : item);
+
     return !validation.valid;
   });
 
