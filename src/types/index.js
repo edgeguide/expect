@@ -63,7 +63,9 @@ module.exports = function validate({
     return {
       valid: false,
       errors: [
-        `${parameter} could not be validated against type "${type}": it has not been defined`
+        `${
+          Array.isArray(parameter) ? parameter.join('.') : parameter
+        } could not be validated against type "${type}": it has not been defined`
       ]
     };
   }

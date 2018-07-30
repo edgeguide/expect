@@ -13,7 +13,9 @@ module.exports = ({ parameter, value, options }) => {
       valid: false,
       errors: [
         options.errorCode ||
-          `Expected parameter ${parameter} to be email address but it was incorrectly formatted: ${JSON.stringify(
+          `Expected parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } to be email address but it was incorrectly formatted: ${JSON.stringify(
             value
           )}`
       ]
@@ -37,7 +39,9 @@ module.exports = ({ parameter, value, options }) => {
       errors: [
         options.unsafeErrorCode ||
           options.errorCode ||
-          `Parameter ${parameter} contained unsafe, unescaped characters`
+          `Parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } contained unsafe, unescaped characters`
       ]
     };
   }
@@ -48,7 +52,9 @@ module.exports = ({ parameter, value, options }) => {
       errors: [
         options.alphanumericErrorCode ||
           options.errorCode ||
-          `Parameter ${parameter} contained non-alphanumeric characters`
+          `Parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } contained non-alphanumeric characters`
       ]
     };
   }

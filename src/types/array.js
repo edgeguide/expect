@@ -18,9 +18,9 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
       valid: false,
       errors: [
         errorCode ||
-          `Expected parameter ${parameter} to be of type array but it was ${JSON.stringify(
-            value
-          )}`
+          `Expected parameter ${
+            Array.isArray(parameter) ? parameter.join('.') : parameter
+          } to be of type array but it was ${JSON.stringify(value)}`
       ]
     };
   }
