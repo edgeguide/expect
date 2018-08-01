@@ -42,7 +42,9 @@ module.exports = function validate({
 
   if (typeof type !== 'string' || !mapTypeValidations[type]) {
     throw new Error(
-      `Invalid type option for parameter ${formatParameter(parameter)}`
+      `Invalid type ${JSON.stringify(type)} for parameter ${formatParameter(
+        parameter
+      )}`
     );
   }
 
