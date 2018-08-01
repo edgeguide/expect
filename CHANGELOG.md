@@ -1,3 +1,19 @@
+## 5.0.0 (1 August 2018)
+
+### Breaking changes
+
+- Passing an invalid type in the validation schema throws an error instead of failing the validation
+- `errors()` only returns a single error for each failed property
+- `requiredIf` no longer attempts to parse the target parameter if the parameter has a `parse` option
+- `requiredIf` no longer ignores _false_ value for boolean types
+  - Values still ignored are _null_, _undefined_ and empty string
+- Changed the name of some options for consistency
+  - `unsafeErrorCode` changed to `blockUnsafeErrorCode`
+  - `nullCode` changed to `allowNullErrorCode`
+- Type validator for _phone_ strictly checks that the input is a _string_ or a _number_
+  - Inputs of other types that would pass the regular expression are no longer allowed
+  - Symbol() input no longer throws an error
+
 ## 4.1.0 (30 July 2018)
 
 - `getParsed()` no longer returns parameters that were not valid
