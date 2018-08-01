@@ -1,3 +1,7 @@
+## 5.0.1 (1 August 2018)
+
+- JSON.stringify invalid type in error message
+
 ## 5.0.0 (1 August 2018)
 
 ### Breaking changes
