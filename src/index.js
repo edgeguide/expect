@@ -25,7 +25,7 @@ module.exports = function(expected, actualValues) {
       parsedValues[parameter] = validation.parsed;
     } else {
       valid = false;
-      errors[parameter] = validation.errors;
+      errors[parameter] = validation.error;
     }
   });
 

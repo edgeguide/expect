@@ -45,64 +45,6 @@ describe('Expect package (date validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('respects allowNull', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'date', allowNull: true } },
-      { test: null }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('respects the errorCode option', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'date', errorCode: 'missing' } },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
-  it('respects requiredIf', () => {
-    const expectModule = require('../../src');
-    const validExpectations = expectModule(
-      {
-        test: { type: 'date', requiredIf: 'foo' },
-        foo: { type: 'string', allowNull: true }
-      },
-      {}
-    );
-
-    const invalidExpectations = expectModule(
-      {
-        test: { type: 'date', requiredIf: 'foo' },
-        foo: 'string'
-      },
-      { foo: '123' }
-    );
-
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(invalidExpectations.wereMet()).toBe(false);
-  });
-
-  it('nullCode has higher priority than errorCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'date',
-          nullCode: 'missing',
-          errorCode: 'error'
-        }
-      },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
   it('parse string date', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
@@ -131,23 +73,5 @@ describe('Expect package (date validation):', () => {
     );
 
     expect(expectations.getParsed()).toEqual(testObject);
-  });
-
-  it('condition met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'date', condition: test => test === '2018-01-01' } },
-      { test: '2018-01-01' }
-    );
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('condition not met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'date', condition: test => test === '2018-01-01' } },
-      { test: '2018-01-02' }
-    );
-    expect(expectations.wereMet()).toBe(false);
   });
 });

@@ -117,96 +117,6 @@ describe('Expect package (email validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('respects the allowNull option', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'email',
-          allowNull: true
-        }
-      },
-      {
-        test: null
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('respects the errorCode option', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'email',
-          errorCode: 'missing'
-        }
-      },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({
-      test: ['missing']
-    });
-  });
-
-  it('respects requiredIf', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'email',
-          requiredIf: 'foo'
-        },
-        foo: {
-          type: 'email',
-          allowNull: true
-        }
-      },
-      {
-        foo: ''
-      }
-    );
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('is required if another field is not undefined', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'email',
-          requiredIf: 'foo'
-        },
-        foo: 'string'
-      },
-      {
-        foo: '123'
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('nullCode has higher priority than errorCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'email',
-          nullCode: 'missing',
-          errorCode: 'error'
-        }
-      },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({
-      test: ['missing']
-    });
-  });
-
   it('blocks unsafe input with the blockUnsafe flag', () => {
     const testObject = {
       test: 'hello@unsafeinput.<div>some html</div>'
@@ -241,7 +151,7 @@ describe('Expect package (email validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      test: ['Parameter test contained unsafe, unescaped characters']
+      test: 'Parameter test contained unsafe, unescaped characters'
     });
   });
 
@@ -396,34 +306,6 @@ describe('Expect package (email validation):', () => {
       testObject
     );
 
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('condition met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'email',
-          condition: test => typeof test === 'string' && test.startsWith('test')
-        }
-      },
-      { test: 'test@test.com' }
-    );
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('condition not met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'email',
-          condition: test => typeof test === 'string' && test.startsWith('test')
-        }
-      },
-      { test: 'fest@fest.com' }
-    );
     expect(expectations.wereMet()).toBe(false);
   });
 });

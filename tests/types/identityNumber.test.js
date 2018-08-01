@@ -222,32 +222,4 @@ describe('Expect package (identityNumber validation):', () => {
 
     expect(expectations.wereMet()).toBe(true);
   });
-
-  it('condition met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'identityNumber',
-          condition: test => /^5.+/.test(test)
-        }
-      },
-      { test: '550128-6149' }
-    );
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('condition not met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'identityNumber',
-          condition: test => /^5.+/.test(test)
-        }
-      },
-      { test: '0101286144' }
-    );
-    expect(expectations.wereMet()).toBe(false);
-  });
 });

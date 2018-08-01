@@ -1,16 +1,8 @@
-const { sanitize, containsUnsafe } = require('../util');
+const { formatParameter, sanitize, containsUnsafe } = require('../util');
 
 module.exports = ({ parameter, value, options }) => {
   if (typeof value !== 'string') {
-    return {
-      valid: false,
-      errors: [
-        options.errorCode ||
-          `Expected parameter ${
-            Array.isArray(parameter) ? parameter.join('.') : parameter
-          } to be of type string but it was ${JSON.stringify(value)}`
-      ]
-    };
+    return { valid: false };
   }
 
   if (
@@ -23,13 +15,12 @@ module.exports = ({ parameter, value, options }) => {
   ) {
     return {
       valid: false,
-      errors: [
-        options.unsafeErrorCode ||
-          options.errorCode ||
-          `Parameter ${
-            Array.isArray(parameter) ? parameter.join('.') : parameter
-          } contained unsafe, unescaped characters`
-      ]
+      error:
+        options.blockUnsafeErrorCode ||
+        options.errorCode ||
+        `Parameter ${formatParameter(
+          parameter
+        )} contained unsafe, unescaped characters`
     };
   }
 

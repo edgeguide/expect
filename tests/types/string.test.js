@@ -21,93 +21,6 @@ describe('Expect package (string validation):', () => {
     });
   });
 
-  it('respects allowNull', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'string', allowNull: true } },
-      {}
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('allowNull has higher priority than parse', () => {
-    const expectModule = require('../../src');
-    const validExpectations = expectModule(
-      { foo: { type: 'string', allowNull: true, parse: true } },
-      { foo: null }
-    );
-    const invalidExpectations = expectModule(
-      { foo: { type: 'string', parse: true } },
-      { foo: null }
-    );
-
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(validExpectations.getParsed()).toEqual({ foo: 'null' });
-
-    expect(invalidExpectations.wereMet()).toBe(false);
-    expect(invalidExpectations.getParsed()).toEqual({});
-  });
-
-  it('a string should be counted as a string even if allowed to be null', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'string', allowNull: true } },
-      { test: 'test' }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('empty string should be allowed with the allowNull options', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'string', allowNull: true } },
-      { test: '' }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('respects the errorCode option', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'string', errorCode: 'missing' } },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
-  it('respects requiredIf', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: { type: 'string', requiredIf: 'foo' },
-        foo: { type: 'string', allowNull: true }
-      },
-      {}
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('nullCode has higher priority than errorCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          nullCode: 'missing',
-          errorCode: 'error'
-        }
-      },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
   it('parse numbers', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
@@ -184,20 +97,22 @@ describe('Expect package (string validation):', () => {
     expect(expectations.getParsed()).toEqual(testObject);
   });
 
-  it('parse null', () => {
+  it('parse null values', () => {
     const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'string',
-          allowNull: true,
-          parse: true
-        }
-      },
-      { test: null }
-    );
+    const typeValues = {
+      null: 'null',
+      undefined: undefined,
+      '': ''
+    };
 
-    expect(expectations.wereMet()).toBe(true);
+    [null, undefined, ''].forEach(test => {
+      const expectations = expectModule(
+        { test: { type: 'string', allowNull: true, parse: true } },
+        { test }
+      );
+      expect(expectations.wereMet()).toBe(true);
+      expect(expectations.getParsed()).toEqual({ test: typeValues[test] });
+    });
   });
 
   it('does not destroy correct values when parsing', () => {
@@ -234,7 +149,7 @@ describe('Expect package (string validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      test: ['Parameter test contained unsafe, unescaped characters']
+      test: 'Parameter test contained unsafe, unescaped characters'
     });
   });
 
@@ -260,12 +175,104 @@ describe('Expect package (string validation):', () => {
 
   it('blocks assitional unsafe input with the blockUnsafe flag when in strict mode', () => {
     const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'string', blockUnsafe: true, strictEntities: true } },
-      { test: 'I am not exactly safe (though it is hard to ever be)!' }
-    );
 
-    expect(expectations.wereMet()).toBe(false);
+    expect(
+      expectModule(
+        { test: { type: 'string', blockUnsafe: true, strictEntities: true } },
+        { test: 'I am not exactly safe (though it is hard to ever be)!' }
+      ).wereMet()
+    ).toBe(false);
+  });
+
+  it('blockUnsafeErrorCode changes error message', () => {
+    const expectModule = require('../../src');
+
+    expect(
+      expectModule(
+        {
+          test: {
+            type: 'string',
+            blockUnsafe: true,
+            blockUnsafeErrorCode: 'blockUnsafe'
+          }
+        },
+        { test: '<div>I am unsafe</div>' }
+      ).errors()
+    ).toEqual({ test: 'blockUnsafe' });
+  });
+
+  it('blockUnsafeErrorCode has lower priority than type validation (errorCode)', () => {
+    const expectModule = require('../../src');
+
+    expect(
+      expectModule(
+        {
+          test: {
+            type: 'string',
+            blockUnsafe: true,
+            blockUnsafeErrorCode: 'blockUnsafe',
+            errorCode: 'error'
+          }
+        },
+        { test: 123 }
+      ).errors()
+    ).toEqual({ test: 'error' });
+  });
+
+  it('blockUnsafeErrorCode has lower priority than allowNullErrorCode', () => {
+    const expectModule = require('../../src');
+
+    expect(
+      expectModule(
+        {
+          test: {
+            type: 'string',
+            blockUnsafe: true,
+            blockUnsafeErrorCode: 'blockUnsafe',
+            allowNullErrorCode: 'allowNull'
+          }
+        },
+        {}
+      ).errors()
+    ).toEqual({ test: 'allowNull' });
+  });
+
+  it('blockUnsafeErrorCode has higher priority than equalToErrorCode', () => {
+    const expectModule = require('../../src');
+
+    expect(
+      expectModule(
+        {
+          test: {
+            type: 'string',
+            blockUnsafe: true,
+            equalTo: 'missing',
+            blockUnsafeErrorCode: 'blockUnsafe',
+            equalToErrorCode: 'equalTo'
+          }
+        },
+        { test: '<div>I am unsafe</div>' }
+      ).errors()
+    ).toEqual({ test: 'blockUnsafe' });
+  });
+
+  it('blockUnsafeErrorCode has higher priority than conditionErrorCode', () => {
+    const expectModule = require('../../src');
+
+    expect(
+      expectModule(
+        {
+          test: {
+            type: 'string',
+            blockUnsafe: true,
+            condition: () => false,
+            blockUnsafeErrorCode: 'blockUnsafe',
+            conditionErrorCode: 'condition'
+          }
+        },
+        { test: '<div>I am unsafe</div>' }
+      ).errors()
+    ).toEqual({ test: 'blockUnsafe' });
   });
 
   it('allows some specified characters in strict mode', () => {
@@ -507,35 +514,5 @@ describe('Expect package (string validation):', () => {
       test:
         'Some japanese characters &lpar;日本語&rpar; should be handled correctly'
     });
-  });
-
-  it('condition lower priority than requiredIf', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'boolean',
-          requiredIf: 'fest',
-          condition: test => test !== null
-        }
-      },
-      {}
-    );
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('condition lower priority than allowNull', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'boolean',
-          allowNull: true,
-          condition: test => test !== null
-        }
-      },
-      {}
-    );
-    expect(expectations.wereMet()).toBe(true);
   });
 });

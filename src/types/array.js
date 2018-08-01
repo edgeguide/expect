@@ -7,29 +7,21 @@ function itemsFunctionWrapper(itemsFunction, item) {
 }
 
 module.exports = ({ parameter, value, actualValues, options, validate }) => {
-  const { convert, items, errorCode } = options;
+  const { convert, items } = options;
 
   if (convert && !Array.isArray(value)) {
     value = value === undefined ? [] : [value];
   }
 
   if (!Array.isArray(value)) {
-    return {
-      valid: false,
-      errors: [
-        errorCode ||
-          `Expected parameter ${
-            Array.isArray(parameter) ? parameter.join('.') : parameter
-          } to be of type array but it was ${JSON.stringify(value)}`
-      ]
-    };
+    return { valid: false };
   }
 
   if (!items) {
     return { valid: true, parsed: value };
   }
 
-  const errors = {};
+  const error = {};
   const parsed = [];
   const hasInvalidItems = value.filter((item, index) => {
     const itemOptions =
@@ -61,13 +53,13 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
         validation.hasOwnProperty('parsed') ? validation.parsed : item
       );
     } else {
-      errors[index] = validation.errors;
+      error[index] = validation.error;
     }
 
     return !validation.valid;
   });
 
   return hasInvalidItems.length
-    ? { valid: false, errors }
+    ? { valid: false, error }
     : { valid: true, parsed };
 };

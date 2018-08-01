@@ -1,6 +1,6 @@
 describe('Expect package (README examples):', () => {
   it('Usage - Validate parameters on the server', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     const schema = { foo: 'string' };
     const validInput = { foo: 'test' };
@@ -14,7 +14,7 @@ describe('Expect package (README examples):', () => {
 
     expect(valid.errors()).toEqual({});
     expect(invalid.errors()).toEqual({
-      foo: ['Expected parameter foo to be of type string but it was undefined']
+      foo: 'Expected parameter foo to be of type string but it was undefined'
     });
 
     expect(valid.getParsed()).toEqual({ foo: 'test' });
@@ -22,7 +22,7 @@ describe('Expect package (README examples):', () => {
   });
 
   it('Options', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     expect(
       expectModule(
@@ -39,7 +39,7 @@ describe('Expect package (README examples):', () => {
   });
 
   it('Options - allowNull', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     expect(
       expectModule(
@@ -53,7 +53,17 @@ describe('Expect package (README examples):', () => {
   });
 
   it('Options - requiredIf', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
+
+    expect(
+      expectModule(
+        {
+          foo: { type: 'string', allowNull: true },
+          bar: { type: 'string', allowNull: true, requiredIf: 'foo' }
+        },
+        { foo: 'test' }
+      ).wereMet()
+    ).toBe(true);
 
     expect(
       expectModule(
@@ -93,7 +103,7 @@ describe('Expect package (README examples):', () => {
   });
 
   it('Options - parse', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
     expect(
       expectModule(
         { test: { type: 'number', parse: test => Number(test) } },
@@ -114,10 +124,27 @@ describe('Expect package (README examples):', () => {
     );
     expect(valid.wereMet()).toBe(true);
     expect(valid.getParsed()).toEqual({ test: 'null' });
+
+    const alsoValid = expectModule(
+      { test: { type: 'string', allowNull: true, parse: () => null } },
+      { test: 'test' }
+    );
+    expect(alsoValid.wereMet()).toBe(true); // true
+    expect(alsoValid.getParsed()).toEqual({ test: null });
+
+    const anotherOne = expectModule(
+      {
+        test: { type: 'string', requiredIf: 'existing' },
+        existing: { type: 'string', allowNull: true, parse: () => 'test' }
+      },
+      { test: null, existing: null }
+    );
+    expect(anotherOne.wereMet()).toBe(true);
+    expect(anotherOne.getParsed()).toEqual({ test: null, existing: 'test' });
   });
 
   it('Options - condition', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     expect(
       expectModule(
@@ -159,7 +186,7 @@ describe('Expect package (README examples):', () => {
   });
 
   it('Options - errorCode', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     expect(
       expectModule(
@@ -169,7 +196,7 @@ describe('Expect package (README examples):', () => {
         { bar: {} }
       ).errors()
     ).toEqual({
-      bar: ['Expected parameter bar to be of type string but it was {}']
+      bar: 'Expected parameter bar to be of type string but it was {}'
     });
 
     expect(
@@ -179,11 +206,11 @@ describe('Expect package (README examples):', () => {
         },
         { bar: {} }
       ).errors()
-    ).toEqual({ bar: ['Invalid format'] });
+    ).toEqual({ bar: 'Invalid format' });
   });
 
   it('Type explanations - object', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
     expect(
       expectModule(
         {
@@ -196,7 +223,7 @@ describe('Expect package (README examples):', () => {
       ).errors()
     ).toEqual({
       bar: {
-        buzz: ['Expected parameter bar.buzz to be of type string but it was 1']
+        buzz: 'Expected parameter bar.buzz to be of type string but it was 1'
       }
     });
 
@@ -216,9 +243,8 @@ describe('Expect package (README examples):', () => {
     ).toEqual({
       bar: {
         buzz: {
-          bizz: [
+          bizz:
             'Expected parameter bar.buzz.bizz to be of type number but it was "hello"'
-          ]
         }
       }
     });
@@ -243,11 +269,11 @@ describe('Expect package (README examples):', () => {
           }
         }
       ).errors()
-    ).toEqual({ bar: ['Object contained unchecked keys "kizz"'] });
+    ).toEqual({ bar: 'Object contained unchecked keys "kizz"' });
   });
 
   it('Type explanations - array', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     expect(
       expectModule(
@@ -304,7 +330,7 @@ describe('Expect package (README examples):', () => {
   });
 
   it('Matchers - equalTo', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     expect(
       expectModule(
@@ -361,7 +387,7 @@ describe('Expect package (README examples):', () => {
   });
 
   it('Matchers - blockUnsafe', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     expect(
       expectModule(
@@ -407,7 +433,7 @@ describe('Expect package (README examples):', () => {
   });
 
   it('Matchers - sanitize', () => {
-    const expectModule = require('../../src');
+    const expectModule = require('../src');
 
     expect(
       expectModule(

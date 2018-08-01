@@ -33,73 +33,6 @@ describe('Expect package (array validation):', () => {
     expect(expectations.getParsed()).toEqual({ test: ['convertme'] });
   });
 
-  it('respects allowNull', () => {
-    const expectModule = require('../../src');
-    const validExpectations = expectModule(
-      { test: { type: 'array', allowNull: true } },
-      { test: null }
-    );
-
-    const invalidExpectations = expectModule(
-      { test: { type: 'array', allowNull: false } },
-      { test: null }
-    );
-
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(invalidExpectations.wereMet()).toBe(false);
-  });
-
-  it('respects requiredIf', () => {
-    const expectModule = require('../../src');
-    const validExpectations = expectModule(
-      {
-        test: { type: 'array', requiredIf: 'foo' },
-        foo: { type: 'string', allowNull: true }
-      },
-      {}
-    );
-
-    const invalidExpectations = expectModule(
-      {
-        test: { type: 'array', requiredIf: 'foo' },
-        foo: { type: 'string', allowNull: true }
-      },
-      { foo: '123' }
-    );
-
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(invalidExpectations.wereMet()).toBe(false);
-  });
-
-  it('respects errorCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'array', errorCode: 'missing' } },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
-  it('respects nullCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'array', nullCode: 'missing' } },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
-  it('nullCode has higher priorty than errorCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'boolean', nullCode: 'missing', errorCode: 'error' } },
-      {}
-    );
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
   it('parse string array', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
@@ -194,7 +127,7 @@ describe('Expect package (array validation):', () => {
 
     expect(expectations.errors()).toEqual({
       test: {
-        2: ['Expected parameter test.2 to be of type number but it was "3"']
+        2: 'Expected parameter test.2 to be of type number but it was "3"'
       }
     });
   });
@@ -215,7 +148,7 @@ describe('Expect package (array validation):', () => {
     );
 
     expect(expectations.errors()).toEqual({
-      test: { 2: ['incorrect.item.format'] }
+      test: { 2: 'incorrect.item.format' }
     });
   });
 
@@ -256,23 +189,5 @@ describe('Expect package (array validation):', () => {
     );
 
     expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('condition met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'array', condition: test => test.length > 2 } },
-      { test: [1, 2, 3] }
-    );
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('condition not met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'array', condition: test => test.length > 2 } },
-      { test: [1, 2] }
-    );
-    expect(expectations.wereMet()).toBe(false);
   });
 });

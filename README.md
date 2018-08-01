@@ -18,14 +18,16 @@
     - [allowNull](#allownull)
     - [requiredIf](#requiredif)
     - [parse](#parse)
-    - [condition](#condition)
     - [equalTo](#equalto)
-    - [errorCode](#errorcode)
-    - [nullCode](#nullcode)
-    - [conditionErrorCode](#conditionerrorcode)
+    - [condition](#condition)
     - [convert](#convert)
     - [blockUnsafe](#blockunsafe)
     - [sanitize](#sanitize)
+    - [errorCode](#errorcode)
+    - [allowNullErrorCode](#allownullerrorcode)
+    - [blockUnsafeErrorCode](#blockunsafeerrorcode)
+    - [equalToErrorCode](#equaltoerrorcode)
+    - [conditionErrorCode](#conditionerrorcode)
 
 ## Installation
 
@@ -75,7 +77,7 @@ valid.wereMet(); // true
 invalid.wereMet(); // false
 
 valid.errors(); // {}
-invalid.errors(); // { foo: ['Expected parameter foo to be of type string but it was undefined'] }
+invalid.errors(); // { foo: 'Expected parameter foo to be of type string but it was undefined' }
 
 valid.getParsed(); // { foo: 'test' }
 invalid.getParsed(); // {}
@@ -140,7 +142,7 @@ expect(
     }
   },
   { bar: { fizz: 1, buzz: 1 } }
-).errors(); // { bar: { buzz: ['Expected parameter bar.buzz to be of type string but it was 1'] } }
+).errors(); // { bar: { buzz: 'Expected parameter bar.buzz to be of type string but it was 1' } }
 ```
 
 Object validation can be nested with several keys-options.
@@ -158,7 +160,7 @@ expect(
     }
   },
   { bar: { fizz: 1, buzz: { bizz: 'hello' } } }
-).errors(); // { bar: { buzz: { bizz: ['Expected parameter bar.buzz.bizz to be of type number but it was "hello"] } } }
+).errors(); // { bar: { buzz: { bizz: 'Expected parameter bar.buzz.bizz to be of type number but it was "hello"' } } }
 ```
 
 Unlike top-level validation, when evaluating deeper in an object the error-key will be a path to the parameter which failed (as a string). If the `keys`-option is combined with `strictKeyCheck`, object validation will fail
@@ -184,7 +186,7 @@ expect(
       kizz: 3
     }
   }
-).errors(); // { bar: ['Object contained unchecked keys "kizz"'] }
+).errors(); // { bar: 'Object contained unchecked keys "kizz"' }
 ```
 
 ### array
@@ -309,7 +311,7 @@ expect(
 
 ### requiredIf
 
-The `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_ or _undefined_.
+The `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_, _undefined_ or empty string ('').
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -329,6 +331,14 @@ expect(
   },
   { foo: 'test' }
 ).wereMet(); // false
+
+expect(
+  {
+    foo: { type: 'string', allowNull: true },
+    bar: { type: 'string', allowNull: true, requiredIf: 'foo' }
+  },
+  { foo: 'test' }
+).wereMet(); // true (requiredIf has no effect if allowNull is true)
 ```
 
 Note that when using `requiredIf` on nested objects or arrays, you need to pass an array to `requiredIf` with the path to the target parameter.
@@ -376,7 +386,11 @@ Some types support setting the `parse` option to _true_ which will instead use t
 - `object` - `JSON.parse()`
 - `date` - `new Date()`
 
-Note that the `parse` option has a lower priority than `allowNull` and `requiredIf`.
+Note that `parse` has a particular interaction with the `allowNull` and `requiredIf` options.
+
+- If null values are not allowed, `parse` will not be applied for a null value
+- If null values are allowed, `parse` will be applied and may also return a null value
+- `parse` will not be applied for the target parameter when `requiredIf` checks the value of the target path
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -394,52 +408,23 @@ const valid = expect(
 );
 valid.wereMet(); // true
 valid.getParsed(); // { test: 'null' }
-```
 
-### condition
+const alsoValid = expect(
+  { test: { type: 'string', allowNull: true, parse: () => null } },
+  { test: 'test' }
+);
+alsoValid.wereMet(); // true
+alsoValid.getParsed(); // { test: null }
 
-The `condition` option is available for all types. Passing a function as a `condition` option will test that the function evaluates to a _truthy_ value with the input value as its parameter.
-
-```javascript
-const expect = require('@edgeguideab/expect');
-
-expect(
+const anotherOne = expect(
   {
-    foo: {
-      type: 'array',
-      condition: test => test.length
-    }
+    test: { type: 'string', requiredIf: 'existing' },
+    existing: { type: 'string', allowNull: true, parse: () => 'test' }
   },
-  { foo: [] }
-).wereMet(); // false
-```
-
-Note that the `condition` option has a lower priority than `allowNull`, `requiredIf` and `parse`.
-
-```javascript
-const expect = require('@edgeguideab/expect');
-
-expect(
-  {
-    foo: {
-      type: 'array',
-      condition: test => test !== null,
-      allowNull: true
-    }
-  },
-  { foo: null }
-).wereMet(); // true
-
-expect(
-  {
-    foo: {
-      type: 'boolean',
-      parse: foo => !!foo,
-      condition: foo => typeof foo !== 'string'
-    }
-  },
-  { foo: 'bar' }
-).wereMet(); // true
+  { test: null, existing: null }
+);
+anotherOne.wereMet(); // true
+anotherOne.getParsed(); // { test: null, existing: 'test' }
 ```
 
 ### equalTo
@@ -500,45 +485,59 @@ expect(
 ).wereMet(); // true
 ```
 
-### errorCode
+### condition
 
-Changes the value of the returned error.
-
-Default errorCode is a string describing what went wrong, this option allows for customized error codes.
+The `condition` option is available for all types. Passing a function as a `condition` option will test that the function evaluates to a _truthy_ value with the input value as its parameter.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
 
 expect(
   {
-    bar: { type: 'string' }
+    foo: {
+      type: 'array',
+      condition: test => test.length
+    }
   },
-  { bar: {} }
-).errors(); // { bar: ['Expected parameter bar to be of type string but it was {}'] }
+  { foo: [] }
+).wereMet(); // false
+```
+
+Note that the `condition` option has a lower priority than `allowNull`, `requiredIf` and `parse`.
+
+```javascript
+const expect = require('@edgeguideab/expect');
 
 expect(
   {
-    bar: { type: 'string', errorCode: 'Invalid format' }
+    foo: {
+      type: 'array',
+      condition: test => test !== null,
+      allowNull: true
+    }
   },
-  { bar: {} }
-).errors(); // { bar: ['Invalid format'] }
+  { foo: null }
+).wereMet(); // true
+
+expect(
+  {
+    foo: {
+      type: 'boolean',
+      parse: foo => !!foo,
+      condition: foo => typeof foo !== 'string'
+    }
+  },
+  { foo: 'bar' }
+).wereMet(); // true
 ```
-
-### nullCode
-
-Similar to `errorCode`, this option changes the returned error if it was a null error.
-
-### conditionErrorCode
-
-Similar to `errorCode` and `nullCode`, this option changes the returned error if it was a condition error.
 
 ### convert
 
-Similar to `parse`, this option will try to parse the given value into the desired type. Typically useful for parsing arrays from the request query in Express.js.
+`convert` is only available for the _array_ type. Similar to `parse`, this option will try to parse the given value into the desired type. Typically useful for parsing arrays from the request query in Express.js.
 
 ### blockUnsafe
 
-If true, expectations will fail if the value contains unsafe characters that can be used for XSS injections. In non-strict mode, these are
+`blockUnsafe` is only available for the _string_ type. If true, expectations will fail if the value contains unsafe characters that can be used for XSS injections. In non-strict mode, these are
 `& < > " '`, and with the strictEntities option enabled they are `& < > " ' ! @ $ ( ) = + { } [ ]`.
 
 ```javascript
@@ -636,6 +635,52 @@ expect(
   { test: 'keep (some) of this as it is [test]' }
 ).getParsed(); // { test: 'keep (some) of this as it is &lbrack;test&rbrack;'}
 ```
+
+### errorCode
+
+Changes the error message returned by `errors()` if the validation fails. Default errorCode is a string describing what went wrong, this option allows for customized error codes.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+
+expect(
+  {
+    bar: { type: 'string' }
+  },
+  { bar: {} }
+).errors(); // { bar: 'Expected parameter bar to be of type string but it was {}' }
+
+expect(
+  {
+    bar: { type: 'string', errorCode: 'Invalid format' }
+  },
+  { bar: {} }
+).errors(); // { bar: 'Invalid format' }
+```
+
+### allowNullErrorCode
+
+Custom error message if the error was caused by the `allowNull` option.
+
+Note: Errors caused by `allowNull` have the highest priority.
+
+### blockUnsafeErrorCode
+
+Custom error message if the error was caused by the `blockUnsafe` option.
+
+Note: Errors caused by `blockUnsafe` have the second highest priority.
+
+### equalToErrorCode
+
+Custom error message if the error was caused by the `equalTo` option.
+
+Note: Errors caused by `equalTo` have the third highest priority.
+
+### conditionErrorCode
+
+Overrides `errorCode` if the error was caused by the `condition` option.
+
+Note: Errors caused by `condition` have the lowest priority.
 
 ## Author
 

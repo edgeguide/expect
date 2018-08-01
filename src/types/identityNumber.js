@@ -1,30 +1,22 @@
 const IDENTITY_NUMBER_REGEXP = /^(?:19|20)?(\d{6}(?:-|\+)?\d{4})$/;
 const IDENTITY_NUMBER_REGEXP_STRICT = /^(\d{6}(?:-|\+)?\d{4})$/;
 
-module.exports = ({ parameter, value, options }) => {
+module.exports = ({ value, options }) => {
   const regexp = options.strict
     ? IDENTITY_NUMBER_REGEXP_STRICT
     : IDENTITY_NUMBER_REGEXP;
 
-  const errorCode =
-    options.errorCode ||
-    `Expected parameter ${
-      Array.isArray(parameter) ? parameter.join('.') : parameter
-    } to be of type personal identity number but it was ${JSON.stringify(
-      value
-    )}`;
-
   if (typeof value !== 'string') {
-    return { valid: false, errors: [errorCode] };
+    return { valid: false };
   }
 
   const matches = value.match(regexp);
   if (matches === null) {
-    return { valid: false, errors: [errorCode] };
+    return { valid: false };
   }
 
   if (!verifyLuhn(matches[1].replace(/(\+|-)/, ''))) {
-    return { valid: false, errors: [errorCode] };
+    return { valid: false };
   }
 
   return { valid: true };

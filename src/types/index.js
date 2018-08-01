@@ -1,21 +1,22 @@
 const {
+  formatParameter,
   isEqualTo,
   isNull,
   getDeep,
-  getDeepOptions,
   parseType,
   parseFunctionWrapper
 } = require('../util');
 
 const mapTypeValidations = {
-  array: require('./array'),
-  boolean: require('./boolean'),
-  email: require('./email'),
+  any: require('./any'),
   number: require('./number'),
-  object: require('./object'),
-  phone: require('./phone'),
+  boolean: require('./boolean'),
   string: require('./string'),
+  array: require('./array'),
+  object: require('./object'),
   date: require('./date'),
+  phone: require('./phone'),
+  email: require('./email'),
   identityNumber: require('./identityNumber')
 };
 
@@ -34,13 +35,18 @@ module.exports = function validate({
     allowNull,
     condition,
     errorCode,
-    nullCode,
+    allowNullErrorCode,
     conditionErrorCode,
     equalToErrorCode
   } = options;
-  const validation = { valid: true };
-  const initialValue = value;
 
+  if (typeof type !== 'string' || !mapTypeValidations[type]) {
+    throw new Error(
+      `Invalid type option for parameter ${formatParameter(parameter)}`
+    );
+  }
+
+  const initialValue = value;
   if (parse) {
     value =
       typeof parse === 'function'
@@ -48,106 +54,80 @@ module.exports = function validate({
         : parseType({ value, type });
   }
 
-  if (mapTypeValidations[type]) {
-    Object.assign(
-      validation,
-      mapTypeValidations[type]({
-        parameter,
-        value,
-        actualValues,
-        options,
-        validate
-      })
-    );
-  } else if (type !== 'any') {
+  const validation = mapTypeValidations[type]({
+    parameter,
+    value,
+    actualValues,
+    options,
+    validate
+  });
+
+  const isNullValue = isNull(initialValue) || isNull(value);
+  const nullAllowed =
+    allowNull || (requiredIf && isNull(getDeep(requiredIf, actualValues)));
+
+  if (isNullValue && !nullAllowed) {
     return {
       valid: false,
-      errors: [
-        `${
-          Array.isArray(parameter) ? parameter.join('.') : parameter
-        } could not be validated against type "${type}": it has not been defined`
-      ]
+      error:
+        allowNullErrorCode ||
+        errorCode ||
+        `Expected parameter ${formatParameter(
+          parameter
+        )} to be of type ${type} but it was ${JSON.stringify(value)}`
     };
   }
 
-  if (!validation.hasOwnProperty('parsed')) {
-    validation.parsed = value;
-  }
-
-  if (requiredIf && isNull(initialValue)) {
-    let requiredFieldValue = getDeep(requiredIf, actualValues);
-    const requiredFieldOptions = getDeepOptions(requiredIf, expected);
-    const requiredFieldType =
-      typeof requiredFieldOptions === 'string'
-        ? requiredFieldOptions
-        : requiredFieldOptions && requiredFieldOptions.type;
-
-    if (
-      requiredFieldType === 'boolean' &&
-      requiredFieldOptions &&
-      requiredFieldOptions.parse
-    ) {
-      requiredFieldValue =
-        typeof requiredFieldOptions.parse === 'function'
-          ? parseFunctionWrapper({ value, parse: requiredFieldOptions.parse })
-          : parseType({ value: requiredFieldValue, type: requiredFieldType });
-    }
-
-    if (
-      isNull(requiredFieldValue) ||
-      (requiredFieldType === 'boolean' && !requiredFieldValue)
-    ) {
-      return { valid: true, parsed: validation.parsed };
-    }
-  }
-
-  if (!allowNull && isNull(initialValue)) {
+  if (!validation.valid && (!isNullValue || !nullAllowed)) {
     return {
       valid: false,
-      errors: [
-        nullCode ||
-          errorCode ||
-          `Expected parameter ${
-            Array.isArray(parameter) ? parameter.join('.') : parameter
-          } to be of type ${type} but it was ${JSON.stringify(value)}`
-      ]
+      error:
+        validation.error ||
+        errorCode ||
+        `Expected parameter ${formatParameter(
+          parameter
+        )} to be of type ${type} but it was ${JSON.stringify(value)}`
+    };
+  }
+
+  if (equalTo && !isEqualTo({ value, type, equalTo, actualValues, expected })) {
+    return {
+      valid: false,
+      error:
+        equalToErrorCode ||
+        errorCode ||
+        `Expected parameter ${formatParameter(
+          parameter
+        )} to be equal to ${JSON.stringify(equalTo)}.`
+    };
+  }
+
+  if (isNullValue && nullAllowed) {
+    return {
+      valid: true,
+      parsed: validation.hasOwnProperty('parsed') ? validation.parsed : value
     };
   }
 
   if (typeof condition === 'function') {
-    let valid;
+    let valid = false;
     try {
       valid = condition(value);
     } catch (error) {}
 
     if (!valid) {
-      validation.valid = false;
-      validation.errors = [
-        conditionErrorCode ||
+      return {
+        valid: false,
+        error:
+          conditionErrorCode ||
           errorCode ||
-          `Expected parameter ${JSON.stringify(value)} to meet condition`
-      ];
+          `Expected parameter ${formatParameter(parameter)} to meet condition`
+      };
     }
   }
 
-  if (allowNull && isNull(initialValue)) {
-    validation.valid = true;
-    delete validation.errors;
-  }
-
-  if (equalTo && !isEqualTo({ value, type, equalTo, actualValues, expected })) {
-    validation.valid = false;
-    validation.errors = (validation.errors || []).concat(
-      equalToErrorCode ||
-        `Expected parameter ${JSON.stringify(
-          Array.isArray(parameter) ? parameter.join('.') : parameter
-        )} to be equal to ${JSON.stringify(equalTo)}.`
-    );
-  }
-
-  if (!validation.valid) {
-    delete validation.parsed;
-  }
-
-  return validation;
+  return {
+    valid: true,
+    parsed: validation.hasOwnProperty('parsed') ? validation.parsed : value
+  };
 };

@@ -176,64 +176,6 @@ describe('Expect package (number validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('respects allowNull', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'number', allowNull: true } },
-      { test: null }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('respects requiredIf', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'number',
-          requiredIf: 'foo'
-        },
-        foo: {
-          type: 'string',
-          allowNull: true
-        }
-      },
-      {
-        foo: ''
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('respects errorCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'number', errorCode: 'error' } },
-      {}
-    );
-    expect(expectations.errors()).toEqual({ test: ['error'] });
-  });
-
-  it('respects nullCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'number', nullCode: 'missing' } },
-      {}
-    );
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
-  it('nullCode has higher priorty than errorCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'number', nullCode: 'missing', errorCode: 'error' } },
-      {}
-    );
-    expect(expectations.errors()).toEqual({ test: ['missing'] });
-  });
-
   it('does not mutate the input value when parsing', () => {
     const testObject = { test: '1337' };
     const expectModule = require('../../src');
@@ -246,42 +188,6 @@ describe('Expect package (number validation):', () => {
     const expectModule = require('../../src');
     const expectations = expectModule({ test: 'number' }, { test: 1337 });
     expect(expectations.getParsed()).toEqual({ test: 1337 });
-  });
-
-  it('condition met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'number', condition: test => test > 0 } },
-      { test: 1 }
-    );
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('condition not met', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      { test: { type: 'number', condition: test => test > 0 } },
-      { test: -1 }
-    );
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('reject gracefully if condition throws error', () => {
-    const expectModule = require('../../src');
-    const expectationsFunc = () =>
-      expectModule(
-        {
-          test: {
-            type: 'number',
-            condition: () => {
-              throw new Error('fail');
-            }
-          }
-        },
-        { test: 2 }
-      );
-    expect(expectationsFunc).not.toThrow();
-    expect(expectationsFunc().wereMet()).toBe(false);
   });
 
   it('parse using a function', () => {

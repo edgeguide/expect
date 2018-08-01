@@ -69,125 +69,24 @@ describe('Expect package (object validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('respects the allowNull option', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'object',
-          allowNull: true
-        }
-      },
-      {
-        test: null
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('respects the errorCode option', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'object',
-          errorCode: 'missing'
-        }
-      },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({
-      test: ['missing']
-    });
-  });
-
-  it('respects requiredIf', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'object',
-          requiredIf: 'test'
-        },
-        foo: {
-          type: 'string',
-          allowNull: true
-        }
-      },
-      {
-        foo: ''
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
-  it('is required if another field is not undefined', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'object',
-          requiredIf: 'foo'
-        },
-        foo: 'string'
-      },
-      {
-        foo: '123'
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('nullCode has higher priority than errorCode', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: {
-          type: 'object',
-          nullCode: 'missing',
-          errorCode: 'error'
-        }
-      },
-      {}
-    );
-
-    expect(expectations.errors()).toEqual({
-      test: ['missing']
-    });
-  });
-
   it('validates object keys if given the keys option', () => {
     const expectModule = require('../../src');
     const expectations = expectModule(
       {
         foo: {
           type: 'object',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           errorCode: 'error',
           keys: {
-            bar: {
-              type: 'number',
-              errorCode: 'invalid type'
-            },
+            bar: { type: 'number', errorCode: 'invalid type' },
             fest: 'string'
           }
         }
       },
-      {
-        foo: {
-          bar: 'testest',
-          fest: 'festfest'
-        }
-      }
+      { foo: { bar: 'testest', fest: 'festfest' } }
     );
 
-    expect(expectations.errors()).toEqual({
-      foo: { bar: ['invalid type'] }
-    });
+    expect(expectations.errors()).toEqual({ foo: { bar: 'invalid type' } });
   });
 
   it('validates nested objects with the keys option', () => {
@@ -196,7 +95,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'object',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           errorCode: 'error',
           keys: {
             dead: {
@@ -222,9 +121,8 @@ describe('Expect package (object validation):', () => {
     expect(expectations.errors()).toEqual({
       foo: {
         dead: {
-          beef: [
+          beef:
             'Expected parameter foo.dead.beef to be of type number but it was "fail"'
-          ]
         }
       }
     });
@@ -236,7 +134,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'object',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           errorCode: 'error',
           keys: {
             dead: {
@@ -263,13 +161,11 @@ describe('Expect package (object validation):', () => {
 
     expect(expectations.errors()).toEqual({
       foo: {
-        bizz: [
-          'Expected parameter foo.bizz to be of type number but it was "1a"'
-        ],
+        bizz:
+          'Expected parameter foo.bizz to be of type number but it was "1a"',
         dead: {
-          beef: [
+          beef:
             'Expected parameter foo.dead.beef to be of type number but it was "fail"'
-          ]
         }
       }
     });
@@ -281,7 +177,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'array',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           items: {
             type: 'object',
             keys: {
@@ -326,7 +222,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'array',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           items: {
             type: 'object',
             keys: {
@@ -371,7 +267,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'array',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           items: {
             type: 'object',
             keys: {
@@ -410,9 +306,8 @@ describe('Expect package (object validation):', () => {
     expect(expectations.errors()).toEqual({
       foo: {
         2: {
-          beef: [
+          beef:
             'Expected parameter foo.2.beef to be of type number but it was "hello"'
-          ]
         }
       }
     });
@@ -424,7 +319,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'object',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           errorCode: 'error',
           keys: {
             dead: {
@@ -450,9 +345,8 @@ describe('Expect package (object validation):', () => {
     expect(expectations.errors()).toEqual({
       foo: {
         dead: {
-          beef: [
+          beef:
             'Expected parameter foo.dead.beef to be of type number but it was null'
-          ]
         }
       }
     });
@@ -464,7 +358,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'object',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           errorCode: 'error',
           keys: {
             dead: {
@@ -499,7 +393,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'object',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           errorCode: 'error',
           keys: {
             dead: {
@@ -535,7 +429,7 @@ describe('Expect package (object validation):', () => {
       {
         foo: {
           type: 'object',
-          nullCode: 'missing',
+          allowNullErrorCode: 'missing',
           errorCode: 'error',
           keys: {
             dead: {
@@ -630,9 +524,8 @@ describe('Expect package (object validation):', () => {
     expect(expectations.errors()).toEqual({
       foo: {
         dead: {
-          beef: [
+          beef:
             'Expected parameter foo.dead.beef to be of type boolean but it was "true"'
-          ]
         }
       }
     });
@@ -681,7 +574,7 @@ describe('Expect package (object validation):', () => {
 
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
-      foo: ['Object contained unchecked keys "buzz"']
+      foo: 'Object contained unchecked keys "buzz"'
     });
   });
 
@@ -695,31 +588,16 @@ describe('Expect package (object validation):', () => {
             dead: {
               type: 'object',
               strictKeyCheck: true,
-              keys: {
-                beef: {
-                  type: 'boolean',
-                  strict: true,
-                  parse: true
-                }
-              }
+              keys: { beef: { type: 'boolean', parse: true } }
             },
-            bar: {
-              type: 'number',
-              parse: true
-            },
-            bizz: {
-              type: 'array',
-              parse: true
-            }
+            bar: { type: 'number', parse: true },
+            bizz: { type: 'array', parse: true }
           }
         }
       },
       {
         foo: {
-          dead: {
-            beef: 'true',
-            well: 'fed'
-          },
+          dead: { beef: 'true', well: 'fed' },
           bar: '1',
           bizz: '[1,2,3,4,5]',
           buzz: '1337'
@@ -729,7 +607,7 @@ describe('Expect package (object validation):', () => {
 
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
-      foo: { dead: ['Object contained unchecked keys "well"'] }
+      foo: { dead: 'Object contained unchecked keys "well"' }
     });
   });
 
@@ -743,31 +621,16 @@ describe('Expect package (object validation):', () => {
             dead: {
               type: 'object',
               strictKeyCheck: true,
-              keys: {
-                beef: {
-                  type: 'boolean',
-                  allowNull: true,
-                  strict: true,
-                  parse: true
-                }
-              }
+              keys: { beef: { type: 'boolean', allowNull: true, parse: true } }
             },
-            bar: {
-              type: 'number',
-              parse: true
-            },
-            bizz: {
-              type: 'array',
-              parse: true
-            }
+            bar: { type: 'number', parse: true },
+            bizz: { type: 'array', parse: true }
           }
         }
       },
       {
         foo: {
-          dead: {
-            beef: null
-          },
+          dead: { beef: null },
           bar: '1',
           bizz: '[1,2,3,4,5]',
           buzz: '1337'
@@ -823,23 +686,38 @@ describe('Expect package (object validation):', () => {
     ).not.toThrow();
   });
 
-  it('condition met', () => {
+  it('keys errors have higher priority than parent error', () => {
     const expectModule = require('../../src');
-    const condition = test => Object.keys(test).length;
-    const expectations = expectModule(
-      { test: { type: 'object', condition } },
-      { test: { fest: 'hest' } }
-    );
-    expect(expectations.wereMet()).toBe(true);
-  });
+    expect(
+      expectModule(
+        {
+          foo: {
+            type: 'object',
+            errorCode: 'foo error',
+            condition: foo => Object.keys(foo) > 10,
+            keys: {
+              bar: { type: 'number', errorCode: 'bar error' }
+            }
+          }
+        },
+        { foo: { bar: '123' } }
+      ).errors()
+    ).toEqual({ foo: { bar: 'bar error' } });
 
-  it('condition not met', () => {
-    const expectModule = require('../../src');
-    const condition = test => Object.keys(test).length;
-    const expectations = expectModule(
-      { test: { type: 'object', condition } },
-      { test: {} }
-    );
-    expect(expectations.wereMet()).toBe(false);
+    expect(
+      expectModule(
+        {
+          foo: {
+            type: 'object',
+            errorCode: 'foo error',
+            condition: foo => Object.keys(foo) > 10,
+            keys: {
+              bar: { type: 'number', errorCode: 'bar error' }
+            }
+          }
+        },
+        { foo: { bar: 123 } }
+      ).errors()
+    ).toEqual({ foo: 'foo error' });
   });
 });

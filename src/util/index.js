@@ -3,6 +3,7 @@ const { getDeep, getDeepOptions } = require('./getDeep');
 const { parseType, parseFunctionWrapper } = require('./parse');
 
 module.exports = {
+  formatParameter,
   isEqualTo,
   getDeep,
   getDeepOptions,
@@ -12,6 +13,10 @@ module.exports = {
   sanitize,
   containsUnsafe
 };
+
+function formatParameter(parameter) {
+  return Array.isArray(parameter) ? parameter.join('.') : parameter;
+}
 
 const htmlEntityMap = {
   '&': '&amp;',

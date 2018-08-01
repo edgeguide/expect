@@ -1,14 +1,6 @@
 module.exports = ({ parameter, value, actualValues, options, validate }) => {
   if (typeof value !== 'object' || Array.isArray(value)) {
-    return {
-      valid: false,
-      errors: [
-        options.errorCode ||
-          `Expected parameter ${
-            Array.isArray(parameter) ? parameter.join('.') : parameter
-          } to be of type object but it was ${JSON.stringify(value)}`
-      ]
-    };
+    return { valid: false };
   }
 
   if (!options.keys) {
@@ -16,7 +8,7 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
   }
 
   const parsed = {};
-  const errors = {};
+  const error = {};
   if (options.strictKeyCheck) {
     const checkedKeys = Object.keys(options.keys);
     const uncheckedKeys = Object.keys(value).filter(
@@ -26,10 +18,11 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
     if (uncheckedKeys.length) {
       return {
         valid: false,
-        errors: [
+        error:
           options.errorCode ||
-            `Object contained unchecked keys "${uncheckedKeys.join(', ')}"`
-        ]
+          `Object contained unchecked keys ${JSON.stringify(
+            uncheckedKeys.join(', ')
+          )}`
       };
     }
   }
@@ -57,13 +50,11 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
         ? validation.parsed
         : value[key];
     } else {
-      errors[key] = validation.errors;
+      error[key] = validation.error;
     }
 
     return !validation.valid;
   });
 
-  return invalidKeys.length
-    ? { valid: false, errors }
-    : { valid: true, parsed };
+  return invalidKeys.length ? { valid: false, error } : { valid: true, parsed };
 };
