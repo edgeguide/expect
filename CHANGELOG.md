@@ -1,3 +1,8 @@
+## 5.1.1 (15 August 2018)
+
+- `allowNull` combined with `parse` will use the initial null value if the parsed value is not valid
+- `equalTo` will do a recursion if the target parameter has a validation schema in order to correctly parse the target parameter
+
 ## 5.1.0 (15 August 2018)
 
 - `allowNull` supports function
