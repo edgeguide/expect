@@ -403,7 +403,7 @@ Some types support setting the `parse` option to _true_ which will instead use t
 Note that `parse` has a particular interaction with the `allowNull` and `requiredIf` options.
 
 - If null values are not allowed, `parse` will not be applied for a null value
-- If null values are allowed, `parse` will be applied and may also return a null value
+- If null values are allowed, `parse` will be applied. The parsed value must either be a null value or matching the type
 - `parse` will not be applied for the target parameter when `requiredIf` checks the value of the target path
 
 ```javascript

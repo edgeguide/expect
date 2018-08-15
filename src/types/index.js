@@ -64,23 +64,15 @@ module.exports = function validate({
     validate
   });
 
-  const validNullValue =
-    isNull(value) ||
-    (isNull(initialValue) &&
-      mapTypeValidations[type]({
-        parameter,
-        value: validation.hasOwnProperty('parsed') ? validation.parsed : value,
-        actualValues,
-        options,
-        validate
-      }).valid);
+  value = validation.hasOwnProperty('parsed') ? validation.parsed : value;
 
+  const isNullValue = isNull(value) || isNull(initialValue);
   const isAllowNull =
     typeof allowNull === 'function' ? allowNullWrapper(allowNull) : allowNull;
   const notRequired = requiredIf && isNull(getDeep(requiredIf, actualValues));
   const nullAllowed = isAllowNull || notRequired;
 
-  if (validNullValue && !nullAllowed) {
+  if (isNullValue && !nullAllowed) {
     return {
       valid: false,
       error:
@@ -92,7 +84,7 @@ module.exports = function validate({
     };
   }
 
-  if (!validation.valid && (!validNullValue || !nullAllowed)) {
+  if (!validation.valid && (!isNullValue || !nullAllowed)) {
     return {
       valid: false,
       error:
@@ -104,7 +96,22 @@ module.exports = function validate({
     };
   }
 
-  if (equalTo && !isEqualTo({ value, type, equalTo, actualValues, expected })) {
+  const parsed =
+    nullAllowed && isNull(initialValue) && !validation.valid
+      ? initialValue
+      : value;
+
+  if (
+    equalTo &&
+    !isEqualTo({
+      value: parsed,
+      type,
+      equalTo,
+      actualValues,
+      expected,
+      validate
+    })
+  ) {
     return {
       valid: false,
       error:
@@ -116,24 +123,8 @@ module.exports = function validate({
     };
   }
 
-  if (
-    nullAllowed &&
-    (isNull(value) ||
-      (isNull(initialValue) &&
-        mapTypeValidations[type]({
-          parameter,
-          value: validation.hasOwnProperty('parsed')
-            ? validation.parsed
-            : value,
-          actualValues,
-          options,
-          validate
-        }).valid))
-  ) {
-    return {
-      valid: true,
-      parsed: validation.hasOwnProperty('parsed') ? validation.parsed : value
-    };
+  if (nullAllowed && isNullValue) {
+    return { valid: true, parsed };
   }
 
   if (typeof condition === 'function') {
@@ -153,10 +144,7 @@ module.exports = function validate({
     }
   }
 
-  return {
-    valid: true,
-    parsed: validation.hasOwnProperty('parsed') ? validation.parsed : value
-  };
+  return { valid: true, parsed };
 };
 
 function allowNullWrapper(allowNull) {

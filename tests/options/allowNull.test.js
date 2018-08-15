@@ -148,13 +148,26 @@ it('does not throw', () => {
   ).not.toThrow();
 });
 
-it('safsdf', () => {
+it('allowNull with invalid parse is ignored', () => {
   const expectModule = require('../../src');
   const expectations = expectModule(
     { test: { type: 'number', parse: () => 'test', allowNull: true } },
     {}
   );
 
-  expect(expectations.wereMet()).toBe(false);
+  expect(expectations.wereMet()).toBe(true);
   expect(expectations.getParsed()).toEqual({});
+});
+
+it('allowNull with invalid parse behaves correctly with equalTo', () => {
+  const expectModule = require('../../src');
+  expect(
+    expectModule(
+      {
+        foo: { type: 'string', allowNull: true, equalTo: 'bar' },
+        bar: { type: 'string', allowNull: true, parse: () => 123 }
+      },
+      {}
+    ).wereMet()
+  ).toBe(true);
 });

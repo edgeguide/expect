@@ -1,24 +1,31 @@
 const { getDeep, getDeepOptions } = require('./getDeep');
-const { parseType, parseFunctionWrapper } = require('./parse');
 
 module.exports = function isEqualTo({
   value,
   type,
   equalTo,
   actualValues,
-  expected
+  expected,
+  validate
 }) {
   const initialValue = getDeep(equalTo, actualValues);
   const options = getDeepOptions(equalTo, expected);
 
-  const equalToValue =
-    !options || !options.parse
-      ? initialValue
-      : typeof options.parse === 'function'
-        ? parseFunctionWrapper({ value: initialValue, parse: options.parse })
-        : parseType({ value: initialValue, type: options.type });
+  const { valid, parsed } = !options
+    ? { valid: true, parsed: initialValue }
+    : validate({
+      type: options.type || options,
+      parameter: equalTo,
+      value: initialValue,
+      options,
+      actualValues,
+      expected
+    });
 
-  return type === 'date'
-    ? new Date(value).getTime() === new Date(equalToValue).getTime()
-    : value === equalToValue;
+  return (
+    valid &&
+    (type === 'date'
+      ? new Date(value).getTime() === new Date(parsed).getTime()
+      : value === parsed)
+  );
 };
