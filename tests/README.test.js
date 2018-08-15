@@ -50,6 +50,16 @@ describe('Expect package (README examples):', () => {
         { foo: 'deadbeef' }
       ).wereMet()
     ).toBe(true);
+
+    expect(
+      expectModule(
+        {
+          foo: 'string',
+          bar: { type: 'string', allowNull: () => true }
+        },
+        { foo: 'deadbeef' }
+      ).wereMet()
+    ).toBe(true);
   });
 
   it('Options - requiredIf', () => {

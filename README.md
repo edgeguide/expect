@@ -278,7 +278,7 @@ A customized type for _strings_ and _numbers_ which can be used to check if the 
 
 The validation for each type may be configured using options. See the [Types section](#types) for a list of options limited to certain types.
 
-Note that `expect` does **not** support asynchronous functions as options. We strongly advise against attempting to, as passing  asynchronous functions will most likely result in unexpected behavior in current of future releases.
+Note that `expect` does **not** support asynchronous functions as options. We strongly advise against attempting to, as passing asynchronous functions will most likely result in unexpected behavior in current of future releases.
 
 In order to use options, you need to specify the types with objects containing a `type` property instead of strings.
 
@@ -299,7 +299,9 @@ expect(
 
 ### allowNull
 
-The `allowNull` option is available for all types. If this option is set, an expected value can be matched against _null_ or _undefined_. In other words, `allowNull` makes the value optional.
+The `allowNull` option is available for all types. Setting this option means that the expected value can be matched against _null_ or _undefined_. In other words, `allowNull` makes the value optional.
+
+It is possible to pass a function to `allowNull`, in which case the return value will be used (errors thrown will be ignored and treated as _false_).
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -308,6 +310,14 @@ expect(
   {
     foo: 'string',
     bar: { type: 'string', allowNull: true }
+  },
+  { foo: 'deadbeef' }
+).wereMet(); // true
+
+expect(
+  {
+    foo: 'string',
+    bar: { type: 'string', allowNull: () => true }
   },
   { foo: 'deadbeef' }
 ).wereMet(); // true

@@ -65,8 +65,10 @@ module.exports = function validate({
   });
 
   const isNullValue = isNull(initialValue) || isNull(value);
-  const nullAllowed =
-    allowNull || (requiredIf && isNull(getDeep(requiredIf, actualValues)));
+  const isAllowNull =
+    typeof allowNull === 'function' ? allowNullWrapper(allowNull) : allowNull;
+  const notRequired = requiredIf && isNull(getDeep(requiredIf, actualValues));
+  const nullAllowed = isAllowNull || notRequired;
 
   if (isNullValue && !nullAllowed) {
     return {
@@ -133,3 +135,11 @@ module.exports = function validate({
     parsed: validation.hasOwnProperty('parsed') ? validation.parsed : value
   };
 };
+
+function allowNullWrapper(allowNull) {
+  try {
+    return allowNull();
+  } catch (error) {
+    return false;
+  }
+}

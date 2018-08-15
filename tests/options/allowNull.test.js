@@ -35,7 +35,20 @@ types.forEach(type =>
           expectModule({ test: { type, allowNull: false } }, { test }).wereMet()
         ).toBe(false);
         expect(
+          expectModule(
+            { test: { type, allowNull: () => false } },
+            { test }
+          ).wereMet()
+        ).toBe(false);
+
+        expect(
           expectModule({ test: { type, allowNull: true } }, { test }).wereMet()
+        ).toBe(true);
+        expect(
+          expectModule(
+            { test: { type, allowNull: () => true } },
+            { test }
+          ).wereMet()
         ).toBe(true);
       });
     });
@@ -117,3 +130,20 @@ types.forEach(type =>
     });
   })
 );
+
+it('does not throw', () => {
+  const expectModule = require('../../src');
+  expect(() =>
+    expectModule(
+      {
+        test: {
+          type: 'string',
+          allowNull: () => {
+            throw new Error();
+          }
+        }
+      },
+      {}
+    )
+  ).not.toThrow();
+});
