@@ -1,3 +1,4 @@
+if (window && !window._babelPolyfill) require('babel-polyfill'); // eslint-disable-line no-undef
 const validateTypes = require('./types');
 
 module.exports = function(expected, actualValues) {

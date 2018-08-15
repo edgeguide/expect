@@ -17,6 +17,7 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "xregexp": "^4.2.0"
   },
   "devDependencies": {
