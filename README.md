@@ -276,6 +276,10 @@ A customized type for _strings_ and _numbers_ which can be used to check if the 
 
 ## Options
 
+The validation for each type may be configured using options. See the [Types section](#types) for a list of options limited to certain types.
+
+Note that `expect` does **not** support asynchronous functions as options. We strongly advise against attempting to, as passing  asynchronous functions will most likely result in unexpected behavior in current of future releases.
+
 In order to use options, you need to specify the types with objects containing a `type` property instead of strings.
 
 ```javascript
