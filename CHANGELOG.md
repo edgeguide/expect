@@ -1,3 +1,9 @@
+## 5.1.0 (15 August 2018)
+
+- `allowNull` supports function
+- [babel-polyfill](https://www.npmjs.com/package/babel-polyfill) is required to window if it does not already exist
+- Added disclaimer in README about not using asynchronous functions as options
+
 ## 5.0.1 (1 August 2018)
 
 - JSON.stringify invalid type in error message
