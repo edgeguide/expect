@@ -11,8 +11,8 @@ module.exports = function isEqualTo({
   const initialValue = getDeep(equalTo, actualValues);
   const options = getDeepOptions(equalTo, expected);
 
-  const { valid, parsed } = !options
-    ? { valid: true, parsed: initialValue }
+  const { parsed } = !options
+    ? { parsed: initialValue }
     : validate({
       type: options.type || options,
       parameter: equalTo,
@@ -22,10 +22,7 @@ module.exports = function isEqualTo({
       expected
     });
 
-  return (
-    valid &&
-    (type === 'date'
-      ? new Date(value).getTime() === new Date(parsed).getTime()
-      : value === parsed)
-  );
+  return type === 'date'
+    ? new Date(value).getTime() === new Date(parsed).getTime()
+    : value === parsed;
 };
