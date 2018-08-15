@@ -644,6 +644,7 @@ describe('Expect package (object validation):', () => {
 
   it('allows nested requiredIf statements ', () => {
     const expectModule = require('../../src');
+
     const expectations = expectModule(
       {
         foo: {
@@ -669,7 +670,7 @@ describe('Expect package (object validation):', () => {
           requiredIf: ['foo', 'dead', 'beef']
         }
       },
-      { foo: { dead: { beef: null }, bar: '' } }
+      { foo: { dead: { beef: null } }, bar: '' }
     );
 
     expect(expectations.wereMet()).toBe(true);

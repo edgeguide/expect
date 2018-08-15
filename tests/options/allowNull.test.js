@@ -147,3 +147,14 @@ it('does not throw', () => {
     )
   ).not.toThrow();
 });
+
+it('safsdf', () => {
+  const expectModule = require('../../src');
+  const expectations = expectModule(
+    { test: { type: 'number', parse: () => 'test', allowNull: true } },
+    {}
+  );
+
+  expect(expectations.wereMet()).toBe(false);
+  expect(expectations.getParsed()).toEqual({});
+});
