@@ -1,3 +1,7 @@
+## 6.0.1 (16 August 2018)
+
+- Fixed reference error if global variable `window` is not defined
+
 ## 6.0.0 (16 August 2018)
 
 ### Breaking changes
