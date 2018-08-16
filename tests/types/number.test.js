@@ -1,12 +1,11 @@
 describe('Expect package (number validation):', () => {
-  it('accepts numbers', () => {
-    const expectModule = require('../../src');
-    const tests = [-1, 0, 1, Infinity, -Infinity];
-    tests.forEach(test => {
+  [-1, 0, 1, Infinity, -Infinity].forEach(test =>
+    it(`accepts ${test}`, () => {
+      const expectModule = require('../../src');
       const expectations = expectModule({ test: 'number' }, { test });
       expect(expectations.wereMet()).toBe(true);
-    });
-  });
+    })
+  );
 
   it('rejects NaN', () => {
     const expectModule = require('../../src');
@@ -14,14 +13,13 @@ describe('Expect package (number validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('rejects other data types', () => {
-    const expectModule = require('../../src');
-    const tests = [null, undefined, true, false, '', [], {}, Symbol()];
-    tests.forEach(test => {
+  [null, undefined, true, false, '', [], {}, Symbol()].forEach(test =>
+    it(`rejects ${typeof test === 'symbol' ? test.toString() : test}`, () => {
+      const expectModule = require('../../src');
       const expectations = expectModule({ test: 'number' }, { test });
       expect(expectations.wereMet()).toBe(false);
-    });
-  });
+    })
+  );
 
   it('parse number type', () => {
     const expectModule = require('../../src');
@@ -49,6 +47,20 @@ describe('Expect package (number validation):', () => {
     );
     expect(expectations.getParsed()).toEqual({ test: 83 });
   });
+
+  ['', null, undefined, true, NaN, [], {}, Symbol()].forEach(test =>
+    it(`reject parse ${
+      typeof test === 'symbol' ? test.toString() : test
+    }`, () => {
+      const expectModule = require('../../src');
+      const expectations = expectModule(
+        { test: { type: 'number', parse: true } },
+        { test }
+      );
+      expect(expectations.wereMet()).toBe(false);
+      expect(expectations.getParsed()).toEqual({});
+    })
+  );
 
   it('trim leading zeros if not valid octal integer', () => {
     const expectModule = require('../../src');

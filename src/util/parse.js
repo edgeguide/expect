@@ -7,7 +7,7 @@ function parseType({ value, type }) {
         return typeof value === 'string' ? value : JSON.stringify(value);
       }
       case 'number': {
-        return Number(value);
+        return typeof value === 'string' && value ? Number(value) : value;
       }
       case 'boolean': {
         try {
