@@ -1,3 +1,9 @@
+## 6.0.0 (16 August 2018)
+
+### Breaking changes
+
+- Default `parse` for numbers only parse non-empty strings.
+
 ## 5.1.1 (15 August 2018)
 
 - `allowNull` combined with `parse` will use the initial null value if the parsed value is not valid
