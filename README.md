@@ -391,7 +391,7 @@ expect(
 
 Some types support setting the `parse` option to _true_ which will instead use the following default type conversions:
 
-- `number` - `Number()`
+- `number` - `Number()`, only parsing non-empty strings
 - `boolean` - `JSON.parse()` followed by coercion for _falsy_ and _truthy_ values.
   - Fallback on coercing the initial value if `JSON.parse()` fails.
   - Strings _"undefined"_ and _"NaN"_ are also parsed to _false_
