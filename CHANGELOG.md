@@ -1,3 +1,7 @@
+## 6.0.2 (17 August 2018)
+
+- Fixed default error message for `allowNull` when `parse` is used
+
 ## 6.0.1 (16 August 2018)
 
 - Fixed reference error if global variable `window` is not defined
