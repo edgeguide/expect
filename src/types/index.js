@@ -80,7 +80,11 @@ module.exports = function validate({
         errorCode ||
         `Expected parameter ${formatParameter(
           parameter
-        )} to be of type ${type} but it was ${JSON.stringify(value)}`
+        )} to be of type ${type} but it was ${
+          isNull(initialValue)
+            ? JSON.stringify(initialValue)
+            : JSON.stringify(value)
+        }`
     };
   }
 
