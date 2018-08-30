@@ -1,73 +1,19 @@
 describe('Expect package (object validation):', () => {
   it('tests for object type correctly', () => {
     const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'object'
-      },
-      {
-        test: {}
-      }
-    );
+    const expectations = expectModule({ test: 'object' }, { test: {} });
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('tests that null is not an object', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'object'
-      },
-      {
-        test: null
-      }
-    );
+  [null, undefined, [], 1].forEach(test =>
+    it(`rejects ${test}`, () => {
+      const expectModule = require('../../src');
+      const expectations = expectModule({ test: 'object' }, { test });
 
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('tests that undefined is not an object', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'object'
-      },
-      {
-        test: undefined
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('tests that an array is not an object', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'object'
-      },
-      {
-        test: []
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
-
-  it('tests a number is not an object', () => {
-    const expectModule = require('../../src');
-    const expectations = expectModule(
-      {
-        test: 'object'
-      },
-      {
-        test: 1
-      }
-    );
-
-    expect(expectations.wereMet()).toBe(false);
-  });
+      expect(expectations.wereMet()).toBe(false);
+    })
+  );
 
   it('validates object keys if given the keys option', () => {
     const expectModule = require('../../src');
@@ -100,9 +46,7 @@ describe('Expect package (object validation):', () => {
           keys: {
             dead: {
               type: 'object',
-              keys: {
-                beef: 'number'
-              }
+              keys: { beef: 'number' }
             },
             bar: 'string'
           }
@@ -110,9 +54,7 @@ describe('Expect package (object validation):', () => {
       },
       {
         foo: {
-          dead: {
-            beef: 'fail'
-          },
+          dead: { beef: 'fail' },
           bar: 'festfest'
         }
       }
@@ -234,26 +176,11 @@ describe('Expect package (object validation):', () => {
       },
       {
         foo: [
-          {
-            dead: 'fed',
-            beef: 1
-          },
-          {
-            dead: 'fed',
-            beef: 2
-          },
-          {
-            dead: 'fed',
-            beef: 'hello'
-          },
-          {
-            dead: 'fed',
-            beef: 4
-          },
-          {
-            dead: 'fed',
-            beef: 5
-          }
+          { dead: 'fed', beef: 1 },
+          { dead: 'fed', beef: 2 },
+          { dead: 'fed', beef: 'hello' },
+          { dead: 'fed', beef: 4 },
+          { dead: 'fed', beef: 5 }
         ]
       }
     );
@@ -270,35 +197,17 @@ describe('Expect package (object validation):', () => {
           allowNullErrorCode: 'missing',
           items: {
             type: 'object',
-            keys: {
-              dead: 'string',
-              beef: 'number'
-            }
+            keys: { dead: 'string', beef: 'number' }
           }
         }
       },
       {
         foo: [
-          {
-            dead: 'fed',
-            beef: 1
-          },
-          {
-            dead: 'fed',
-            beef: 2
-          },
-          {
-            dead: 'fed',
-            beef: 'hello'
-          },
-          {
-            dead: 'fed',
-            beef: 4
-          },
-          {
-            dead: 'fed',
-            beef: 5
-          }
+          { dead: 'fed', beef: 1 },
+          { dead: 'fed', beef: 2 },
+          { dead: 'fed', beef: 'hello' },
+          { dead: 'fed', beef: 4 },
+          { dead: 'fed', beef: 5 }
         ]
       }
     );
@@ -324,22 +233,13 @@ describe('Expect package (object validation):', () => {
           keys: {
             dead: {
               type: 'object',
-              keys: {
-                beef: 'number'
-              }
+              keys: { beef: 'number' }
             },
             bar: 'string'
           }
         }
       },
-      {
-        foo: {
-          dead: {
-            beef: null
-          },
-          bar: 'festfest'
-        }
-      }
+      { foo: { dead: { beef: null }, bar: 'festfest' } }
     );
 
     expect(expectations.errors()).toEqual({
@@ -363,12 +263,7 @@ describe('Expect package (object validation):', () => {
           keys: {
             dead: {
               type: 'object',
-              keys: {
-                beef: {
-                  type: 'number',
-                  allowNull: true
-                }
-              }
+              keys: { beef: { type: 'number', allowNull: true } }
             },
             bar: 'string'
           }
@@ -376,9 +271,7 @@ describe('Expect package (object validation):', () => {
       },
       {
         foo: {
-          dead: {
-            beef: null
-          },
+          dead: { beef: null },
           bar: 'festfest'
         }
       }
@@ -398,13 +291,7 @@ describe('Expect package (object validation):', () => {
           keys: {
             dead: {
               type: 'object',
-              keys: {
-                beef: {
-                  type: 'boolean',
-                  strict: true,
-                  parse: true
-                }
-              }
+              keys: { beef: { type: 'boolean', strict: true, parse: true } }
             },
             bar: 'string'
           }

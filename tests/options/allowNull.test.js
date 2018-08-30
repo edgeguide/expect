@@ -88,6 +88,15 @@ types.forEach(type =>
       ).toEqual({ test: typesValues[type] });
     });
 
+    it('parsed value is not returned if undefined', () => {
+      const expectModule = require('../../src');
+      const parsed = expectModule(
+        { test: { type, parse: () => undefined, allowNull: true } },
+        {}
+      ).getParsed();
+      expect(parsed.hasOwnProperty('test')).toBe(false);
+    });
+
     it('non-null values are ignored by allowNull', () => {
       const expectModule = require('../../src');
       expect(

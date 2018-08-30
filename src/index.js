@@ -26,11 +26,14 @@ module.exports = function(expected, actualValues) {
       expected
     });
 
-    if (validation.valid) {
-      parsedValues[parameter] = validation.parsed;
-    } else {
+    if (!validation.valid) {
       valid = false;
       errors[parameter] = validation.error;
+      return;
+    }
+
+    if (validation.parsed !== undefined) {
+      parsedValues[parameter] = validation.parsed;
     }
   });
 
