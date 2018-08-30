@@ -46,9 +46,12 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
     });
 
     if (validation.valid) {
-      parsed[key] = validation.hasOwnProperty('parsed')
+      const parsedValue = validation.hasOwnProperty('parsed')
         ? validation.parsed
         : value[key];
+      if (parsedValue !== undefined) {
+        parsed[key] = parsedValue;
+      }
     } else {
       error[key] = validation.error;
     }

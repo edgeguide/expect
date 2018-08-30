@@ -168,6 +168,20 @@ it('allowNull with invalid parse is ignored', () => {
   expect(expectations.getParsed()).toEqual({});
 });
 
+it('nested parsed value is not returned if undefined', () => {
+  const expectModule = require('../../src');
+  const parsed = expectModule(
+    {
+      foo: {
+        type: 'object',
+        keys: { bar: { type: 'number', allowNull: true, parse: true } }
+      }
+    },
+    { foo: {} }
+  ).getParsed();
+  expect(parsed.foo.hasOwnProperty('bar')).toBe(false);
+});
+
 it('allowNull with invalid parse behaves correctly with equalTo', () => {
   const expectModule = require('../../src');
   expect(
