@@ -1,3 +1,7 @@
+## 6.1.0 (30 August 2018)
+
+- `getParsed()` no longer returns properties that are _undefined_
+
 ## 6.0.2 (17 August 2018)
 
 - Fixed default error message for `allowNull` when `parse` is used
