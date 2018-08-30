@@ -1,3 +1,7 @@
+## 6.1.1 (30 August 2018)
+
+- Fixed `getParsed()` was returning _undefined_ properties for _object_ type
+
 ## 6.1.0 (30 August 2018)
 
 - `getParsed()` no longer returns properties that are _undefined_
