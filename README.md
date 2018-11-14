@@ -55,7 +55,7 @@ The function returns an object exposing three method definitions:
 
 ```javascript
 {
-  wereMet(): Boolean, // Returns whether the input object was validated correctly
+  wereMet(): Boolean, // Returns true if the input object was validated correctly
   errors(): Object,   // Returns errors for each property in the input object
   getParsed(): Object // Returns a subset of the input, containing parts that were specified in the schema
 }
@@ -163,8 +163,7 @@ expect(
 ).errors(); // { bar: { buzz: { bizz: 'Expected parameter bar.buzz.bizz to be of type number but it was "hello"' } } }
 ```
 
-Unlike top-level validation, when evaluating deeper in an object the error-key will be a path to the parameter which failed (as a string). If the `keys`-option is combined with `strictKeyCheck`, object validation will fail
-if the actual object contains any keys which are not explicitly checked for.
+Unlike top-level validation, when evaluating deeper in an object the error-key will be a path to the parameter which failed (as a string). If the `keys`-option is combined with `strictKeyCheck`, object validation will fail if the actual object contains any keys which are not explicitly checked for.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -278,7 +277,7 @@ A customized type for _strings_ and _numbers_ which can be used to check if the 
 
 The validation for each type may be configured using options. See the [Types section](#types) for a list of options limited to certain types.
 
-Note that `expect` does **not** support asynchronous functions as options. We strongly advise against attempting to, as passing asynchronous functions will most likely result in unexpected behavior in current of future releases.
+Note that `expect` does **not** support using asynchronous functions as options and we strongly advise against it. Passing asynchronous functions will likely result in unexpected behavior with current and future releases.
 
 In order to use options, you need to specify the types with objects containing a `type` property instead of strings.
 
