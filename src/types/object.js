@@ -1,5 +1,5 @@
 module.exports = ({ parameter, value, actualValues, options, validate }) => {
-  if (typeof value !== 'object' || Array.isArray(value)) {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
     return { valid: false };
   }
 
@@ -29,9 +29,11 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
 
   const invalidKeys = Object.keys(options.keys).filter(key => {
     const keyOptions =
-      typeof options.keys[key] === 'object' ? options.keys[key] : {};
+      typeof options.keys[key] === 'object' && options.keys[key] !== null
+        ? options.keys[key]
+        : {};
     const keyType =
-      typeof options.keys[key] === 'object'
+      typeof options.keys[key] === 'object' && options.keys[key] !== null
         ? options.keys[key].type
         : options.keys[key];
 

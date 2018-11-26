@@ -13,7 +13,9 @@ module.exports = function(expected, actualValues) {
 
   Object.keys(expected).forEach(parameter => {
     const options =
-      typeof expected[parameter] === 'object' ? expected[parameter] : {};
+      typeof expected[parameter] === 'object' && expected[parameter] !== null
+        ? expected[parameter]
+        : {};
     const actual = actualValues[parameter];
     const type = options.type || expected[parameter];
 

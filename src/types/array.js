@@ -27,14 +27,14 @@ module.exports = ({ parameter, value, actualValues, options, validate }) => {
     const itemOptions =
       typeof items === 'function'
         ? itemsFunctionWrapper(items, item)
-        : typeof items === 'object'
+        : typeof items === 'object' && items !== null
           ? items
           : {};
 
     const itemType =
       typeof items === 'string'
         ? items
-        : typeof itemOptions === 'object'
+        : typeof itemOptions === 'object' && itemOptions !== null
           ? itemOptions.type
           : itemOptions;
 

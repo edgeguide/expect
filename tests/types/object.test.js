@@ -564,6 +564,21 @@ describe('Expect package (object validation):', () => {
     expect(expectations.errors()).toEqual({});
   });
 
+  it('does not throw on null key in strictKeyCheck', () => {
+    const expectModule = require('../../src');
+    expect(() =>
+      expectModule(
+        {
+          foo: {
+            type: 'array',
+            items: { type: 'object', keys: 'string', strictKeyCheck: true }
+          }
+        },
+        { foo: [null, { bar: 'test' }] }
+      )
+    ).not.toThrow();
+  });
+
   it('does not throw error if nested requiredIf is missing ', () => {
     const expectModule = require('../../src');
     expect(() =>
