@@ -1,3 +1,8 @@
+## 6.1.2 (26 November 2018)
+
+- Added missing null checks when checking typeof === "object"
+- Rephrasing and fixed spelling errors in README
+
 ## 6.1.1 (30 August 2018)
 
 - Fixed `getParsed()` was returning _undefined_ properties for _object_ type
