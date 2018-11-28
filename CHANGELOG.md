@@ -1,3 +1,7 @@
+## 6.1.3 (28 November 2018)
+
+- Updated npm packages
+
 ## 6.1.2 (26 November 2018)
 
 - Added missing null checks when checking typeof === "object"
