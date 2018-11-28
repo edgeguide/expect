@@ -110,7 +110,7 @@ app.put('/user', function addUser(req, res) {
 
 | Type    | Custom options                                 | Description                                                          |
 | ------- | ---------------------------------------------- | -------------------------------------------------------------------- |
-| any     | N/A                                            | expects any type except for _undefined_, _null_ or empty string ('') |
+| any     | N/A                                            | expects any type except for _undefined_, _null_ or empty string      |
 | number  | N/A                                            | expects a `number`                                                   |
 | boolean | N/A                                            | expects a `boolean`                                                  |
 | string  | sanitize, allowed, blockUnsafe, strictEntities | expects a `string`                                                   |
@@ -324,7 +324,7 @@ expect(
 
 ### requiredIf
 
-The `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_, _undefined_ or empty string ('').
+The `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_, _undefined_ or empty string.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
