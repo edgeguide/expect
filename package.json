@@ -21,7 +21,7 @@
     "lint": "tslint --project .",
     "test": "jest",
     "test-d": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "build": "rm -r dist/* && npm run test && npm run lint && tsc && rm dist/definitions.js",
+    "build": "rm -rf dist && npm run test && npm run lint && tsc && rm dist/definitions.js",
     "prepublish": "npm run build"
   },
   "dependencies": {
