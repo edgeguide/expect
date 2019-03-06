@@ -25,12 +25,12 @@ describe('Expect package (README examples):', () => {
     expect(
       expectModule(
         {
-          foo: 'string',
-          bar: { type: 'string' }
+          foo: 'number',
+          bar: { type: 'number' }
         },
         {
-          foo: 'deadbeef',
-          bar: 'deadbeef'
+          foo: 123,
+          bar: 321
         }
       ).wereMet()
     ).toBe(true);

@@ -96,19 +96,19 @@ app.put('/user', function addUser(req, res) {
 
 ## Types
 
-Types must be specified in the validation schema for each input field. This is done either with a string or by using an object with the `type` property,
+Types must be specified in the validation schema for each input field, either by using a string or an object with the `type` property,
 
 ```javascript
 const expect = require('@edgeguideab/expect');
 
 expect(
   {
-    foo: 'string', // Strings only validates the type
-    bar: { type: 'string' } // Objects are used to combine type with other options
+    foo: 'number', // Type string only validates the type
+    bar: { type: 'number' } // Object can be used to combine type validation with other options
   },
   {
-    foo: 'deadbeef',
-    bar: 'deadbeef'
+    foo: 123,
+    bar: 321
   }
 ).wereMet(); // true
 ```
@@ -132,7 +132,7 @@ expect(
 <details>
 <summary><strong><i>object</i></strong></summary>
 
-Expects the value to be of type object. If the `keys` option is provided, the different keys for the object can be evaluated recursively.
+Expects the input value to be an object. If the `keys` option is provided, each property of the input object can be evaluated.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -147,7 +147,7 @@ expect(
 ).errors(); // { bar: { buzz: 'Expected parameter bar.buzz to be of type string but it was 1' } }
 ```
 
-Object validation can be nested with several keys-options.
+Object validation may be nested with several keys-options.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -165,7 +165,7 @@ expect(
 ).errors(); // { bar: { buzz: { bizz: 'Expected parameter bar.buzz.bizz to be of type number but it was "hello"' } } }
 ```
 
-Unlike top-level validation, when evaluating deeper in an object the error-key will be a path to the parameter which failed (as a string). If the `keys`-option is combined with `strictKeyCheck`, object validation will fail if the actual object contains any keys which are not explicitly checked for.
+Using the `strictKeyCheck` option, the validation will fail if the input object has a property that is not specified in the `keys` option.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -195,7 +195,7 @@ expect(
 <details>
 <summary><strong><i>array</i></strong></summary>
 
-Checks whether the parameter is an array or not. Each child in the array can be further validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
+Expects the parameter to be an array. Each array item can be validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -221,7 +221,7 @@ expect(
 ).wereMet(); // true
 ```
 
-A function may be passed as an `items` option, taking the input array as its parameter and returning a validation schema.
+A function may be used as an `items` option. The function will be passed the input array as its parameter and must return a validation schema.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -252,7 +252,7 @@ expect(schema, {
 }).wereMet(); // false
 ```
 
-Note that the function may also be used for recursing the validation schema.
+Note that a function can also be used for recursive validation schemas.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
