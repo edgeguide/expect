@@ -85,7 +85,9 @@ export const validate: ValidateFunction = ({
 
   const isNullValue = isNull(value) || isNull(initialValue);
   const isAllowNull =
-    typeof allowNull === 'function' ? allowNullWrapper(allowNull) : allowNull;
+    typeof allowNull === 'function'
+      ? allowNullWrapper({ value, allowNull })
+      : allowNull;
   const notRequired = requiredIf && isNull(getDeep(requiredIf, actualValues));
   const nullAllowed = isAllowNull || notRequired;
 
@@ -170,9 +172,15 @@ export const validate: ValidateFunction = ({
   return { valid: true, parsed };
 };
 
-function allowNullWrapper(allowNull: () => boolean) {
+function allowNullWrapper({
+  value,
+  allowNull
+}: {
+  value: any;
+  allowNull: (value: any) => boolean;
+}) {
   try {
-    return allowNull();
+    return allowNull(value);
   } catch (error) {
     return false;
   }

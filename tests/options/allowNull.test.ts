@@ -110,6 +110,17 @@ types.forEach((type: any) =>
       );
     });
 
+    it('allowNull can filter allowed null values for all types using function', () => {
+      ['', null, undefined].forEach(test => {
+        expect(
+          expectModule(
+            { test: { type, allowNull: x => x !== test } },
+            { test }
+          ).wereMet()
+        ).toBe(false);
+      });
+    });
+
     it('allowNullErrorCode changes error message', () => {
       expect(
         expectModule(

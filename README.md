@@ -343,33 +343,33 @@ The validation for each type may be configured using options. See the [Types sec
 
 Note that `expect` does **not** support using asynchronous functions as options and we strongly advise against it.
 
-<details open>
+<details>
 <summary><strong><i>allowNull</i></strong></summary>
 
 The `allowNull` option is available for all types. `allowNull` allows the expected value to be _null_, _undefined_ or an empty string. In other words, `allowNull` makes the value optional.
 
-Note that setting `allowNull` will make empty string a valid input regardless of the validation type. The `allowNul
+Note that _null_, _undefined_ and empty string are valid input values with `allowNull` regardless of the actual validation type.
 
-It is possible to pass a function to `allowNull`, in which case the return value will be used (errors thrown will be ignored and treated as _false_).
+It is possible to pass a function to `allowNull`, in which case the return value will be used (errors thrown will be ignored and treated as _false_). This may be used to filter allowed null values.
 
 ```javascript
 const expect = require('@edgeguideab/expect');
 
 expect(
   {
-    foo: 'string',
-    bar: { type: 'string', allowNull: true }
+    foo: { type: 'string', allowNull: true },
+    bar: { type: 'number', allowNull: true }
   },
-  { foo: 'deadbeef' }
+  { bar: '' }
 ).wereMet(); // true
 
 expect(
   {
-    foo: 'string',
-    bar: { type: 'string', allowNull: () => true }
+    foo: { type: 'string', allowNull: true },
+    bar: { type: 'number', allowNull: bar => bar !== '' }
   },
-  { foo: 'deadbeef' }
-).wereMet(); // true
+  { bar: '' }
+).wereMet(); // false
 ```
 
 </details>

@@ -14,16 +14,14 @@ export interface IErrorObject {
   [key: string]: undefined | string | IErrorObject;
 }
 
-export type ValidateFunction = (
-  input: {
-    type: ExpectedType;
-    parameter: string | number | Array<string | number>;
-    value: any;
-    options: ExpectedType | Options;
-    actualValues?: any;
-    expected?: any;
-  }
-) => {
+export type ValidateFunction = (input: {
+  type: ExpectedType;
+  parameter: string | number | Array<string | number>;
+  value: any;
+  options: ExpectedType | Options;
+  actualValues?: any;
+  expected?: any;
+}) => {
   valid: boolean;
   error?: string | IErrorObject;
   parsed?: any;
@@ -32,7 +30,7 @@ export type ValidateFunction = (
 export interface IDefaultOption {
   type: ExpectedType;
   requiredIf?: string | string[];
-  allowNull?: boolean | (() => boolean);
+  allowNull?: boolean | ((x: any) => boolean);
   parse?: boolean | ((x: any) => any);
   equalTo?: string | string[];
   condition?: (x: any) => boolean;

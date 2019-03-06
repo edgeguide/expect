@@ -40,22 +40,22 @@ describe('Expect package (README examples):', () => {
     expect(
       expectModule(
         {
-          foo: 'string',
-          bar: { type: 'string', allowNull: true }
+          foo: { type: 'string', allowNull: true },
+          bar: { type: 'number', allowNull: true }
         },
-        { foo: 'deadbeef' }
+        { bar: '' }
       ).wereMet()
     ).toBe(true);
 
     expect(
       expectModule(
         {
-          foo: 'string',
-          bar: { type: 'string', allowNull: () => true }
+          foo: { type: 'string', allowNull: true },
+          bar: { type: 'number', allowNull: (bar: any) => bar !== '' }
         },
-        { foo: 'deadbeef' }
+        { bar: '' }
       ).wereMet()
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it('Options - requiredIf', () => {
