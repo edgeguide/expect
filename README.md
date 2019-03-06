@@ -247,6 +247,37 @@ expect(schema, {
 }).wereMet(); // false
 ```
 
+Note that the function may also be used for recursing the validation schema.
+
+```javascript
+const expect = require('@edgeguideab/expect');
+
+const schema = {
+  type: 'object',
+  keys: {
+    value: 'string',
+    branches: {
+      type: 'array',
+      allowNull: true,
+      items: () => schema
+    }
+  }
+};
+
+expect(
+  { root: schema },
+  {
+    root: {
+      value: 'foo',
+      branches: [
+        { value: 'bar' },
+        { value: 'bizz', branches: [{ value: 'buzz' }] }
+      ]
+    }
+  }
+).wereMet(); // true
+```
+
 ### email
 
 A customized type for _strings_ which can be used to check if the value is correctly formatted as an email address. Regular expression used to validate emails:

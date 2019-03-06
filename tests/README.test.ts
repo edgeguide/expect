@@ -340,6 +340,33 @@ describe('Expect package (README examples):', () => {
         beef: [{ foo: '1', bar: true }, { foo: '2', bar: true }]
       }).wereMet()
     ).toBe(false);
+
+    const recursion: any = {
+      type: 'object',
+      keys: {
+        value: 'string',
+        branches: {
+          type: 'array',
+          allowNull: true,
+          items: () => recursion
+        }
+      }
+    };
+
+    expect(
+      expectModule(
+        { root: recursion },
+        {
+          root: {
+            value: 'foo',
+            branches: [
+              { value: 'bar' },
+              { value: 'bizz', branches: [{ value: 'buzz' }] }
+            ]
+          }
+        }
+      ).wereMet()
+    ).toBe(true);
   });
 
   it('Matchers - equalTo', () => {
