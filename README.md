@@ -1,47 +1,27 @@
-## Contents
-
-1.  [Installation](#installation)
-    - [Using NPM](#using-npm)
-    - [In a browser](#in-a-browser)
-2.  [Usage](#usage)
-    - [Example of each method definition](#example-of-each-method-definition)
-    - [Example validating input with Express.js](#example-validating-input-with-expressjs)
-3.  [Types](#types)
-    - [Standard types](#standard-types)
-    - [Customized types](#customized-types)
-4.  [Type explanations](#type-explanations)
-    - [object](#object)
-    - [array](#array)
-    - [email](#email)
-    - [phone](#phone)
-5.  [Options](#options)
-    - [allowNull](#allownull)
-    - [requiredIf](#requiredif)
-    - [parse](#parse)
-    - [equalTo](#equalto)
-    - [condition](#condition)
-    - [convert](#convert)
-    - [blockUnsafe](#blockunsafe)
-    - [sanitize](#sanitize)
-    - [errorCode](#errorcode)
-    - [allowNullErrorCode](#allownullerrorcode)
-    - [blockUnsafeErrorCode](#blockunsafeerrorcode)
-    - [equalToErrorCode](#equaltoerrorcode)
-    - [conditionErrorCode](#conditionerrorcode)
-
 ## Installation
 
-### Using NPM
+<details open>
+<summary><strong>Using NPM</strong></summary>
 
 ```
 npm install @edgeguideab/expect
 ```
 
-### In a browser
+</details>
+
+<details>
+<summary><strong>Using a browser</strong></summary>
 
 You will need to require the module and then package your scripts using a bundler like webpack or browserify.
 
-## Usage
+```
+import expect from '@edgeguideab/expect
+```
+
+</details>
+
+<details>
+<summary><strong>Function signature</strong></summary>
 
 `expect` exposes a function with the following signature:
 
@@ -61,7 +41,10 @@ The function returns an object exposing three method definitions:
 }
 ```
 
-### Example of each method definition
+</details>
+
+<details>
+<summary><strong>Example of each method definition</strong></summary>
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -83,7 +66,10 @@ valid.getParsed(); // { foo: 'test' }
 invalid.getParsed(); // {}
 ```
 
-### Example validating input with Express.js
+</details>
+
+<details>
+<summary><strong>Example validating input with Express.js</strong></summary>
 
 ```javascript
 const expect = require('@edgeguideab/expect');
@@ -104,31 +90,47 @@ app.put('/user', function addUser(req, res) {
 });
 ```
 
+</details>
+
+</br>
+
 ## Types
 
-### Standard types
+Types must be specified in the validation schema for each input field. This is done either with a string or by using an object with the `type` property,
 
-| Type    | Custom options                                 | Description                                                          |
-| ------- | ---------------------------------------------- | -------------------------------------------------------------------- |
-| any     | N/A                                            | expects any type except for _undefined_, _null_ or empty string      |
-| number  | N/A                                            | expects a `number`                                                   |
-| boolean | N/A                                            | expects a `boolean`                                                  |
-| string  | sanitize, allowed, blockUnsafe, strictEntities | expects a `string`                                                   |
-| array   | items, convert                                 | expects an `array`                                                   |
-| object  | keys, strictKeyCheck                           | expects an `object` (note that arrays will **not** count as objects) |
+```javascript
+const expect = require('@edgeguideab/expect');
 
-### Customized types
+expect(
+  {
+    foo: 'string', // Strings only validates the type
+    bar: { type: 'string' } // Objects are used to combine type with other options
+  },
+  {
+    foo: 'deadbeef',
+    bar: 'deadbeef'
+  }
+).wereMet(); // true
+```
 
-| Type           | Options                                      | Description                                                        |
-| -------------- | -------------------------------------------- | ------------------------------------------------------------------ |
-| date           | N/A                                          | expects a `string` formatted as a date or a `Date` instance        |
-| phone          | strict                                       | expects a `string` or a `number` formatted as a phone number       |
-| email          | strict, allowed, blockUnsafe, strictEntities | expects a `string` formatted as an email address                   |
-| identityNumber | N/A                                          | expects a `string` formatted as a Swedish personal identity number |
+</br>
 
-## Type explanations
+<details open>
+<summary><strong>Standard types</strong></summary>
 
-### object
+| Type          | Custom options                                 | Description                                                          |
+| ------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
+| **_any_**     | N/A                                            | expects any type (except null values, see `allowNull` option)        |
+| **_number_**  | N/A                                            | expects a `number`                                                   |
+| **_boolean_** | N/A                                            | expects a `boolean`                                                  |
+| **_string_**  | sanitize, allowed, blockUnsafe, strictEntities | expects a `string`                                                   |
+| **_array_**   | items, convert                                 | expects an `array`                                                   |
+| **_object_**  | keys, strictKeyCheck                           | expects an `object` (note that arrays will **not** count as objects) |
+
+</br>
+
+<details>
+<summary><strong><i>object</i></strong></summary>
 
 Expects the value to be of type object. If the `keys` option is provided, the different keys for the object can be evaluated recursively.
 
@@ -188,7 +190,10 @@ expect(
 ).errors(); // { bar: 'Object contained unchecked keys "kizz"' }
 ```
 
-### array
+</details>
+
+<details>
+<summary><strong><i>array</i></strong></summary>
 
 Checks whether the parameter is an array or not. Each child in the array can be further validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
 
@@ -278,7 +283,26 @@ expect(
 ).wereMet(); // true
 ```
 
-### email
+</details>
+
+</details>
+
+</br>
+
+<details>
+<summary><strong>Customized types</strong></summary>
+
+| Type           | Options                                      | Description                                                        |
+| -------------- | -------------------------------------------- | ------------------------------------------------------------------ |
+| date           | N/A                                          | expects a `string` formatted as a date or a `Date` instance        |
+| phone          | strict                                       | expects a `string` or a `number` formatted as a phone number       |
+| email          | strict, allowed, blockUnsafe, strictEntities | expects a `string` formatted as an email address                   |
+| identityNumber | N/A                                          | expects a `string` formatted as a Swedish personal identity number |
+
+</br>
+
+<details>
+<summary><strong><i>email</i></strong></summary>
 
 A customized type for _strings_ which can be used to check if the value is correctly formatted as an email address. Regular expression used to validate emails:
 
@@ -287,11 +311,15 @@ A customized type for _strings_ which can be used to check if the value is corre
   /.+@.+/
   ```
 - With `strict` option
+
   ```
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   ```
 
-### phone
+</details>
+
+<details>
+<summary><strong><i>phone</i></strong></summary>
 
 A customized type for _strings_ and _numbers_ which can be used to check if the value is correctly formatted as a phone number. Regular expression used to validate phone numbers:
 
@@ -303,33 +331,24 @@ A customized type for _strings_ and _numbers_ which can be used to check if the 
   ```
   /^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/
   ```
+  </details>
+
+</details>
+
+</br>
 
 ## Options
 
-The validation for each type may be configured using options. See the [Types section](#types) for a list of options limited to certain types.
+The validation for each type may be configured using options. See the [Types section](#types) for a list of custom options limited to certain types.
 
-Note that `expect` does **not** support using asynchronous functions as options and we strongly advise against it. Passing asynchronous functions will likely result in unexpected behavior with current and future releases.
+Note that `expect` does **not** support using asynchronous functions as options and we strongly advise against it.
 
-In order to use options, you need to specify the types with objects containing a `type` property instead of strings.
+<details open>
+<summary><strong><i>allowNull</i></strong></summary>
 
-```javascript
-const expect = require('@edgeguideab/expect');
+The `allowNull` option is available for all types. `allowNull` allows the expected value to be _null_, _undefined_ or an empty string. In other words, `allowNull` makes the value optional.
 
-expect(
-  {
-    foo: 'string',
-    bar: { type: 'string' }
-  },
-  {
-    foo: 'deadbeef',
-    bar: 'deadbeef'
-  }
-).wereMet(); // true
-```
-
-### allowNull
-
-The `allowNull` option is available for all types. Setting this option means that the expected value can be matched against _null_ or _undefined_. In other words, `allowNull` makes the value optional.
+Note that setting `allowNull` will make empty string a valid input regardless of the validation type. The `allowNul
 
 It is possible to pass a function to `allowNull`, in which case the return value will be used (errors thrown will be ignored and treated as _false_).
 
@@ -353,7 +372,10 @@ expect(
 ).wereMet(); // true
 ```
 
-### requiredIf
+</details>
+
+<details>
+<summary><strong><i>requiredIf</i></strong></summary>
 
 The `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_, _undefined_ or empty string.
 
@@ -405,7 +427,10 @@ expect(
 ).wereMet(); // true
 ```
 
-### parse
+</details>
+
+<details>
+<summary><strong><i>parse</i></strong></summary>
 
 The `parse` option is available to all types. This option allows the user to mutate input values before they are validated and returned by `getParsed()`.
 
@@ -471,7 +496,10 @@ anotherOne.wereMet(); // true
 anotherOne.getParsed(); // { test: null, existing: 'test' }
 ```
 
-### equalTo
+</details>
+
+<details>
+<summary><strong><i>equalTo</i></strong></summary>
 
 `equalTo` is another option available to all types. It ensures that the input value matches another value specified by a key.
 
@@ -529,7 +557,10 @@ expect(
 ).wereMet(); // true
 ```
 
-### condition
+</details>
+
+<details>
+<summary><strong><i>condition</i></strong></summary>
 
 The `condition` option is available for all types. Passing a function as a `condition` option will test that the function evaluates to a _truthy_ value with the input value as its parameter.
 
@@ -575,11 +606,17 @@ expect(
 ).wereMet(); // true
 ```
 
-### convert
+</details>
+
+<details>
+<summary><strong><i>convert</i></strong></summary>
 
 `convert` is only available for the _array_ type. Similar to `parse`, this option will try to parse the given value into the desired type. Typically useful for parsing arrays from the request query in Express.js.
 
-### blockUnsafe
+</details>
+
+<details>
+<summary><strong><i>blockUnsafe</i></strong></summary>
 
 `blockUnsafe` is only available for the _string_ type. If true, expectations will fail if the value contains unsafe characters that can be used for XSS injections. In non-strict mode, these are
 `& < > " '`, and with the strictEntities option enabled they are `& < > " ' ! @ $ ( ) = + { } [ ]`.
@@ -632,7 +669,10 @@ expect(
 ).wereMet(); // true
 ```
 
-### sanitize
+</details>
+
+<details>
+<summary><strong><i>sanitize</i></strong></summary>
 
 If true, the value will have dangerous characters replaced with html entities. In non-strict mode, these are
 `& < > " '`, and with the strictEntities option enabled they are `& < > " ' ! @ $ ( ) = + { } [ ]`.
@@ -680,7 +720,10 @@ expect(
 ).getParsed(); // { test: 'keep (some) of this as it is &lbrack;test&rbrack;'}
 ```
 
-### errorCode
+</details>
+
+<details>
+<summary><strong><i>errorCode</i></strong></summary>
 
 Changes the error message returned by `errors()` if the validation fails. Default errorCode is a string describing what went wrong, this option allows for customized error codes.
 
@@ -702,29 +745,45 @@ expect(
 ).errors(); // { bar: 'Invalid format' }
 ```
 
-### allowNullErrorCode
+</details>
+
+<details>
+<summary><strong><i>allowNullErrorCode</i></strong></summary>
 
 Custom error message if the error was caused by the `allowNull` option.
 
 Note: Errors caused by `allowNull` have the highest priority.
 
-### blockUnsafeErrorCode
+</details>
+
+<details>
+<summary><strong><i>blockUnsafeErrorCode</i></strong></summary>
 
 Custom error message if the error was caused by the `blockUnsafe` option.
 
 Note: Errors caused by `blockUnsafe` have the second highest priority.
 
-### equalToErrorCode
+</details>
+
+<details>
+<summary><strong><i>equalToErrorCode</i></strong></summary>
 
 Custom error message if the error was caused by the `equalTo` option.
 
 Note: Errors caused by `equalTo` have the third highest priority.
 
-### conditionErrorCode
+</details>
+
+<details>
+<summary><strong><i>conditionErrorCode</i></strong></summary>
 
 Overrides `errorCode` if the error was caused by the `condition` option.
 
 Note: Errors caused by `condition` have the lowest priority.
+
+</details>
+
+</br>
 
 ## Author
 
