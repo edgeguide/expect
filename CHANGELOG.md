@@ -1,3 +1,7 @@
+## Unreleased
+
+- Removed dependency on babel-polyfill
+
 ## 6.1.3 (28 November 2018)
 
 - Updated npm packages

@@ -1,7 +1,3 @@
-if (typeof window !== 'undefined' && !(window as any)._babelPolyfill) {
-  require('babel-polyfill');
-}
-
 import { IErrorObject, ExpectedType, Options } from './definitions';
 import { validate } from './types';
 
