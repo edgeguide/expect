@@ -1,6 +1,18 @@
-## Unreleased
+## 7.0.0 (16 April 2019)
 
-- Removed dependency on babel-polyfill
+- allowNull takes the input value as a function parameter. Can be used to filter allowed null values
+
+### Breaking changes
+
+- Removed dependency on babel-polyfill. You will need polyfill the following features:
+  - Array.reduce
+  - Array.some
+  - Array.includes
+  - Number.isInteger
+
+## 6.2.0-beta.0 (25 January 2019)
+
+- Rewrite of codebase to TypeScript
 
 ## 6.1.3 (28 November 2018)
 
