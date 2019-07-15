@@ -603,4 +603,63 @@ describe('Expect package (object validation):', () => {
       ).errors()
     ).toEqual({ foo: 'foo error' });
   });
+
+  it('fails if the __proto__ is present for an object', () => {
+    const value = JSON.parse(`{
+      "foo": {
+        "__proto__": 1,
+        "bar": "1",
+        "bizz": "[1,2,3,4,5]",
+        "buzz": "1337"
+      }
+    }`);
+    const expectations = expectModule(
+      {
+        foo: {
+          type: 'object',
+          keys: {
+            bar: { type: 'number', parse: true },
+            bizz: { type: 'array', parse: true }
+          }
+        }
+      },
+      value
+    );
+
+    expect(expectations.wereMet()).toBe(false);
+    expect(expectations.errors()).toEqual({
+      foo: 'Object contained unsafe keys "__proto__"'
+    });
+  });
+
+  it('fails if the __proto__ is present on a deeper level for an object', () => {
+    const expectations = expectModule(
+      {
+        foo: {
+          type: 'object',
+          strictKeyCheck: true,
+          keys: {
+            bar: {
+              type: 'object',
+              keys: {
+                test: 'string'
+              }
+            },
+            bizz: { type: 'array', parse: true }
+          }
+        }
+      },
+      JSON.parse(`{
+        "foo": {
+          "bar": {"__proto__": 1},
+          "bizz": "[1,2,3,4,5]"
+        }
+      }`)
+    );
+
+    expect(expectations.wereMet()).toBe(false);
+    expect(expectations.errors()).toEqual({
+      foo: { bar: 'Object contained unsafe keys "__proto__"' }
+    });
+  });
 });

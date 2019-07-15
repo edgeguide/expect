@@ -21,6 +21,10 @@ export function validateObject({
     return { valid: true };
   }
 
+  if (Object.prototype.hasOwnProperty.call(value, '__proto__')) {
+    return { valid: false, error: 'Object contained unsafe keys "__proto__"' };
+  }
+
   const parsed: { [key: string]: any } = {};
   const error: IErrorObject = {};
   if (options.strictKeyCheck) {

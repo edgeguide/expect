@@ -15,3 +15,40 @@ import expectModule = require('../src');
     });
   })
 );
+
+describe('handling of __proto__ poisoning', () => {
+  it('does not include the __proto__ key if parse is true for objects', () => {
+    const expectations = expectModule(
+      {
+        test: {
+          type: 'object',
+          parse: true
+        }
+      },
+      {
+        test: '{ "b": 5, "__proto__": { "c": 6 } }'
+      }
+    );
+    const values = expectations.getParsed();
+    expect(values.test.__proto__).toEqual(Object.prototype);
+  });
+
+  it('should not accept __proto__ as type', () => {
+    const expectFunction = () =>
+      expectModule(
+        {
+          test: {
+            type: '__proto__',
+            parse: true
+          } as any
+        },
+        {
+          test: '{ "b": 5, "__proto__": { "c": 6 } }'
+        }
+      );
+
+    expect(expectFunction).toThrow(
+      'Invalid type "__proto__" for parameter test'
+    );
+  });
+});

@@ -57,7 +57,10 @@ export const validate: ValidateFunction = ({
     equalToErrorCode
   } = options;
 
-  if (typeof type !== 'string' || !mapTypeValidations[type]) {
+  if (
+    typeof type !== 'string' ||
+    !Object.prototype.hasOwnProperty.call(mapTypeValidations, type)
+  ) {
     throw new Error(
       `Invalid type ${JSON.stringify(type)} for parameter ${formatParameter(
         parameter

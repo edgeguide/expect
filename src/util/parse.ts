@@ -20,7 +20,9 @@ function parseType({ value, type }: { value: any; type: string }) {
       }
       case 'array':
       case 'object': {
-        return JSON.parse(value);
+        const result = JSON.parse(value);
+        delete result.__proto__;
+        return result;
       }
       case 'date': {
         return new Date(value);
@@ -37,8 +39,8 @@ function parseFunctionWrapper({
   value,
   parse
 }: {
-value: any;
-parse: (x: any) => any;
+  value: any;
+  parse: (x: any) => any;
 }) {
   try {
     return parse(value);
