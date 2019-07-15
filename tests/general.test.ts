@@ -17,7 +17,7 @@ import expectModule = require('../src');
 );
 
 describe('handling of __proto__ poisoning', () => {
-  it('does not include the __proto__ key if parse is true for objects', () => {
+  it('fails if __proto__ key is present when parse is true for objects', () => {
     const expectations = expectModule(
       {
         test: {
@@ -29,8 +29,24 @@ describe('handling of __proto__ poisoning', () => {
         test: '{ "b": 5, "__proto__": { "c": 6 } }'
       }
     );
-    const values = expectations.getParsed();
-    expect(values.test.__proto__).toEqual(Object.prototype);
+
+    expect(expectations.wereMet()).toEqual(false);
+  });
+
+  it('fails if __proto__ is present deeper in the object if parse is true', () => {
+    const expectations = expectModule(
+      {
+        test: {
+          type: 'object',
+          parse: true
+        }
+      },
+      {
+        test: '{ "a": 5, b: { "__proto__": { "c": 6 } } }'
+      }
+    );
+
+    expect(expectations.wereMet()).toEqual(false);
   });
 
   it('should not accept __proto__ as type', () => {

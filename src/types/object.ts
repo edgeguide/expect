@@ -17,12 +17,12 @@ export function validateObject({
     return { valid: false };
   }
 
-  if (!options.keys) {
-    return { valid: true };
-  }
-
   if (Object.prototype.hasOwnProperty.call(value, '__proto__')) {
     return { valid: false, error: 'Object contained unsafe keys "__proto__"' };
+  }
+
+  if (!options.keys) {
+    return { valid: true };
   }
 
   const parsed: { [key: string]: any } = {};

@@ -21,7 +21,6 @@ function parseType({ value, type }: { value: any; type: string }) {
       case 'array':
       case 'object': {
         const result = JSON.parse(value);
-        delete result.__proto__;
         return result;
       }
       case 'date': {
