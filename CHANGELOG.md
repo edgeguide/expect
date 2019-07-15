@@ -1,3 +1,7 @@
+## 7.0.1
+
+- Objects containing \_\_proto\_\_ as a key will now cause the validation to fail. This is to mitigate prototype poisoning
+
 ## 7.0.0 (16 April 2019)
 
 - allowNull takes the input value as a function parameter. Can be used to filter allowed null values
