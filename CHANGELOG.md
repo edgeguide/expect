@@ -1,4 +1,4 @@
-## 7.0.1
+## 7.0.1 (15 July 2019)
 
 - Objects containing \_\_proto\_\_ as a key will now cause the validation to fail. This is to mitigate prototype poisoning
 
