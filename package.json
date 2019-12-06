@@ -18,7 +18,7 @@
   "author": "EdgeGuide AB",
   "license": "MIT",
   "scripts": {
-    "lint": "tslint --project .",
+    "lint": "eslint '*/**/*.{js,ts}' --quiet --ignore-path .gitignore",
     "test": "jest",
     "test-d": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "build": "rm -rf dist && npm run test && npm run lint && tsc && rm dist/definitions.js",
@@ -31,9 +31,13 @@
     "@types/jest": "^24.0.9",
     "@types/node": "^11.10.4",
     "@types/xregexp": "^3.0.29",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
     "jest": "^24.1.0",
+    "prettier": "1.19.1",
     "ts-jest": "^24.0.0",
-    "tslint": "^5.13.1",
     "typescript": "^3.3.3333"
   }
 }

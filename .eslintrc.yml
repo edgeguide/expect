@@ -1,0 +1,53 @@
+env:
+  browser: true
+  es6: true
+  jest: true
+
+extends:
+  - eslint:recommended
+  - "plugin:@typescript-eslint/eslint-recommended"
+  - "plugin:@typescript-eslint/recommended"
+  - "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  - "prettier"
+  - "prettier/@typescript-eslint"
+
+parser: "@typescript-eslint/parser"
+
+parserOptions:
+  project: "./tsconfig.eslint.json"
+
+plugins:
+  - "@typescript-eslint"
+
+rules:
+  "@typescript-eslint/explicit-function-return-type": off
+  "@typescript-eslint/interface-name-prefix": off
+  "@typescript-eslint/member-ordering": error
+  "@typescript-eslint/no-explicit-any": off
+  "@typescript-eslint/no-use-before-define":
+    - error
+    - nofunc
+  "@typescript-eslint/prefer-for-of": error
+  "@typescript-eslint/unified-signatures": error
+  eqeqeq:
+    - error
+    - smart
+  guard-for-in: error
+  no-bitwise: error
+  no-caller: error
+  no-cond-assign: error
+  no-console:
+    - error
+    - allow:
+        - warn
+        - error
+  no-duplicate-imports: error
+  no-eval: error
+  no-invalid-this: error
+  no-new-wrappers: error
+  no-throw-literal: error
+  no-undef-init: error
+  no-underscore-dangle: error
+  no-unused-expressions: error
+  object-shorthand: error
+  radix: error
