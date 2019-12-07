@@ -553,7 +553,7 @@ describe('Expect package (object validation):', () => {
         {
           foo: {
             type: 'array',
-            items: { type: 'object', keys: 'string', strictKeyCheck: true }
+            items: { type: 'object', keys: { bar: 'string' }, strictKeyCheck: true }
           }
         },
         { foo: [null, { bar: 'test' }] }

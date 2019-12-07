@@ -278,7 +278,7 @@ describe('equalTo option', () => {
             items: {
               type: 'object',
               keys: {
-                dead: { type: 'string', equalTo: ['foo', 0, 'bar'] },
+                dead: { type: 'string', equalTo: ['foo', '0', 'bar'] },
                 bar: 'string'
               }
             }
