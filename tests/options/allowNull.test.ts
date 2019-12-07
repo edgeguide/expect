@@ -89,7 +89,7 @@ types.forEach((type: any) =>
         { test: { type, parse: () => undefined, allowNull: true } },
         {}
       ).getParsed();
-      expect(parsed.hasOwnProperty('test')).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(parsed, 'test')).toBe(false);
     });
 
     it('non-null values are ignored by allowNull', () => {
@@ -179,7 +179,7 @@ it('nested parsed value is not returned if undefined', () => {
     },
     { foo: {} }
   ).getParsed();
-  expect(parsed.foo.hasOwnProperty('bar')).toBe(false);
+  expect(Object.prototype.hasOwnProperty.call(parsed.foo, 'bar')).toBe(false);
 });
 
 it('allowNull with invalid parse behaves correctly with equalTo', () => {

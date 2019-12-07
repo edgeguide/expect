@@ -1,4 +1,4 @@
-import { ValidateFunction, ExpectedType } from '../definitions';
+import { ValidateFunction } from '../definitions';
 
 import {
   formatParameter,
@@ -84,7 +84,9 @@ export const validate: ValidateFunction = ({
     validate
   });
 
-  value = validation.hasOwnProperty('parsed') ? validation.parsed : value;
+  value = Object.prototype.hasOwnProperty.call(validation, 'parsed') 
+    ? validation.parsed 
+    : value;
 
   const isNullValue = isNull(value) || isNull(initialValue);
   const isAllowNull =

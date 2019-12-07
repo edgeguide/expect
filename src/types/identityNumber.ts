@@ -18,7 +18,7 @@ export function validateIdentityNumber({
     return { valid: false };
   }
 
-  const matches = value.match(regexp);
+  const matches = regexp.exec(value);
   if (matches === null) {
     return { valid: false };
   }

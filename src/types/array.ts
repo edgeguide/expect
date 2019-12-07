@@ -1,10 +1,4 @@
-import {
-  Options,
-  ExpectedType,
-  ValidateFunction,
-  IArrayOption,
-  IErrorObject
-} from '../definitions';
+import { ValidateFunction, IArrayOption, IErrorObject } from "../definitions";
 
 export function validateArray({
   parameter,
@@ -37,7 +31,7 @@ export function validateArray({
   const parsed: any[] = [];
   const hasInvalidItems = value.filter((item, index) => {
     let itemOptions = items;
-    if (typeof items === 'function') {
+    if (typeof items === "function") {
       try {
         itemOptions = items(item);
       } catch (error) {
@@ -47,13 +41,13 @@ export function validateArray({
 
     if (
       itemOptions === null ||
-      (typeof itemOptions !== 'string' && typeof itemOptions !== 'object')
+      (typeof itemOptions !== "string" && typeof itemOptions !== "object")
     ) {
-      return { valid: false, error: 'Invalid items' };
+      return { valid: false, error: "Invalid items" };
     }
 
     const validation = validate({
-      type: typeof itemOptions === 'string' ? itemOptions : itemOptions.type,
+      type: typeof itemOptions === "string" ? itemOptions : itemOptions.type,
       parameter: Array.isArray(parameter)
         ? parameter.concat(index)
         : [parameter, index],
@@ -64,7 +58,9 @@ export function validateArray({
 
     if (validation.valid) {
       parsed.push(
-        validation.hasOwnProperty('parsed') ? validation.parsed : item
+        Object.prototype.hasOwnProperty.call(validation, "parsed")
+          ? validation.parsed
+          : item
       );
     } else {
       error[index] = validation.error;

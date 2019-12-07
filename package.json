@@ -18,7 +18,7 @@
   "author": "EdgeGuide AB",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint '*/**/*.{js,ts}' --quiet --ignore-path .gitignore",
+    "lint": "eslint '*/**/*.{js,ts}' --ignore-path .gitignore",
     "test": "jest",
     "test-d": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "build": "rm -rf dist && npm run test && npm run lint && tsc && rm dist/definitions.js",

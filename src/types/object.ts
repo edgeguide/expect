@@ -46,7 +46,8 @@ export function validateObject({
   }
 
   const invalidKeys = Object.keys(options.keys).filter(key => {
-    const option = options!.keys![key];
+    if (!options.keys) return; // TypeScript inference issue
+    const option = options.keys[key];
 
     const keyType =
       typeof option === 'object' && option !== null ? option.type : option;
@@ -67,7 +68,10 @@ export function validateObject({
     });
 
     if (validation.valid) {
-      const parsedValue = validation.hasOwnProperty('parsed')
+      const parsedValue = Object.prototype.hasOwnProperty.call(
+        validation,
+        'parsed'
+      )
         ? validation.parsed
         : value[key];
       if (parsedValue !== undefined) {
