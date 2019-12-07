@@ -1,34 +1,34 @@
-import expectModule = require('../../src');
+import expectModule = require("../../src");
 
 const types: any = [
-  'any',
-  'number',
-  'boolean',
-  'string',
-  'array',
-  'object',
-  'date',
-  'phone',
-  'email',
-  'identityNumber'
+  "any",
+  "number",
+  "boolean",
+  "string",
+  "array",
+  "object",
+  "date",
+  "phone",
+  "email",
+  "identityNumber"
 ];
 
 const typesValues: any = {
   any: 123,
   number: 321,
   boolean: true,
-  string: 'test',
+  string: "test",
   array: [1, 2, 3],
-  object: { test: 'test' },
+  object: { test: "test" },
   date: new Date(),
-  phone: '0701113210',
-  email: 'tester@mydomain.cxx',
-  identityNumber: '550128-6149'
+  phone: "0701113210",
+  email: "tester@mydomain.cxx",
+  identityNumber: "550128-6149"
 };
 
 types.forEach((type: any) =>
   describe(`condition - type ${type}`, () => {
-    it('option can be used', () => {
+    it("option can be used", () => {
       expect(
         expectModule(
           { test: { type, condition: () => true } },
@@ -44,25 +44,25 @@ types.forEach((type: any) =>
       ).toBe(false);
     });
 
-    it('conditionErrorCode changes error message', () => {
+    it("conditionErrorCode changes error message", () => {
       expect(
         expectModule(
           {
-            test: { type, condition: () => false, conditionErrorCode: 'error' }
+            test: { type, condition: () => false, conditionErrorCode: "error" }
           },
           { test: typesValues[type] }
         ).errors()
-      ).toEqual({ test: 'error' });
+      ).toEqual({ test: "error" });
     });
 
-    it('reject gracefully if condition throws error', () => {
+    it("reject gracefully if condition throws error", () => {
       const expectationsFunc = () =>
         expectModule(
           {
             test: {
               type,
               condition: () => {
-                throw new Error('fail');
+                throw new Error("fail");
               }
             }
           },
@@ -72,7 +72,7 @@ types.forEach((type: any) =>
       expect(expectationsFunc().wereMet()).toBe(false);
     });
 
-    it('lower priority than allowNull', () => {
+    it("lower priority than allowNull", () => {
       expect(
         expectModule(
           {
@@ -87,13 +87,13 @@ types.forEach((type: any) =>
       ).toBe(true);
     });
 
-    it('lower priority than requiredIf', () => {
+    it("lower priority than requiredIf", () => {
       expect(
         expectModule(
           {
             test: {
               type,
-              requiredIf: 'missing',
+              requiredIf: "missing",
               condition: test => test !== null
             }
           },
@@ -102,18 +102,18 @@ types.forEach((type: any) =>
       ).toBe(true);
     });
 
-    it('lower priority than parse', () => {
+    it("lower priority than parse", () => {
       const otherTypeValues: any = {
         any: 456,
         number: 654,
         boolean: false,
-        string: 'bar',
+        string: "bar",
         array: [4, 5, 6],
-        object: { test: 'object' },
+        object: { test: "object" },
         date: new Date(1),
         phone: 948569845123466525,
-        email: 'other@mydomain.cxx',
-        identityNumber: '195501286149'
+        email: "other@mydomain.cxx",
+        identityNumber: "195501286149"
       };
 
       expect(
@@ -130,54 +130,54 @@ types.forEach((type: any) =>
       ).toBe(true);
     });
 
-    it('conditionErrorCode has lower priority than allowNullErrorCode', () => {
+    it("conditionErrorCode has lower priority than allowNullErrorCode", () => {
       expect(
         expectModule(
           {
             test: {
               type,
               condition: () => false,
-              conditionErrorCode: 'condition',
-              allowNullErrorCode: 'allowNull'
+              conditionErrorCode: "condition",
+              allowNullErrorCode: "allowNull"
             }
           },
           {}
         ).errors()
-      ).toEqual({ test: 'allowNull' });
+      ).toEqual({ test: "allowNull" });
     });
 
-    it('conditionErrorCode has lower priority than equalToErrorCode', () => {
+    it("conditionErrorCode has lower priority than equalToErrorCode", () => {
       expect(
         expectModule(
           {
             test: {
               type,
               condition: () => false,
-              equalTo: 'missing',
-              conditionErrorCode: 'condition',
-              equalToErrorCode: 'equalTo'
+              equalTo: "missing",
+              conditionErrorCode: "condition",
+              equalToErrorCode: "equalTo"
             }
           },
           { test: typesValues[type] }
         ).errors()
-      ).toEqual({ test: 'equalTo' });
+      ).toEqual({ test: "equalTo" });
     });
 
-    if (type !== 'any') {
-      it('conditionErrorCode has lower priority than type validation (errorCode)', () => {
+    if (type !== "any") {
+      it("conditionErrorCode has lower priority than type validation (errorCode)", () => {
         expect(
           expectModule(
             {
               test: {
                 type,
                 condition: () => false,
-                conditionErrorCode: 'condition',
-                errorCode: 'error'
+                conditionErrorCode: "condition",
+                errorCode: "error"
               }
             },
             { test: Symbol() }
           ).errors()
-        ).toEqual({ test: 'error' });
+        ).toEqual({ test: "error" });
       });
     }
   })

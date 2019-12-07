@@ -1,4 +1,4 @@
-import { ValidateFunction } from '../definitions';
+import { ValidateFunction } from "../definitions";
 
 import {
   formatParameter,
@@ -7,18 +7,18 @@ import {
   getDeep,
   parseType,
   parseFunctionWrapper
-} from '../util';
+} from "../util";
 
-import { validateAny } from './any';
-import { validateNumber } from './number';
-import { validateBoolean } from './boolean';
-import { validateString } from './string';
-import { validateArray } from './array';
-import { validateObject } from './object';
-import { validateDate } from './date';
-import { validatePhone } from './phone';
-import { validateEmail } from './email';
-import { validateIdentityNumber } from './identityNumber';
+import { validateAny } from "./any";
+import { validateNumber } from "./number";
+import { validateBoolean } from "./boolean";
+import { validateString } from "./string";
+import { validateArray } from "./array";
+import { validateObject } from "./object";
+import { validateDate } from "./date";
+import { validatePhone } from "./phone";
+import { validateEmail } from "./email";
+import { validateIdentityNumber } from "./identityNumber";
 
 const mapTypeValidations: any = {
   any: validateAny,
@@ -41,7 +41,7 @@ export const validate: ValidateFunction = ({
   actualValues = {},
   expected = {}
 }) => {
-  if (typeof options === 'string') {
+  if (typeof options === "string") {
     options = { type: options };
   }
 
@@ -58,7 +58,7 @@ export const validate: ValidateFunction = ({
   } = options;
 
   if (
-    typeof type !== 'string' ||
+    typeof type !== "string" ||
     !Object.prototype.hasOwnProperty.call(mapTypeValidations, type)
   ) {
     throw new Error(
@@ -71,7 +71,7 @@ export const validate: ValidateFunction = ({
   const initialValue = value;
   if (parse) {
     value =
-      typeof parse === 'function'
+      typeof parse === "function"
         ? parseFunctionWrapper({ value, parse })
         : parseType({ value, type });
   }
@@ -84,13 +84,13 @@ export const validate: ValidateFunction = ({
     validate
   });
 
-  value = Object.prototype.hasOwnProperty.call(validation, 'parsed') 
-    ? validation.parsed 
+  value = Object.prototype.hasOwnProperty.call(validation, "parsed")
+    ? validation.parsed
     : value;
 
   const isNullValue = isNull(value) || isNull(initialValue);
   const isAllowNull =
-    typeof allowNull === 'function'
+    typeof allowNull === "function"
       ? allowNullWrapper({ value, allowNull })
       : allowNull;
   const notRequired = requiredIf && isNull(getDeep(requiredIf, actualValues));
@@ -155,7 +155,7 @@ export const validate: ValidateFunction = ({
     return { valid: true, parsed };
   }
 
-  if (typeof condition === 'function') {
+  if (typeof condition === "function") {
     let valid = false;
     try {
       valid = condition(value);

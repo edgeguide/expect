@@ -98,14 +98,14 @@
 - `errors()` for types _array_ and _object_ now returns an object with nested properties instead of dot-separated string properties. Example illustrating changes:
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
-    foo: { type: 'array', items: 'number' },
-    bar: { type: 'object', keys: { buzz: 'number' } }
+    foo: { type: "array", items: "number" },
+    bar: { type: "object", keys: { buzz: "number" } }
   },
-  { foo: [1, '2'], bar: { buzz: '3' } }
+  { foo: [1, "2"], bar: { buzz: "3" } }
 ).errors(); // { foo: { '1': [ 'Expected parameter foo.1 to be of type number but it was "2"' ] }, bar: { buzz: [ 'Expected parameter bar.buzz to be of type number but it was "3"' ] } }
 ```
 

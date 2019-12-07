@@ -1,4 +1,4 @@
-import { IIdentityNumberOption } from '../definitions';
+import { IIdentityNumberOption } from "../definitions";
 
 const IDENTITY_NUMBER_REGEXP = /^(?:19|20)?(\d{6}(?:-|\+)?\d{4})$/;
 const IDENTITY_NUMBER_REGEXP_STRICT = /^(\d{6}(?:-|\+)?\d{4})$/;
@@ -14,7 +14,7 @@ export function validateIdentityNumber({
     ? IDENTITY_NUMBER_REGEXP_STRICT
     : IDENTITY_NUMBER_REGEXP;
 
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return { valid: false };
   }
 
@@ -23,7 +23,7 @@ export function validateIdentityNumber({
     return { valid: false };
   }
 
-  if (!verifyLuhn(matches[1].replace(/(\+|-)/, ''))) {
+  if (!verifyLuhn(matches[1].replace(/(\+|-)/, ""))) {
     return { valid: false };
   }
 

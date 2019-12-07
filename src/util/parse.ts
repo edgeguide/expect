@@ -3,27 +3,27 @@ export { parseType, parseFunctionWrapper };
 function parseType({ value, type }: { value: any; type: string }) {
   try {
     switch (type) {
-      case 'string': {
-        return typeof value === 'string' ? value : JSON.stringify(value);
+      case "string": {
+        return typeof value === "string" ? value : JSON.stringify(value);
       }
-      case 'number': {
-        return typeof value === 'string' && value ? Number(value) : value;
+      case "number": {
+        return typeof value === "string" && value ? Number(value) : value;
       }
-      case 'boolean': {
+      case "boolean": {
         try {
-          return value === 'undefined' || value === 'NaN'
+          return value === "undefined" || value === "NaN"
             ? false
             : !!JSON.parse(value);
         } catch (error) {
           return !!value;
         }
       }
-      case 'array':
-      case 'object': {
+      case "array":
+      case "object": {
         const result = JSON.parse(value);
         return result;
       }
-      case 'date': {
+      case "date": {
         return new Date(value);
       }
       default:

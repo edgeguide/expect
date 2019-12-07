@@ -1,4 +1,4 @@
-import { ValidateFunction, IErrorObject, IObjectOption } from '../definitions';
+import { ValidateFunction, IErrorObject, IObjectOption } from "../definitions";
 
 export function validateObject({
   parameter,
@@ -13,11 +13,11 @@ export function validateObject({
   options: IObjectOption;
   validate: ValidateFunction;
 }) {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return { valid: false };
   }
 
-  if (Object.prototype.hasOwnProperty.call(value, '__proto__')) {
+  if (Object.prototype.hasOwnProperty.call(value, "__proto__")) {
     return { valid: false, error: 'Object contained unsafe keys "__proto__"' };
   }
 
@@ -39,7 +39,7 @@ export function validateObject({
         error:
           options.errorCode ||
           `Object contained unchecked keys ${JSON.stringify(
-            uncheckedKeys.join(', ')
+            uncheckedKeys.join(", ")
           )}`
       };
     }
@@ -50,10 +50,10 @@ export function validateObject({
     const option = options.keys[key];
 
     const keyType =
-      typeof option === 'object' && option !== null ? option.type : option;
+      typeof option === "object" && option !== null ? option.type : option;
 
     const keyOptions =
-      typeof option === 'object' && option !== null
+      typeof option === "object" && option !== null
         ? option
         : { type: keyType };
 
@@ -70,7 +70,7 @@ export function validateObject({
     if (validation.valid) {
       const parsedValue = Object.prototype.hasOwnProperty.call(
         validation,
-        'parsed'
+        "parsed"
       )
         ? validation.parsed
         : value[key];

@@ -1,5 +1,5 @@
-import { IStringOption } from '../definitions';
-import { formatParameter, sanitize, containsUnsafe } from '../util';
+import { IStringOption } from "../definitions";
+import { formatParameter, sanitize, containsUnsafe } from "../util";
 
 export function validateString({
   parameter,
@@ -10,7 +10,7 @@ export function validateString({
   value: string;
   options: IStringOption;
 }) {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return { valid: false };
   }
 

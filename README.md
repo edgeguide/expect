@@ -47,10 +47,10 @@ The function returns an object exposing three method definitions:
 <summary><strong>Example of each method definition</strong></summary>
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
-const schema = { foo: 'string' };
-const validInput = { foo: 'test' };
+const schema = { foo: "string" };
+const validInput = { foo: "test" };
 const invalidInput = {};
 
 const valid = expect(schema, validInput);
@@ -72,11 +72,11 @@ invalid.getParsed(); // {}
 <summary><strong>Example validating input with Express.js</strong></summary>
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
-app.put('/user', function addUser(req, res) {
+app.put("/user", function addUser(req, res) {
   const expectations = expect(
-    { username: 'string', age: 'number', isAdmin: 'boolean' },
+    { username: "string", age: "number", isAdmin: "boolean" },
     req.body
   );
 
@@ -99,12 +99,12 @@ app.put('/user', function addUser(req, res) {
 Types must be specified in the validation schema for each input field, either by using a string or an object with the `type` property,
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
-    foo: 'number', // Type string only validates the type
-    bar: { type: 'number' } // Object can be used to combine type validation with other options
+    foo: "number", // Type string only validates the type
+    bar: { type: "number" } // Object can be used to combine type validation with other options
   },
   {
     foo: 123,
@@ -135,12 +135,12 @@ expect(
 Expects the input value to be an object. If the `keys` option is provided, each property of the input object can be evaluated.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 expect(
   {
     bar: {
-      type: 'object',
-      keys: { fizz: 'number', buzz: 'string' }
+      type: "object",
+      keys: { fizz: "number", buzz: "string" }
     }
   },
   { bar: { fizz: 1, buzz: 1 } }
@@ -150,33 +150,33 @@ expect(
 Object validation may be nested with several keys-options.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 expect(
   {
     bar: {
-      type: 'object',
+      type: "object",
       keys: {
-        fizz: 'number',
-        buzz: { type: 'object', keys: { bizz: 'number' } }
+        fizz: "number",
+        buzz: { type: "object", keys: { bizz: "number" } }
       }
     }
   },
-  { bar: { fizz: 1, buzz: { bizz: 'hello' } } }
+  { bar: { fizz: 1, buzz: { bizz: "hello" } } }
 ).errors(); // { bar: { buzz: { bizz: 'Expected parameter bar.buzz.bizz to be of type number but it was "hello"' } } }
 ```
 
 Using the `strictKeyCheck` option, the validation will fail if the input object has a property that is not specified in the `keys` option.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 expect(
   {
     bar: {
-      type: 'object',
+      type: "object",
       strictKeyCheck: true,
       keys: {
-        fizz: 'number',
-        buzz: { type: 'object', keys: { bizz: 'number' } }
+        fizz: "number",
+        buzz: { type: "object", keys: { bizz: "number" } }
       }
     }
   },
@@ -198,24 +198,24 @@ expect(
 Expects the parameter to be an array. Each array item can be validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
     beef: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'object',
-        keys: { foo: 'number', bar: 'string' }
+        type: "object",
+        keys: { foo: "number", bar: "string" }
       }
     }
   },
   {
     beef: [
-      { foo: 1, bar: '1' },
-      { foo: 2, bar: '2' },
-      { foo: 3, bar: '3' },
-      { foo: 4, bar: '4' }
+      { foo: 1, bar: "1" },
+      { foo: 2, bar: "2" },
+      { foo: 3, bar: "3" },
+      { foo: 4, bar: "4" }
     ]
   }
 ).wereMet(); // true
@@ -224,45 +224,54 @@ expect(
 A function may be used as an `items` option. The function will be passed the input array as its parameter and must return a validation schema.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 const schema = {
   beef: {
-    type: 'array',
+    type: "array",
     items: item => ({
-      type: 'object',
+      type: "object",
       keys: {
-        foo: item.bar ? 'number' : 'string',
-        bar: 'boolean'
+        foo: item.bar ? "number" : "string",
+        bar: "boolean"
       }
     })
   }
 };
 
 expect(schema, {
-  beef: [{ foo: 1, bar: true }, { foo: 2, bar: true }]
+  beef: [
+    { foo: 1, bar: true },
+    { foo: 2, bar: true }
+  ]
 }).wereMet(); // true
 
 expect(schema, {
-  beef: [{ foo: '1', bar: false }, { foo: '2', bar: false }]
+  beef: [
+    { foo: "1", bar: false },
+    { foo: "2", bar: false }
+  ]
 }).wereMet(); // true
 
 expect(schema, {
-  beef: [{ foo: '1', bar: true }, { foo: '2', bar: true }]
+  beef: [
+    { foo: "1", bar: true },
+    { foo: "2", bar: true }
+  ]
 }).wereMet(); // false
 ```
 
 Note that a function can also be used for recursive validation schemas.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 const schema = {
-  type: 'object',
+  type: "object",
   keys: {
-    value: 'string',
+    value: "string",
     branches: {
-      type: 'array',
+      type: "array",
       allowNull: true,
       items: () => schema
     }
@@ -273,10 +282,10 @@ expect(
   { root: schema },
   {
     root: {
-      value: 'foo',
+      value: "foo",
       branches: [
-        { value: 'bar' },
-        { value: 'bizz', branches: [{ value: 'buzz' }] }
+        { value: "bar" },
+        { value: "bizz", branches: [{ value: "buzz" }] }
       ]
     }
   }
@@ -353,22 +362,22 @@ Note that _null_, _undefined_ and empty string are valid input values with `allo
 It is possible to pass a function to `allowNull`, in which case the return value will be used (errors thrown will be ignored and treated as _false_). This may be used to filter allowed null values.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
-    foo: { type: 'string', allowNull: true },
-    bar: { type: 'number', allowNull: true }
+    foo: { type: "string", allowNull: true },
+    bar: { type: "number", allowNull: true }
   },
-  { bar: '' }
+  { bar: "" }
 ).wereMet(); // true
 
 expect(
   {
-    foo: { type: 'string', allowNull: true },
-    bar: { type: 'number', allowNull: bar => bar !== '' }
+    foo: { type: "string", allowNull: true },
+    bar: { type: "number", allowNull: bar => bar !== "" }
   },
-  { bar: '' }
+  { bar: "" }
 ).wereMet(); // false
 ```
 
@@ -380,45 +389,45 @@ expect(
 The `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_, _undefined_ or empty string.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
-    foo: { type: 'string', allowNull: true },
-    bar: { type: 'string', requiredIf: 'foo' }
+    foo: { type: "string", allowNull: true },
+    bar: { type: "string", requiredIf: "foo" }
   },
   { foo: null }
 ).wereMet(); // true
 
 expect(
   {
-    foo: { type: 'string', allowNull: true },
-    bar: { type: 'string', requiredIf: 'foo' }
+    foo: { type: "string", allowNull: true },
+    bar: { type: "string", requiredIf: "foo" }
   },
-  { foo: 'test' }
+  { foo: "test" }
 ).wereMet(); // false
 
 expect(
   {
-    foo: { type: 'string', allowNull: true },
-    bar: { type: 'string', allowNull: true, requiredIf: 'foo' }
+    foo: { type: "string", allowNull: true },
+    bar: { type: "string", allowNull: true, requiredIf: "foo" }
   },
-  { foo: 'test' }
+  { foo: "test" }
 ).wereMet(); // true (requiredIf has no effect if allowNull is true)
 ```
 
 Note that when using `requiredIf` on nested objects or arrays, you need to pass an array to `requiredIf` with the path to the target parameter.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
     foo: {
-      type: 'object',
-      keys: { buzz: { type: 'string', allowNull: true } }
+      type: "object",
+      keys: { buzz: { type: "string", allowNull: true } }
     },
-    bar: { type: 'string', requiredIf: ['foo', 'buzz'] }
+    bar: { type: "string", requiredIf: ["foo", "buzz"] }
   },
   {
     foo: { buzz: null },
@@ -437,10 +446,10 @@ The `parse` option is available to all types. This option allows the user to mut
 If a function is passed as the `parse` option, the type checker will attempt to call the `parse` function with the input value as its parameter. The function's return value will then be used for type checking instead of the input value. If an error is thrown when calling the function, the type checker will proceed using the initial input value.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 expect(
-  { test: { type: 'number', parse: test => Number(test) } },
-  { test: '123' }
+  { test: { type: "number", parse: test => Number(test) } },
+  { test: "123" }
 ).getParsed(); // { test: 123 }
 ```
 
@@ -462,33 +471,33 @@ Note that `parse` has a particular interaction with the `allowNull` and `require
 - `parse` will not be applied for the target parameter when `requiredIf` checks the value of the target path
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 const invalid = expect(
-  { test: { type: 'string', allowNull: false, parse: true } },
+  { test: { type: "string", allowNull: false, parse: true } },
   { test: null }
 );
 invalid.wereMet(); // false
 invalid.getParsed(); // {}
 
 const valid = expect(
-  { test: { type: 'string', allowNull: true, parse: true } },
+  { test: { type: "string", allowNull: true, parse: true } },
   { test: null }
 );
 valid.wereMet(); // true
 valid.getParsed(); // { test: 'null' }
 
 const alsoValid = expect(
-  { test: { type: 'string', allowNull: true, parse: () => null } },
-  { test: 'test' }
+  { test: { type: "string", allowNull: true, parse: () => null } },
+  { test: "test" }
 );
 alsoValid.wereMet(); // true
 alsoValid.getParsed(); // { test: null }
 
 const anotherOne = expect(
   {
-    test: { type: 'string', requiredIf: 'existing' },
-    existing: { type: 'string', allowNull: true, parse: () => 'test' }
+    test: { type: "string", requiredIf: "existing" },
+    existing: { type: "string", allowNull: true, parse: () => "test" }
   },
   { test: null, existing: null }
 );
@@ -504,36 +513,36 @@ anotherOne.getParsed(); // { test: null, existing: 'test' }
 `equalTo` is another option available to all types. It ensures that the input value matches another value specified by a key.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
-    foo: { type: 'boolean', equalTo: 'bar' },
-    bar: 'boolean'
+    foo: { type: "boolean", equalTo: "bar" },
+    bar: "boolean"
   },
   { foo: true, bar: true }
 ).wereMet(); // true
 
 expect(
   {
-    foo: { type: 'boolean', parse: true, equalTo: 'bar' },
-    bar: 'boolean'
+    foo: { type: "boolean", parse: true, equalTo: "bar" },
+    bar: "boolean"
   },
-  { foo: 'true', bar: true }
+  { foo: "true", bar: true }
 ).wereMet(); // true
 
 expect(
   {
-    foo: { type: 'boolean', equalTo: 'bar' },
-    bar: 'boolean'
+    foo: { type: "boolean", equalTo: "bar" },
+    bar: "boolean"
   },
   { foo: true, bar: false }
 ).wereMet(); // false
 
 expect(
   {
-    foo: { type: 'boolean', allowNull: true, equalTo: 'bar' },
-    bar: { type: 'boolean', allowNull: true }
+    foo: { type: "boolean", allowNull: true, equalTo: "bar" },
+    bar: { type: "boolean", allowNull: true }
   },
   { foo: null, bar: null }
 ).wereMet(); // true
@@ -543,16 +552,16 @@ Note that when using the keys/items options when nestling objects/arrays, you ne
 the other parameter.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
-    foo: { type: 'object', keys: { buzz: 'string' } },
-    bar: { type: 'string', equalTo: ['foo', 'buzz'] }
+    foo: { type: "object", keys: { buzz: "string" } },
+    bar: { type: "string", equalTo: ["foo", "buzz"] }
   },
   {
-    foo: { buzz: 'abc' },
-    bar: 'abc'
+    foo: { buzz: "abc" },
+    bar: "abc"
   }
 ).wereMet(); // true
 ```
@@ -565,12 +574,12 @@ expect(
 The `condition` option is available for all types. Passing a function as a `condition` option will test that the function evaluates to a _truthy_ value with the input value as its parameter.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
     foo: {
-      type: 'array',
+      type: "array",
       condition: test => test.length
     }
   },
@@ -581,12 +590,12 @@ expect(
 Note that the `condition` option has a lower priority than `allowNull`, `requiredIf` and `parse`.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
     foo: {
-      type: 'array',
+      type: "array",
       condition: test => test !== null,
       allowNull: true
     }
@@ -597,12 +606,12 @@ expect(
 expect(
   {
     foo: {
-      type: 'boolean',
+      type: "boolean",
       parse: foo => !!foo,
-      condition: foo => typeof foo !== 'string'
+      condition: foo => typeof foo !== "string"
     }
   },
-  { foo: 'bar' }
+  { foo: "bar" }
 ).wereMet(); // true
 ```
 
@@ -622,31 +631,31 @@ expect(
 `& < > " '`, and with the strictEntities option enabled they are `& < > " ' ! @ $ ( ) = + { } [ ]`.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 expect(
-  { test: { type: 'string', blockUnsafe: true } },
-  { test: '<div>Some html</div>' }
+  { test: { type: "string", blockUnsafe: true } },
+  { test: "<div>Some html</div>" }
 ).wereMet(); // false
 
 expect(
-  { test: { type: 'string', blockUnsafe: true } },
-  { test: 'This is not so unsafe in non-strict mode!' }
+  { test: { type: "string", blockUnsafe: true } },
+  { test: "This is not so unsafe in non-strict mode!" }
 ).wereMet(); // true
 
 expect(
-  { test: { type: 'string', blockUnsafe: true, strictEntities: true } },
-  { test: 'But it is not safe in strict mode!' }
+  { test: { type: "string", blockUnsafe: true, strictEntities: true } },
+  { test: "But it is not safe in strict mode!" }
 ).wereMet(); // false
 ```
 
 For the email-type, `@` is always an allowed character.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
-  { test: { type: 'email', blockUnsafe: true, strictEntities: true } },
-  { test: 'thisisok@foo.xcc' }
+  { test: { type: "email", blockUnsafe: true, strictEntities: true } },
+  { test: "thisisok@foo.xcc" }
 ).wereMet(); // true
 ```
 
@@ -654,18 +663,18 @@ To explicitly allow some characters (even when in strict mode), you can pass a p
 characters.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
     test: {
-      type: 'string',
+      type: "string",
       blockUnsafe: true,
       strictEntities: true,
-      allowed: ['!']
+      allowed: ["!"]
     }
   },
-  { test: 'This would normally be considered unsafe!' }
+  { test: "This would normally be considered unsafe!" }
 ).wereMet(); // true
 ```
 
@@ -688,16 +697,16 @@ expect(
 ```
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
-  { test: { type: 'string', sanitize: true } },
-  { test: 'This will be kept as-is in non-strict mode!' }
+  { test: { type: "string", sanitize: true } },
+  { test: "This will be kept as-is in non-strict mode!" }
 ).getParsed(); // { test: 'This will be kept as-is in non-strict mode!' }
 
 expect(
-  { test: { type: 'string', sanitize: true, strictEntities: true } },
-  { test: 'But sanitized in strict mode!' }
+  { test: { type: "string", sanitize: true, strictEntities: true } },
+  { test: "But sanitized in strict mode!" }
 ).getParsed(); // { test: 'But sanitized in strict mode&excl;' }
 ```
 
@@ -705,18 +714,18 @@ To explicitly allow some characters (even when in strict mode), you can pass a p
 characters. These will not be sanitized
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
     test: {
-      type: 'string',
+      type: "string",
       sanitize: true,
       strictEntities: true,
-      allowed: ['(', ')']
+      allowed: ["(", ")"]
     }
   },
-  { test: 'keep (some) of this as it is [test]' }
+  { test: "keep (some) of this as it is [test]" }
 ).getParsed(); // { test: 'keep (some) of this as it is &lbrack;test&rbrack;'}
 ```
 
@@ -728,18 +737,18 @@ expect(
 Changes the error message returned by `errors()` if the validation fails. Default errorCode is a string describing what went wrong, this option allows for customized error codes.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+const expect = require("@edgeguideab/expect");
 
 expect(
   {
-    bar: { type: 'string' }
+    bar: { type: "string" }
   },
   { bar: {} }
 ).errors(); // { bar: 'Expected parameter bar to be of type string but it was {}' }
 
 expect(
   {
-    bar: { type: 'string', errorCode: 'Invalid format' }
+    bar: { type: "string", errorCode: "Invalid format" }
   },
   { bar: {} }
 ).errors(); // { bar: 'Invalid format' }

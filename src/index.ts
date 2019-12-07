@@ -1,12 +1,12 @@
-import { IErrorObject, ExpectedType, Options } from './definitions';
-import { validate } from './types';
+import { IErrorObject, ExpectedType, Options } from "./definitions";
+import { validate } from "./types";
 
 export = (
   expected: { [key: string]: ExpectedType | Options },
   actualValues: { [key: string]: any }
 ) => {
-  if (expected === null || typeof expected !== 'object') {
-    throw new Error('Invalid validation schema');
+  if (expected === null || typeof expected !== "object") {
+    throw new Error("Invalid validation schema");
   }
 
   const parsedValues: { [key: string]: any } = {};
@@ -14,9 +14,9 @@ export = (
   let valid = true;
 
   Object.keys(expected).forEach(parameter => {
-    if (actualValues === null || typeof actualValues !== 'object') {
+    if (actualValues === null || typeof actualValues !== "object") {
       valid = false;
-      errors[parameter] = 'Invalid input';
+      errors[parameter] = "Invalid input";
       return;
     }
 
@@ -24,7 +24,7 @@ export = (
     const actual = actualValues[parameter];
 
     const validation = validate({
-      type: typeof options === 'string' ? options : options.type,
+      type: typeof options === "string" ? options : options.type,
       parameter,
       value: actual,
       options,

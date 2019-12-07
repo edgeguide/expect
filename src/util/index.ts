@@ -1,6 +1,6 @@
-import { isEqualTo } from './isEqualTo';
-import { getDeep, getDeepOptions } from './getDeep';
-import { parseType, parseFunctionWrapper } from './parse';
+import { isEqualTo } from "./isEqualTo";
+import { getDeep, getDeepOptions } from "./getDeep";
+import { parseType, parseFunctionWrapper } from "./parse";
 
 export {
   formatParameter,
@@ -15,31 +15,31 @@ export {
 };
 
 function formatParameter(parameter: string | number | Array<string | number>) {
-  return Array.isArray(parameter) ? parameter.join('.') : parameter;
+  return Array.isArray(parameter) ? parameter.join(".") : parameter;
 }
 
 const htmlEntityMap: {
   [key: string]: string;
 } = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  '\'': '&apos;',
-  '!': '&excl;',
-  '@': '&commat;',
-  $: '&dollar;',
-  '(': '&lpar;',
-  ')': '&rpar;',
-  '=': '&equals;',
-  '+': '&plus;',
-  '{': '&lbrace;',
-  '}': '&rbrace;',
-  '[': '&lbrack;',
-  ']': '&rbrack;'
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&apos;",
+  "!": "&excl;",
+  "@": "&commat;",
+  $: "&dollar;",
+  "(": "&lpar;",
+  ")": "&rpar;",
+  "=": "&equals;",
+  "+": "&plus;",
+  "{": "&lbrace;",
+  "}": "&rbrace;",
+  "[": "&lbrack;",
+  "]": "&rbrack;"
 };
 
-const nonStrictSubset = ['&', '<', '>', '"', '\''];
+const nonStrictSubset = ["&", "<", ">", '"', "'"];
 
 function containsUnsafe({
   value,
@@ -78,10 +78,10 @@ function sanitize({
       (!strict && !nonStrictSubset.includes(char))
         ? `${sanitized}${char}`
         : `${sanitized}${htmlEntityMap[char]}`,
-    ''
+    ""
   );
 }
 
 function isNull(value: any) {
-  return value === undefined || value === null || value === '';
+  return value === undefined || value === null || value === "";
 }

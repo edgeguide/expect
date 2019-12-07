@@ -1,14 +1,14 @@
 export type ExpectedType =
-  | 'any'
-  | 'number'
-  | 'boolean'
-  | 'string'
-  | 'array'
-  | 'object'
-  | 'date'
-  | 'phone'
-  | 'email'
-  | 'identityNumber';
+  | "any"
+  | "number"
+  | "boolean"
+  | "string"
+  | "array"
+  | "object"
+  | "date"
+  | "phone"
+  | "email"
+  | "identityNumber";
 
 export interface IErrorObject {
   [key: string]: undefined | string | IErrorObject;

@@ -1,9 +1,9 @@
-import expectModule = require('../src');
+import expectModule = require("../src");
 
-describe('Expect package (README examples):', () => {
-  it('Usage - Validate parameters on the server', () => {
-    const schema: { [key: string]: 'string' } = { foo: 'string' };
-    const validInput = { foo: 'test' };
+describe("Expect package (README examples):", () => {
+  it("Usage - Validate parameters on the server", () => {
+    const schema: { [key: string]: "string" } = { foo: "string" };
+    const validInput = { foo: "test" };
     const invalidInput = {};
 
     const valid = expectModule(schema, validInput);
@@ -14,19 +14,19 @@ describe('Expect package (README examples):', () => {
 
     expect(valid.errors()).toEqual({});
     expect(invalid.errors()).toEqual({
-      foo: 'Expected parameter foo to be of type string but it was undefined'
+      foo: "Expected parameter foo to be of type string but it was undefined"
     });
 
-    expect(valid.getParsed()).toEqual({ foo: 'test' });
+    expect(valid.getParsed()).toEqual({ foo: "test" });
     expect(invalid.getParsed()).toEqual({});
   });
 
-  it('Options', () => {
+  it("Options", () => {
     expect(
       expectModule(
         {
-          foo: 'number',
-          bar: { type: 'number' }
+          foo: "number",
+          bar: { type: "number" }
         },
         {
           foo: 123,
@@ -36,44 +36,44 @@ describe('Expect package (README examples):', () => {
     ).toBe(true);
   });
 
-  it('Options - allowNull', () => {
+  it("Options - allowNull", () => {
     expect(
       expectModule(
         {
-          foo: { type: 'string', allowNull: true },
-          bar: { type: 'number', allowNull: true }
+          foo: { type: "string", allowNull: true },
+          bar: { type: "number", allowNull: true }
         },
-        { bar: '' }
+        { bar: "" }
       ).wereMet()
     ).toBe(true);
 
     expect(
       expectModule(
         {
-          foo: { type: 'string', allowNull: true },
-          bar: { type: 'number', allowNull: (bar: any) => bar !== '' }
+          foo: { type: "string", allowNull: true },
+          bar: { type: "number", allowNull: (bar: any) => bar !== "" }
         },
-        { bar: '' }
+        { bar: "" }
       ).wereMet()
     ).toBe(false);
   });
 
-  it('Options - requiredIf', () => {
+  it("Options - requiredIf", () => {
     expect(
       expectModule(
         {
-          foo: { type: 'string', allowNull: true },
-          bar: { type: 'string', allowNull: true, requiredIf: 'foo' }
+          foo: { type: "string", allowNull: true },
+          bar: { type: "string", allowNull: true, requiredIf: "foo" }
         },
-        { foo: 'test' }
+        { foo: "test" }
       ).wereMet()
     ).toBe(true);
 
     expect(
       expectModule(
         {
-          foo: { type: 'string', allowNull: true },
-          bar: { type: 'string', requiredIf: 'foo' }
+          foo: { type: "string", allowNull: true },
+          bar: { type: "string", requiredIf: "foo" }
         },
         { foo: null }
       ).wereMet()
@@ -82,10 +82,10 @@ describe('Expect package (README examples):', () => {
     expect(
       expectModule(
         {
-          foo: { type: 'string', allowNull: true },
-          bar: { type: 'string', requiredIf: 'foo' }
+          foo: { type: "string", allowNull: true },
+          bar: { type: "string", requiredIf: "foo" }
         },
-        { foo: 'test' }
+        { foo: "test" }
       ).wereMet()
     ).toBe(false);
 
@@ -93,10 +93,10 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           foo: {
-            type: 'object',
-            keys: { buzz: { type: 'string', allowNull: true } }
+            type: "object",
+            keys: { buzz: { type: "string", allowNull: true } }
           },
-          bar: { type: 'string', requiredIf: ['foo', 'buzz'] }
+          bar: { type: "string", requiredIf: ["foo", "buzz"] }
         },
         {
           foo: { buzz: null },
@@ -106,63 +106,63 @@ describe('Expect package (README examples):', () => {
     ).toBe(true);
   });
 
-  it('Options - parse', () => {
+  it("Options - parse", () => {
     expect(
       expectModule(
         {
           test: {
-            type: 'number',
+            type: "number",
             parse: (test: string) => Number(test)
           }
         },
-        { test: '123' }
+        { test: "123" }
       ).getParsed()
     ).toEqual({ test: 123 });
 
     const invalid = expectModule(
-      { test: { type: 'string', allowNull: false, parse: true } },
+      { test: { type: "string", allowNull: false, parse: true } },
       { test: null }
     );
     expect(invalid.wereMet()).toBe(false);
     expect(invalid.getParsed()).toEqual({});
 
     const valid = expectModule(
-      { test: { type: 'string', allowNull: true, parse: true } },
+      { test: { type: "string", allowNull: true, parse: true } },
       { test: null }
     );
     expect(valid.wereMet()).toBe(true);
-    expect(valid.getParsed()).toEqual({ test: 'null' });
+    expect(valid.getParsed()).toEqual({ test: "null" });
 
     const alsoValid = expectModule(
       {
-        test: { type: 'string', allowNull: true, parse: () => null }
+        test: { type: "string", allowNull: true, parse: () => null }
       },
-      { test: 'test' }
+      { test: "test" }
     );
     expect(alsoValid.wereMet()).toBe(true); // true
     expect(alsoValid.getParsed()).toEqual({ test: null });
 
     const anotherOne = expectModule(
       {
-        test: { type: 'string', requiredIf: 'existing' },
+        test: { type: "string", requiredIf: "existing" },
         existing: {
-          type: 'string',
+          type: "string",
           allowNull: true,
-          parse: () => 'test'
+          parse: () => "test"
         }
       },
       { test: null, existing: null }
     );
     expect(anotherOne.wereMet()).toBe(true);
-    expect(anotherOne.getParsed()).toEqual({ test: null, existing: 'test' });
+    expect(anotherOne.getParsed()).toEqual({ test: null, existing: "test" });
   });
 
-  it('Options - condition', () => {
+  it("Options - condition", () => {
     expect(
       expectModule(
         {
           foo: {
-            type: 'array',
+            type: "array",
             condition: (test: any) => test.length
           }
         },
@@ -174,7 +174,7 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           foo: {
-            type: 'array',
+            type: "array",
             condition: (test: any) => test !== null,
             allowNull: true
           }
@@ -187,52 +187,52 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           foo: {
-            type: 'boolean',
+            type: "boolean",
             parse: (foo: any) => !!foo,
-            condition: (foo: any) => typeof foo !== 'string'
+            condition: (foo: any) => typeof foo !== "string"
           }
         },
-        { foo: 'bar' }
+        { foo: "bar" }
       ).wereMet()
     ).toBe(true);
   });
 
-  it('Options - errorCode', () => {
+  it("Options - errorCode", () => {
     expect(
       expectModule(
         {
-          bar: { type: 'string' }
+          bar: { type: "string" }
         },
         { bar: {} }
       ).errors()
     ).toEqual({
-      bar: 'Expected parameter bar to be of type string but it was {}'
+      bar: "Expected parameter bar to be of type string but it was {}"
     });
 
     expect(
       expectModule(
         {
-          bar: { type: 'string', errorCode: 'Invalid format' }
+          bar: { type: "string", errorCode: "Invalid format" }
         },
         { bar: {} }
       ).errors()
-    ).toEqual({ bar: 'Invalid format' });
+    ).toEqual({ bar: "Invalid format" });
   });
 
-  it('Type explanations - object', () => {
+  it("Type explanations - object", () => {
     expect(
       expectModule(
         {
           bar: {
-            type: 'object',
-            keys: { fizz: 'number', buzz: 'string' }
+            type: "object",
+            keys: { fizz: "number", buzz: "string" }
           }
         },
         { bar: { fizz: 1, buzz: 1 } }
       ).errors()
     ).toEqual({
       bar: {
-        buzz: 'Expected parameter bar.buzz to be of type string but it was 1'
+        buzz: "Expected parameter bar.buzz to be of type string but it was 1"
       }
     });
 
@@ -240,17 +240,17 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           bar: {
-            type: 'object',
+            type: "object",
             keys: {
-              fizz: 'number',
+              fizz: "number",
               buzz: {
-                type: 'object',
-                keys: { bizz: 'number' }
+                type: "object",
+                keys: { bizz: "number" }
               }
             }
           }
         },
-        { bar: { fizz: 1, buzz: { bizz: 'hello' } } }
+        { bar: { fizz: 1, buzz: { bizz: "hello" } } }
       ).errors()
     ).toEqual({
       bar: {
@@ -265,13 +265,13 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           bar: {
-            type: 'object',
+            type: "object",
             strictKeyCheck: true,
             keys: {
-              fizz: 'number',
+              fizz: "number",
               buzz: {
-                type: 'object',
-                keys: { bizz: 'number' }
+                type: "object",
+                keys: { bizz: "number" }
               }
             }
           }
@@ -287,15 +287,15 @@ describe('Expect package (README examples):', () => {
     ).toEqual({ bar: 'Object contained unchecked keys "kizz"' });
   });
 
-  it('Type explanations - array', () => {
+  it("Type explanations - array", () => {
     expect(
       expectModule(
         {
           beef: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'object',
-              keys: { foo: 'number', bar: 'boolean' }
+              type: "object",
+              keys: { foo: "number", bar: "boolean" }
             }
           }
         },
@@ -312,12 +312,12 @@ describe('Expect package (README examples):', () => {
 
     const schema: any = {
       beef: {
-        type: 'array',
+        type: "array",
         items: (item: { bar: any }) => ({
-          type: 'object',
+          type: "object",
           keys: {
-            foo: item.bar ? 'number' : 'string',
-            bar: 'boolean'
+            foo: item.bar ? "number" : "string",
+            bar: "boolean"
           }
         })
       }
@@ -325,28 +325,37 @@ describe('Expect package (README examples):', () => {
 
     expect(
       expectModule(schema, {
-        beef: [{ foo: 1, bar: true }, { foo: 2, bar: true }]
+        beef: [
+          { foo: 1, bar: true },
+          { foo: 2, bar: true }
+        ]
       }).wereMet()
     ).toBe(true);
 
     expect(
       expectModule(schema, {
-        beef: [{ foo: '1', bar: false }, { foo: '2', bar: false }]
+        beef: [
+          { foo: "1", bar: false },
+          { foo: "2", bar: false }
+        ]
       }).wereMet()
     ).toBe(true);
 
     expect(
       expectModule(schema, {
-        beef: [{ foo: '1', bar: true }, { foo: '2', bar: true }]
+        beef: [
+          { foo: "1", bar: true },
+          { foo: "2", bar: true }
+        ]
       }).wereMet()
     ).toBe(false);
 
     const recursion: any = {
-      type: 'object',
+      type: "object",
       keys: {
-        value: 'string',
+        value: "string",
         branches: {
-          type: 'array',
+          type: "array",
           allowNull: true,
           items: () => recursion
         }
@@ -358,10 +367,10 @@ describe('Expect package (README examples):', () => {
         { root: recursion },
         {
           root: {
-            value: 'foo',
+            value: "foo",
             branches: [
-              { value: 'bar' },
-              { value: 'bizz', branches: [{ value: 'buzz' }] }
+              { value: "bar" },
+              { value: "bizz", branches: [{ value: "buzz" }] }
             ]
           }
         }
@@ -369,12 +378,12 @@ describe('Expect package (README examples):', () => {
     ).toBe(true);
   });
 
-  it('Matchers - equalTo', () => {
+  it("Matchers - equalTo", () => {
     expect(
       expectModule(
         {
-          foo: { type: 'boolean', equalTo: 'bar' },
-          bar: 'boolean'
+          foo: { type: "boolean", equalTo: "bar" },
+          bar: "boolean"
         },
         { foo: true, bar: true }
       ).wereMet()
@@ -383,18 +392,18 @@ describe('Expect package (README examples):', () => {
     expect(
       expectModule(
         {
-          foo: { type: 'boolean', parse: true, equalTo: 'bar' },
-          bar: 'boolean'
+          foo: { type: "boolean", parse: true, equalTo: "bar" },
+          bar: "boolean"
         },
-        { foo: 'true', bar: true }
+        { foo: "true", bar: true }
       ).wereMet()
     ).toBe(true);
 
     expect(
       expectModule(
         {
-          foo: { type: 'boolean', equalTo: 'bar' },
-          bar: 'boolean'
+          foo: { type: "boolean", equalTo: "bar" },
+          bar: "boolean"
         },
         { foo: true, bar: false }
       ).wereMet()
@@ -403,8 +412,8 @@ describe('Expect package (README examples):', () => {
     expect(
       expectModule(
         {
-          foo: { type: 'boolean', allowNull: true, equalTo: 'bar' },
-          bar: { type: 'boolean', allowNull: true }
+          foo: { type: "boolean", allowNull: true, equalTo: "bar" },
+          bar: { type: "boolean", allowNull: true }
         },
         { foo: null, bar: null }
       ).wereMet()
@@ -414,31 +423,31 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           foo: {
-            type: 'object',
-            keys: { buzz: 'string' }
+            type: "object",
+            keys: { buzz: "string" }
           },
-          bar: { type: 'string', equalTo: ['foo', 'buzz'] }
+          bar: { type: "string", equalTo: ["foo", "buzz"] }
         },
         {
-          foo: { buzz: 'abc' },
-          bar: 'abc'
+          foo: { buzz: "abc" },
+          bar: "abc"
         }
       ).wereMet()
     ).toBe(true);
   });
 
-  it('Matchers - blockUnsafe', () => {
+  it("Matchers - blockUnsafe", () => {
     expect(
       expectModule(
-        { test: { type: 'string', blockUnsafe: true } },
-        { test: '<div>Some html</div>' }
+        { test: { type: "string", blockUnsafe: true } },
+        { test: "<div>Some html</div>" }
       ).wereMet()
     ).toBe(false);
 
     expect(
       expectModule(
-        { test: { type: 'string', blockUnsafe: true } },
-        { test: 'This is not so unsafe in non-strict mode!' }
+        { test: { type: "string", blockUnsafe: true } },
+        { test: "This is not so unsafe in non-strict mode!" }
       ).wereMet()
     ).toBe(true);
 
@@ -446,12 +455,12 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           test: {
-            type: 'string',
+            type: "string",
             blockUnsafe: true,
             strictEntities: true
           }
         },
-        { test: 'But it is not safe in strict mode!' }
+        { test: "But it is not safe in strict mode!" }
       ).wereMet()
     ).toBe(false);
 
@@ -459,12 +468,12 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           test: {
-            type: 'email',
+            type: "email",
             blockUnsafe: true,
             strictEntities: true
           }
         },
-        { test: 'thisisok@foo.xcc' }
+        { test: "thisisok@foo.xcc" }
       ).wereMet()
     ).toBe(true);
 
@@ -472,57 +481,57 @@ describe('Expect package (README examples):', () => {
       expectModule(
         {
           test: {
-            type: 'string',
+            type: "string",
             blockUnsafe: true,
             strictEntities: true,
-            allowed: ['!']
+            allowed: ["!"]
           }
         },
-        { test: 'This would normally be considered unsafe!' }
+        { test: "This would normally be considered unsafe!" }
       ).wereMet()
     ).toBe(true);
   });
 
-  it('Matchers - sanitize', () => {
+  it("Matchers - sanitize", () => {
     expect(
       expectModule(
-        { test: { type: 'string', sanitize: true } },
-        { test: '<div>Some html</div>' }
+        { test: { type: "string", sanitize: true } },
+        { test: "<div>Some html</div>" }
       ).getParsed()
-    ).toEqual({ test: '&lt;div&gt;Some html&lt;/div&gt;' });
+    ).toEqual({ test: "&lt;div&gt;Some html&lt;/div&gt;" });
 
     expect(
       expectModule(
-        { test: { type: 'string', sanitize: true } },
-        { test: 'This will be kept as-is in non-strict mode!' }
+        { test: { type: "string", sanitize: true } },
+        { test: "This will be kept as-is in non-strict mode!" }
       ).getParsed()
-    ).toEqual({ test: 'This will be kept as-is in non-strict mode!' });
+    ).toEqual({ test: "This will be kept as-is in non-strict mode!" });
 
     expect(
       expectModule(
         {
           test: {
-            type: 'string',
+            type: "string",
             sanitize: true,
             strictEntities: true
           }
         },
-        { test: 'But sanitized in strict mode!' }
+        { test: "But sanitized in strict mode!" }
       ).getParsed()
-    ).toEqual({ test: 'But sanitized in strict mode&excl;' });
+    ).toEqual({ test: "But sanitized in strict mode&excl;" });
 
     expect(
       expectModule(
         {
           test: {
-            type: 'string',
+            type: "string",
             sanitize: true,
             strictEntities: true,
-            allowed: ['(', ')']
+            allowed: ["(", ")"]
           }
         },
-        { test: 'keep (some) of this as it is [test]' }
+        { test: "keep (some) of this as it is [test]" }
       ).getParsed()
-    ).toEqual({ test: 'keep (some) of this as it is &lbrack;test&rbrack;' });
+    ).toEqual({ test: "keep (some) of this as it is &lbrack;test&rbrack;" });
   });
 });

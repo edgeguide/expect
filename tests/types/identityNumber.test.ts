@@ -1,23 +1,23 @@
-import expectModule = require('../../src');
+import expectModule = require("../../src");
 
-describe('Expect package (identityNumber validation):', () => {
-  it('tests for identityNumber type correctly', () => {
+describe("Expect package (identityNumber validation):", () => {
+  it("tests for identityNumber type correctly", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '550128-6149'
+        test: "550128-6149"
       }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('an object is not an identity number', () => {
+  it("an object is not an identity number", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
         test: {}
@@ -27,10 +27,10 @@ describe('Expect package (identityNumber validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('an array is not an identity number', () => {
+  it("an array is not an identity number", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
         test: []
@@ -40,10 +40,10 @@ describe('Expect package (identityNumber validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('a number is not an identity number', () => {
+  it("a number is not an identity number", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
         test: 5501286149
@@ -53,10 +53,10 @@ describe('Expect package (identityNumber validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('a boolean is not an identity number', () => {
+  it("a boolean is not an identity number", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
         test: true
@@ -66,10 +66,10 @@ describe('Expect package (identityNumber validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('null is not an identity number', () => {
+  it("null is not an identity number", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
         test: null
@@ -79,10 +79,10 @@ describe('Expect package (identityNumber validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('undefined is not an identity number', () => {
+  it("undefined is not an identity number", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
         test: undefined
@@ -92,117 +92,117 @@ describe('Expect package (identityNumber validation):', () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('allows identity numbers with a plus', () => {
+  it("allows identity numbers with a plus", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '550128+6149'
+        test: "550128+6149"
       }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('allows identity numbers without a plus or minus', () => {
+  it("allows identity numbers without a plus or minus", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '5501286149'
+        test: "5501286149"
       }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('rejects identity numbers which are too long', () => {
+  it("rejects identity numbers which are too long", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '55012861491'
+        test: "55012861491"
       }
     );
 
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('allows full 1900 years to be specified', () => {
+  it("allows full 1900 years to be specified", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '195501286149'
+        test: "195501286149"
       }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('allows full 2000 years to be specified', () => {
+  it("allows full 2000 years to be specified", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '200107212144'
+        test: "200107212144"
       }
     );
 
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it('rejects badly formatted identity number 1101286141', () => {
+  it("rejects badly formatted identity number 1101286141", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '1101286141'
+        test: "1101286141"
       }
     );
 
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('rejects badly formatted identity number 0101286149', () => {
+  it("rejects badly formatted identity number 0101286149", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '0101286149'
+        test: "0101286149"
       }
     );
 
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('rejects badly formatted identity number 1901286149', () => {
+  it("rejects badly formatted identity number 1901286149", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '1901286149'
+        test: "1901286149"
       }
     );
 
     expect(expectations.wereMet()).toBe(false);
   });
 
-  it('acceptes identity number 0101286144', () => {
+  it("acceptes identity number 0101286144", () => {
     const expectations = expectModule(
       {
-        test: 'identityNumber'
+        test: "identityNumber"
       },
       {
-        test: '0101286144'
+        test: "0101286144"
       }
     );
 

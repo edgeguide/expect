@@ -1,5 +1,5 @@
-import { ExpectedType, ValidateFunction } from '../definitions';
-import { getDeep, getDeepOptions } from './getDeep';
+import { ExpectedType, ValidateFunction } from "../definitions";
+import { getDeep, getDeepOptions } from "./getDeep";
 
 export function isEqualTo({
   value,
@@ -30,7 +30,7 @@ export function isEqualTo({
         expected
       });
 
-  return type === 'date'
+  return type === "date"
     ? new Date(value).getTime() === new Date(parsed).getTime()
     : value === parsed;
 }
