@@ -1,0 +1,5 @@
+"*.ts":
+  - eslint
+  - prettier --write
+  - jest test --bail --passWithNoTests --findRelatedTests
+  - git add
