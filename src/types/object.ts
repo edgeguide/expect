@@ -1,4 +1,4 @@
-import { ValidateFunction, IErrorObject, IObjectOption } from "../definitions";
+import { IErrorObject, IObjectOption, ValidateFunction } from "../definitions";
 
 export function validateObject({
   parameter,
@@ -45,9 +45,9 @@ export function validateObject({
     }
   }
 
-  const invalidKeys = Object.keys(options.keys).filter(key => {
-    if (!options.keys) return; // TypeScript inference issue
-    const option = options.keys[key];
+  const optionsKeys = options.keys || {};
+  const invalidKeys = Object.keys(optionsKeys).filter(key => {
+    const option = optionsKeys[key];
 
     const keyType =
       typeof option === "object" && option !== null ? option.type : option;

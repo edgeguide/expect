@@ -2,23 +2,19 @@ import { ValidateFunction } from "../definitions";
 
 import {
   formatParameter,
+  getDeep,
   isEqualTo,
   isNull,
-  getDeep,
-  parseType,
-  parseFunctionWrapper
+  parseFunctionWrapper,
+  parseType
 } from "../util";
 
 import { validateAny } from "./any";
-import { validateNumber } from "./number";
-import { validateBoolean } from "./boolean";
-import { validateString } from "./string";
 import { validateArray } from "./array";
+import { validateBoolean } from "./boolean";
+import { validateNumber } from "./number";
 import { validateObject } from "./object";
-import { validateDate } from "./date";
-import { validatePhone } from "./phone";
-import { validateEmail } from "./email";
-import { validateIdentityNumber } from "./identityNumber";
+import { validateString } from "./string";
 
 const mapTypeValidations: any = {
   any: validateAny,
@@ -26,11 +22,7 @@ const mapTypeValidations: any = {
   boolean: validateBoolean,
   string: validateString,
   array: validateArray,
-  object: validateObject,
-  date: validateDate,
-  phone: validatePhone,
-  email: validateEmail,
-  identityNumber: validateIdentityNumber
+  object: validateObject
 };
 
 export const validate: ValidateFunction = ({
@@ -133,7 +125,6 @@ export const validate: ValidateFunction = ({
     equalTo &&
     !isEqualTo({
       value: parsed,
-      type,
       equalTo,
       actualValues,
       expected,

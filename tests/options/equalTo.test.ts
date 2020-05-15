@@ -1,17 +1,6 @@
 import expectModule = require("../../src");
 
-const types: any = [
-  "any",
-  "number",
-  "boolean",
-  "string",
-  "array",
-  "object",
-  "date",
-  "phone",
-  "email",
-  "identityNumber"
-];
+const types: any = ["any", "number", "boolean", "string", "array", "object"];
 
 const typesValues: any = {
   any: 123,
@@ -19,11 +8,7 @@ const typesValues: any = {
   boolean: true,
   string: "test",
   array: [1, 2, 3],
-  object: { test: "test" },
-  date: new Date(),
-  phone: "0701113210",
-  email: "tester@mydomain.cxx",
-  identityNumber: "550128-6149"
+  object: { test: "test" }
 };
 
 types.forEach((type: any) =>
@@ -135,62 +120,6 @@ describe("equalTo option", () => {
         { foo: 1, bar: "1" }
       ).wereMet()
     ).toBe(false);
-  });
-
-  it("date equality", () => {
-    expect(
-      expectModule(
-        { foo: { type: "date", equalTo: "bar" }, bar: "date" },
-        { foo: new Date("2017-01-01"), bar: new Date("2017-01-01") }
-      ).wereMet()
-    ).toBe(true);
-  });
-
-  it("date instances inequality", () => {
-    expect(
-      expectModule(
-        { foo: { type: "date", equalTo: "bar" }, bar: "date" },
-        { foo: new Date("2017-01-01"), bar: new Date("2017-01-02") }
-      ).wereMet()
-    ).toBe(false);
-  });
-
-  it("date instance and string can be equal", () => {
-    expect(
-      expectModule(
-        { foo: { type: "date", equalTo: "bar" }, bar: "string" },
-        { foo: new Date("2017-01-01"), bar: "2017-01-01T00:00:00.000Z" }
-      ).wereMet()
-    ).toBe(true);
-  });
-
-  it("date instance and number can be equal", () => {
-    expect(
-      expectModule(
-        { foo: { type: "date", equalTo: "bar" }, bar: "number" },
-        { foo: new Date("2017-01-01"), bar: 1483228800000 }
-      ).wereMet()
-    ).toBe(true);
-  });
-
-  it("date instance and object are not equal", () => {
-    expect(
-      expectModule(
-        { foo: { type: "date", equalTo: "bar" }, bar: "object" },
-        { foo: new Date("2017-01-01"), bar: { date: new Date() } }
-      ).wereMet()
-    ).toBe(false);
-  });
-
-  it("date instance and null values are not equal", () => {
-    [null, undefined, ""].forEach(bar =>
-      expect(
-        expectModule(
-          { foo: { type: "date", equalTo: "bar" } },
-          { foo: new Date("2017-01-01"), bar }
-        ).wereMet()
-      ).toBe(false)
-    );
   });
 
   it("falsy values are not equal", () => {

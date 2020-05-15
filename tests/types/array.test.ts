@@ -160,7 +160,7 @@ describe("Expect package (array validation):", () => {
         test: {
           type: "array",
           items: {
-            type: "date",
+            type: "number",
             errorCode: "incorrect.item.format",
             allowNull: true,
             parse: true
@@ -179,13 +179,13 @@ describe("Expect package (array validation):", () => {
         test: {
           type: "array",
           items: {
-            type: "date",
+            type: "string",
             errorCode: "incorrect.item.format",
             allowNull: true
           }
         }
       },
-      { test: ["2017-01-01", null, null] }
+      { test: ["test", null, null] }
     );
 
     expect(expectations.wereMet()).toBe(true);

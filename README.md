@@ -298,54 +298,6 @@ expect(
 
 </br>
 
-<details>
-<summary><strong>Customized types</strong></summary>
-
-| Type           | Options                                      | Description                                                        |
-| -------------- | -------------------------------------------- | ------------------------------------------------------------------ |
-| date           | N/A                                          | expects a `string` formatted as a date or a `Date` instance        |
-| phone          | strict                                       | expects a `string` or a `number` formatted as a phone number       |
-| email          | strict, allowed, blockUnsafe, strictEntities | expects a `string` formatted as an email address                   |
-| identityNumber | N/A                                          | expects a `string` formatted as a Swedish personal identity number |
-
-</br>
-
-<details>
-<summary><strong><i>email</i></strong></summary>
-
-A customized type for _strings_ which can be used to check if the value is correctly formatted as an email address. Regular expression used to validate emails:
-
-- Without `strict` option
-  ```
-  /.+@.+/
-  ```
-- With `strict` option
-
-  ```
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  ```
-
-</details>
-
-<details>
-<summary><strong><i>phone</i></strong></summary>
-
-A customized type for _strings_ and _numbers_ which can be used to check if the value is correctly formatted as a phone number. Regular expression used to validate phone numbers:
-
-- Without `strict` option
-  ```
-  /^\D?[\d\s\(\)]+$/
-  ```
-- With `strict` option
-  ```
-  /^\D?(\d{3,4})\D?\D?(\d{3})\D?(\d{4})$/
-  ```
-  </details>
-
-</details>
-
-</br>
-
 ## Options
 
 The validation for each type may be configured using options. See the [Types section](#types) for a list of custom options limited to certain types.
@@ -462,7 +414,6 @@ Some types support setting the `parse` option to _true_ which will instead use t
 - `string` - `JSON.stringify()`
 - `array` - `JSON.parse()`
 - `object` - `JSON.parse()`
-- `date` - `new Date()`
 
 Note that `parse` has a particular interaction with the `allowNull` and `requiredIf` options.
 
@@ -646,17 +597,6 @@ expect(
   { test: { type: "string", blockUnsafe: true, strictEntities: true } },
   { test: "But it is not safe in strict mode!" }
 ).wereMet(); // false
-```
-
-For the email-type, `@` is always an allowed character.
-
-```javascript
-const expect = require("@edgeguideab/expect");
-
-expect(
-  { test: { type: "email", blockUnsafe: true, strictEntities: true } },
-  { test: "thisisok@foo.xcc" }
-).wereMet(); // true
 ```
 
 To explicitly allow some characters (even when in strict mode), you can pass a parameter `allowed` which is expected to be of type list containing the allowed

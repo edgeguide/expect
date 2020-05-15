@@ -1,5 +1,5 @@
 import { IStringOption } from "../definitions";
-import { formatParameter, sanitize, containsUnsafe } from "../util";
+import { containsUnsafe, formatParameter, sanitize } from "../util";
 
 export function validateString({
   parameter,

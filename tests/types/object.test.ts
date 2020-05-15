@@ -282,7 +282,12 @@ describe("Expect package (object validation):", () => {
           keys: {
             dead: {
               type: "object",
-              keys: { beef: { type: "boolean", strict: true, parse: true } }
+              keys: {
+                beef: {
+                  type: "boolean",
+                  parse: true
+                }
+              }
             },
             bar: "string"
           }
@@ -314,7 +319,6 @@ describe("Expect package (object validation):", () => {
               keys: {
                 beef: {
                   type: "boolean",
-                  strict: true,
                   parse: true
                 }
               }
@@ -418,7 +422,6 @@ describe("Expect package (object validation):", () => {
               keys: {
                 beef: {
                   type: "boolean",
-                  strict: true,
                   parse: true
                 }
               }
@@ -527,7 +530,6 @@ describe("Expect package (object validation):", () => {
                 beef: {
                   type: "boolean",
                   allowNull: true,
-                  strict: true,
                   parse: true
                 }
               }
@@ -555,7 +557,9 @@ describe("Expect package (object validation):", () => {
             type: "array",
             items: {
               type: "object",
-              keys: { bar: "string" },
+              keys: {
+                bar: "string"
+              },
               strictKeyCheck: true
             }
           }

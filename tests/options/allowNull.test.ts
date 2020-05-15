@@ -2,18 +2,7 @@ import expectModule = require("../../src");
 
 const nullValues = [null, undefined, ""];
 
-const types: any = [
-  "any",
-  "number",
-  "boolean",
-  "string",
-  "array",
-  "object",
-  "date",
-  "phone",
-  "email",
-  "identityNumber"
-];
+const types: any = ["any", "number", "boolean", "string", "array", "object"];
 
 const typesValues: any = {
   any: 123,
@@ -21,11 +10,7 @@ const typesValues: any = {
   boolean: true,
   string: "test",
   array: [1, 2, 3],
-  object: { test: "test" },
-  date: new Date(),
-  phone: "0701113210",
-  email: "tester@mydomain.cxx",
-  identityNumber: "550128-6149"
+  object: { test: "test" }
 };
 
 types.forEach((type: any) =>

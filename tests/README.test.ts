@@ -468,19 +468,6 @@ describe("Expect package (README examples):", () => {
       expectModule(
         {
           test: {
-            type: "email",
-            blockUnsafe: true,
-            strictEntities: true
-          }
-        },
-        { test: "thisisok@foo.xcc" }
-      ).wereMet()
-    ).toBe(true);
-
-    expect(
-      expectModule(
-        {
-          test: {
             type: "string",
             blockUnsafe: true,
             strictEntities: true,

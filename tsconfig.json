@@ -8,7 +8,7 @@
     "strict": true,
     "strictNullChecks": true,
     "target": "es5",
-    "types": ["jest", "xregexp"]
+    "types": ["jest"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "tests"]

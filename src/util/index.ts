@@ -1,6 +1,6 @@
-import { isEqualTo } from "./isEqualTo";
 import { getDeep, getDeepOptions } from "./getDeep";
-import { parseType, parseFunctionWrapper } from "./parse";
+import { isEqualTo } from "./isEqualTo";
+import { parseFunctionWrapper, parseType } from "./parse";
 
 export {
   formatParameter,

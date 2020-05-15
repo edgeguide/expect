@@ -29,15 +29,6 @@ describe("Expect package (string validation):", () => {
     expect(expectations.wereMet()).toBe(true);
   });
 
-  it("parse dates", () => {
-    const expectations = expectModule(
-      { test: { type: "string", parse: true } },
-      { test: new Date("2017-01-01") }
-    );
-
-    expect(expectations.wereMet()).toBe(true);
-  });
-
   it("parse arrays", () => {
     const expectations = expectModule(
       { test: { type: "string", parse: true } },

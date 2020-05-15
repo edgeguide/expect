@@ -1,4 +1,4 @@
-import { IErrorObject, ExpectedType, Options } from "./definitions";
+import { ExpectedType, IErrorObject, Options } from "./definitions";
 import { validate } from "./types";
 
 export = (
@@ -24,12 +24,12 @@ export = (
     const actual = actualValues[parameter];
 
     const validation = validate({
-      type: typeof options === "string" ? options : options.type,
-      parameter,
-      value: actual,
-      options,
       actualValues,
-      expected
+      expected,
+      options,
+      parameter,
+      type: typeof options === "string" ? options : options.type,
+      value: actual
     });
 
     if (!validation.valid) {
@@ -44,8 +44,8 @@ export = (
   });
 
   return {
-    wereMet: () => valid,
     errors: () => errors,
-    getParsed: () => parsedValues
+    getParsed: () => parsedValues,
+    wereMet: () => valid
   };
 };

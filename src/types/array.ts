@@ -1,4 +1,4 @@
-import { ValidateFunction, IArrayOption, IErrorObject } from "../definitions";
+import { IArrayOption, IErrorObject, ValidateFunction } from "../definitions";
 
 export function validateArray({
   parameter,
@@ -34,8 +34,8 @@ export function validateArray({
     if (typeof items === "function") {
       try {
         itemOptions = items(item);
-      } catch (error) {
-        return { valid: false, error };
+      } catch (itemsError) {
+        return { valid: false, error: itemsError };
       }
     }
 
