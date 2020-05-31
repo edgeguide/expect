@@ -14,7 +14,9 @@ describe("Expect package (number validation):", () => {
   });
 
   [null, undefined, true, false, "", [], {}, Symbol()].forEach((test) =>
-    it(`rejects ${typeof test === "symbol" ? test.toString() : test}`, () => {
+    it(`rejects ${
+      typeof test === "symbol" ? test.toString() : String(test)
+    }`, () => {
       const expectations = expectModule({ test: "number" }, { test });
       expect(expectations.wereMet()).toBe(false);
     })
@@ -46,7 +48,7 @@ describe("Expect package (number validation):", () => {
 
   ["", null, undefined, true, NaN, [], {}, Symbol()].forEach((test) =>
     it(`reject parse ${
-      typeof test === "symbol" ? test.toString() : test
+      typeof test === "symbol" ? test.toString() : String(test)
     }`, () => {
       const expectations = expectModule(
         { test: { type: "number", parse: true } },

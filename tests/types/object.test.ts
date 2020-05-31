@@ -8,7 +8,7 @@ describe("Expect package (object validation):", () => {
   });
 
   [null, undefined, [], 1].forEach((test) =>
-    it(`rejects ${test}`, () => {
+    it(`rejects ${String(test)}`, () => {
       const expectations = expectModule({ test: "object" }, { test });
 
       expect(expectations.wereMet()).toBe(false);
