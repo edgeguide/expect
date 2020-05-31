@@ -5,16 +5,16 @@ export function validateArray({
   parameter,
   value,
   options,
-  actualValues,
-  expected,
+  input,
+  schema,
   visitedParams = [],
   validate,
 }: {
   parameter: string | number | Array<string | number>;
   value: unknown;
   options: IArrayOption;
-  actualValues?: unknown;
-  expected: Record<string, any>;
+  input?: unknown;
+  schema: Record<string, any>;
   visitedParams: Array<string | number>;
   validate: ValidateFunction;
 }) {
@@ -54,8 +54,8 @@ export function validateArray({
         : [parameter, index],
       value: item,
       options: itemOptions,
-      actualValues,
-      expected,
+      input,
+      schema,
       visitedParams: visitedParams.concat(formatParameter(parameter)),
     });
 

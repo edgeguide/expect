@@ -49,23 +49,23 @@ types.forEach((type) =>
     });
 
     it("checks initial value before parse", () => {
-      const expected = { test: { type, parse: () => typesValues[type] } };
-      expect(expectModule(expected, {}).wereMet()).toBe(false);
-      expect(expectModule(expected, {}).getParsed()).toEqual({});
+      const schema = { test: { type, parse: () => typesValues[type] } };
+      expect(expectModule(schema, {}).wereMet()).toBe(false);
+      expect(expectModule(schema, {}).getParsed()).toEqual({});
 
-      expect(expectModule(expected, { test: Symbol() }).wereMet()).toBe(true);
-      expect(expectModule(expected, { test: Symbol() }).getParsed()).toEqual({
+      expect(expectModule(schema, { test: Symbol() }).wereMet()).toBe(true);
+      expect(expectModule(schema, { test: Symbol() }).getParsed()).toEqual({
         test: typesValues[type],
       });
     });
 
     it("checks parsed value", () => {
-      const expected = { test: { type, parse: () => null, allowNull: true } };
+      const schema = { test: { type, parse: () => null, allowNull: true } };
+      expect(expectModule(schema, { test: typesValues[type] }).wereMet()).toBe(
+        true
+      );
       expect(
-        expectModule(expected, { test: typesValues[type] }).wereMet()
-      ).toBe(true);
-      expect(
-        expectModule(expected, { test: typesValues[type] }).getParsed()
+        expectModule(schema, { test: typesValues[type] }).getParsed()
       ).toEqual({ test: null });
     });
 

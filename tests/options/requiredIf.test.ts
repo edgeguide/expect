@@ -54,39 +54,39 @@ types.forEach((type) =>
     });
 
     it("checks initial value before parse", () => {
-      const expected = {
+      const schema = {
         test: { type, parse: () => typesValues[type], requiredIf: "existing" },
       };
-      expect(expectModule(expected, { existing: 123 }).wereMet()).toBe(false);
-      expect(expectModule(expected, { existing: 123 }).getParsed()).toEqual({});
+      expect(expectModule(schema, { existing: 123 }).wereMet()).toBe(false);
+      expect(expectModule(schema, { existing: 123 }).getParsed()).toEqual({});
 
       expect(
-        expectModule(expected, { test: Symbol(), existing: 123 }).wereMet()
+        expectModule(schema, { test: Symbol(), existing: 123 }).wereMet()
       ).toBe(true);
       expect(
-        expectModule(expected, { test: Symbol(), existing: 123 }).getParsed()
+        expectModule(schema, { test: Symbol(), existing: 123 }).getParsed()
       ).toEqual({ test: typesValues[type] });
     });
 
     it("checks parsed value", () => {
-      const expected = {
+      const schema = {
         test: { type, parse: () => null, requiredIf: "missing" },
       };
+      expect(expectModule(schema, { test: typesValues[type] }).wereMet()).toBe(
+        true
+      );
       expect(
-        expectModule(expected, { test: typesValues[type] }).wereMet()
-      ).toBe(true);
-      expect(
-        expectModule(expected, { test: typesValues[type] }).getParsed()
+        expectModule(schema, { test: typesValues[type] }).getParsed()
       ).toEqual({ test: null });
     });
 
     it("does not check target parsed value", () => {
-      const expected = {
+      const schema = {
         test: { type, requiredIf: "existing" },
         existing: { type, allowNull: true, parse: () => typesValues[type] },
       };
-      expect(expectModule(expected, {}).wereMet()).toBe(true);
-      expect(expectModule(expected, {}).getParsed()).toEqual({
+      expect(expectModule(schema, {}).wereMet()).toBe(true);
+      expect(expectModule(schema, {}).getParsed()).toEqual({
         existing: typesValues[type],
       });
     });

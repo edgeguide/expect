@@ -37,7 +37,7 @@ export const ExpectType = {
 export type ExpectTypes = keyof typeof ExpectType;
 
 export const validate: ValidateFunction = (props) => {
-  const { type, parameter, actualValues, expected, visitedParams } = props;
+  const { type, parameter, input, schema, visitedParams } = props;
   let { options, value } = props;
 
   if (typeof options === "string") options = { type } as IDefaultOption;
@@ -67,8 +67,8 @@ export const validate: ValidateFunction = (props) => {
     parameter,
     value,
     options,
-    actualValues,
-    expected,
+    input,
+    schema,
     visitedParams,
   });
 
@@ -79,7 +79,7 @@ export const validate: ValidateFunction = (props) => {
     typeof allowNull === "function"
       ? allowNullWrapper({ value, allowNull })
       : allowNull;
-  const notRequired = requiredIf && isNull(getDeep(requiredIf, actualValues));
+  const notRequired = requiredIf && isNull(getDeep(requiredIf, input));
   const nullAllowed = isAllowNull || notRequired;
 
   if (isNullValue && !nullAllowed) {
@@ -122,8 +122,8 @@ export const validate: ValidateFunction = (props) => {
       value: parsed,
       parameter,
       equalTo,
-      actualValues,
-      expected,
+      input,
+      schema,
       visitedParams,
       validate,
     })
@@ -185,8 +185,8 @@ function validateType<T extends ExpectTypes>({
   parameter: string | number | Array<string | number>;
   value: unknown;
   options: Options<T>;
-  actualValues?: unknown;
-  expected: Record<string, any>;
+  input?: unknown;
+  schema: Record<string, any>;
   visitedParams: Array<string | number>;
 }):
   | { valid: true; parsed?: any }

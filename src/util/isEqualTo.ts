@@ -9,8 +9,8 @@ export function isEqualTo({
   value,
   parameter,
   equalTo,
-  actualValues,
-  expected,
+  input,
+  schema,
   visitedParams = [],
   validate,
 }: {
@@ -18,13 +18,13 @@ export function isEqualTo({
   value: unknown;
   parameter: string | number | Array<string | number>;
   equalTo: string | string[];
-  actualValues: unknown;
-  expected: Record<string, any>;
+  input: unknown;
+  schema: Record<string, any>;
   visitedParams: Array<string | number>;
   validate: ValidateFunction;
 }) {
-  const initialValue = getDeep(equalTo, actualValues);
-  const options = getDeepOptions(equalTo, expected);
+  const initialValue = getDeep(equalTo, input);
+  const options = getDeepOptions(equalTo, schema);
 
   const validated =
     !options || visitedParams.includes(formatParameter(parameter))
@@ -34,8 +34,8 @@ export function isEqualTo({
           parameter: equalTo,
           value: initialValue,
           options,
-          actualValues,
-          expected,
+          input,
+          schema,
           visitedParams: visitedParams.concat(formatParameter(parameter)),
         });
 

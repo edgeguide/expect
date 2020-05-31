@@ -64,19 +64,19 @@ describe("Expect package (array validation):", () => {
   });
 
   it("can validate all items", () => {
-    const expected = {
+    const schema = {
       test: { type: "array", items: "number" },
     } as const;
 
-    const validExpectations = expectModule(expected, { test: [1, 2, 3] });
-    const invalidExpectations = expectModule(expected, { test: [1, 2, "3"] });
+    const validExpectations = expectModule(schema, { test: [1, 2, 3] });
+    const invalidExpectations = expectModule(schema, { test: [1, 2, "3"] });
 
     expect(validExpectations.wereMet()).toBe(true);
     expect(invalidExpectations.wereMet()).toBe(false);
   });
 
   it("items function", () => {
-    const expected = {
+    const schema = {
       test: {
         type: "array",
         items: (user: { isLoggedIn: boolean }) => ({
@@ -95,13 +95,13 @@ describe("Expect package (array validation):", () => {
       },
     };
 
-    const validExpectations = expectModule(expected, {
+    const validExpectations = expectModule(schema, {
       test: [
         { isLoggedIn: true, username: "John", password: "Snow" },
         { isLoggedIn: false, temporaryUuid: 123 },
       ],
     });
-    const invalidExpectations = expectModule(expected, {
+    const invalidExpectations = expectModule(schema, {
       test: [
         { isLoggedIn: true, username: "John", password: "Snow" },
         { isLoggedIn: true, temporaryUuid: 123 },
@@ -113,15 +113,15 @@ describe("Expect package (array validation):", () => {
   });
 
   it("items function error", () => {
-    const expected = {
+    const schema = {
       test: {
         type: "array",
         items: (key: any) => (key.someKey.nonExisting ? "number" : "number"),
       },
     };
 
-    expect(() => expectModule(expected, { test: [123] })).not.toThrow();
-    expect(expectModule(expected, { test: [123] }).wereMet()).toBe(false);
+    expect(() => expectModule(schema, { test: [123] })).not.toThrow();
+    expect(expectModule(schema, { test: [123] }).wereMet()).toBe(false);
   });
 
   it("item validation error format", () => {

@@ -4,13 +4,13 @@ export interface IErrorObject {
   [key: string]: string | IErrorObject;
 }
 
-export type ValidateFunction<T extends ExpectTypes = ExpectTypes> = (input: {
+export type ValidateFunction<T extends ExpectTypes = ExpectTypes> = (params: {
   type: T;
   parameter: string | number | Array<string | number>;
   value: unknown;
   options: T | Options<T>;
-  actualValues?: unknown;
-  expected: Record<string, any>;
+  input?: unknown;
+  schema: Record<string, any>;
   visitedParams: Array<string | number>;
 }) =>
   | { valid: true; parsed: TypeValue<T> }

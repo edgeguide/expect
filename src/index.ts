@@ -4,14 +4,14 @@ import { validate, ExpectTypes } from "./types";
 export = function expect<
   Schema extends Record<string, Options | ExpectTypes> | Record<string, any>
 >(
-  expected: Schema,
-  actualValues: Record<string, unknown>
+  schema: Schema,
+  input: Record<string, unknown>
 ): {
   errors(): Record<string, any>;
   getParsed(): { [K in keyof Schema]?: OptionsValue<Schema[K]> };
   wereMet(): boolean;
 } {
-  if (expected === null || typeof expected !== "object") {
+  if (schema === null || typeof schema !== "object") {
     throw new Error("Invalid validation schema");
   }
 
@@ -19,24 +19,24 @@ export = function expect<
   const errors: IErrorObject = {};
   let valid = true;
 
-  Object.keys(expected).forEach((parameter) => {
-    if (actualValues === null || typeof actualValues !== "object") {
+  Object.keys(schema).forEach((parameter) => {
+    if (input === null || typeof input !== "object") {
       valid = false;
       errors[parameter] = "Invalid input";
       return;
     }
 
-    const options = expected[parameter];
-    const actual = actualValues[parameter];
+    const options = schema[parameter];
+    const value = input[parameter];
 
     const validation = validate({
-      actualValues,
-      expected,
+      input,
+      value,
+      schema,
       options,
       parameter,
-      type: typeof options === "string" ? options : options.type,
-      value: actual,
       visitedParams: [],
+      type: typeof options === "string" ? options : options.type,
     });
 
     if (!validation.valid) {

@@ -6,16 +6,16 @@ export function validateObject({
   parameter,
   value,
   options,
-  actualValues,
-  expected,
+  input,
+  schema,
   visitedParams = [],
   validate,
 }: {
   parameter: string | number | Array<string | number>;
   value: unknown;
   options: IObjectOption;
-  actualValues?: unknown;
-  expected: Record<string, any>;
+  input?: unknown;
+  schema: Record<string, any>;
   visitedParams: Array<string | number>;
   validate: ValidateFunction;
 }) {
@@ -66,8 +66,8 @@ export function validateObject({
         : [parameter, key],
       value: value[key],
       options: keyOptions,
-      actualValues,
-      expected,
+      input,
+      schema,
       visitedParams: visitedParams.concat(formatParameter(parameter)),
     });
 
