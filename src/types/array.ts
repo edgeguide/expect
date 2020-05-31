@@ -3,14 +3,16 @@ import { IArrayOption, IErrorObject, ValidateFunction } from "../definitions";
 export function validateArray({
   parameter,
   value,
-  actualValues,
   options,
-  validate
+  actualValues,
+  expected,
+  validate,
 }: {
-  parameter: Array<string | number> | string | number;
-  value: any;
-  actualValues: any;
+  parameter: string | number | Array<string | number>;
+  value: unknown;
   options: IArrayOption;
+  actualValues?: unknown;
+  expected: Record<string, any>;
   validate: ValidateFunction;
 }) {
   const { convert, items } = options;
@@ -19,13 +21,9 @@ export function validateArray({
     value = value === undefined ? [] : [value];
   }
 
-  if (!Array.isArray(value)) {
-    return { valid: false };
-  }
+  if (!Array.isArray(value)) return { valid: false };
 
-  if (!items) {
-    return { valid: true, parsed: value };
-  }
+  if (!items) return { valid: true, parsed: value };
 
   const error: IErrorObject = {};
   const parsed: any[] = [];
@@ -53,17 +51,13 @@ export function validateArray({
         : [parameter, index],
       value: item,
       options: itemOptions,
-      actualValues
+      actualValues,
+      expected,
     });
 
-    if (validation.valid) {
-      parsed.push(
-        Object.prototype.hasOwnProperty.call(validation, "parsed")
-          ? validation.parsed
-          : item
-      );
-    } else {
-      error[index] = validation.error;
+    if (!validation.valid) error[index] = validation.error;
+    else {
+      parsed.push("parsed" in validation ? validation.parsed : item);
     }
 
     return !validation.valid;

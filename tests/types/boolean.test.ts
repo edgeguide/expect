@@ -3,7 +3,7 @@ import expectModule = require("../../src");
 describe("Expect package (boolean validation):", () => {
   it("accepts boolean", () => {
     const tests = [true, false];
-    tests.forEach(test => {
+    tests.forEach((test) => {
       const expectations = expectModule({ test: "boolean" }, { test });
       expect(expectations.wereMet()).toBe(true);
     });
@@ -11,7 +11,7 @@ describe("Expect package (boolean validation):", () => {
 
   it("rejects other data types", () => {
     const tests = [null, undefined, 1, NaN, Infinity, "", [], {}, Symbol()];
-    tests.forEach(test => {
+    tests.forEach((test) => {
       const expectations = expectModule({ test: "boolean" }, { test });
       expect(expectations.wereMet()).toBe(false);
     });
@@ -27,7 +27,7 @@ describe("Expect package (boolean validation):", () => {
 
   it("parse falsy values as false", () => {
     const tests = [0, NaN, undefined, null, false];
-    tests.forEach(test => {
+    tests.forEach((test) => {
       const expectations = expectModule(
         { test: { type: "boolean", parse: true, allowNull: true } },
         { test }
@@ -38,7 +38,7 @@ describe("Expect package (boolean validation):", () => {
 
   it("parse JSON.parsed() falsy values as false", () => {
     const tests = ["0", "null", "false"];
-    tests.forEach(test => {
+    tests.forEach((test) => {
       const expectations = expectModule(
         { test: { type: "boolean", parse: true } },
         { test }
@@ -49,7 +49,7 @@ describe("Expect package (boolean validation):", () => {
 
   it('parse "undefined" and "NaN" as false', () => {
     const tests = ["undefined", "NaN"];
-    tests.forEach(test => {
+    tests.forEach((test) => {
       const expectations = expectModule(
         { test: { type: "boolean", parse: true } },
         { test }
@@ -61,7 +61,7 @@ describe("Expect package (boolean validation):", () => {
   it("parses the actual value if the parse option is specified", () => {
     const expectations = expectModule(
       {
-        test: { type: "boolean", parse: true }
+        test: { type: "boolean", parse: true },
       },
       { test: "true" }
     );

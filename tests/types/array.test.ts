@@ -15,7 +15,7 @@ describe("Expect package (array validation):", () => {
 
   it("rejects other data types", () => {
     const tests = [null, undefined, true, 1, NaN, Infinity, "", {}, Symbol()];
-    tests.forEach(test => {
+    tests.forEach((test) => {
       const expectations = expectModule({ test: "array" }, { test });
       expect(expectations.wereMet()).toBe(false);
     });
@@ -64,7 +64,9 @@ describe("Expect package (array validation):", () => {
   });
 
   it("can validate all items", () => {
-    const expected: any = { test: { type: "array", items: "number" } };
+    const expected = {
+      test: { type: "array", items: "number" },
+    } as const;
 
     const validExpectations = expectModule(expected, { test: [1, 2, 3] });
     const invalidExpectations = expectModule(expected, { test: [1, 2, "3"] });
@@ -74,7 +76,7 @@ describe("Expect package (array validation):", () => {
   });
 
   it("items function", () => {
-    const expected: any = {
+    const expected = {
       test: {
         type: "array",
         items: (user: { isLoggedIn: boolean }) => ({
@@ -83,27 +85,27 @@ describe("Expect package (array validation):", () => {
             ? {
                 username: "string",
                 password: "string",
-                isLoggedIn: { type: "boolean", allowNull: true }
+                isLoggedIn: { type: "boolean", allowNull: true },
               }
             : {
                 temporaryUuid: "number",
-                isLoggedIn: { type: "boolean", allowNull: true }
-              }
-        })
-      }
+                isLoggedIn: { type: "boolean", allowNull: true },
+              },
+        }),
+      },
     };
 
     const validExpectations = expectModule(expected, {
       test: [
         { isLoggedIn: true, username: "John", password: "Snow" },
-        { isLogged: false, temporaryUuid: 123 }
-      ]
+        { isLoggedIn: false, temporaryUuid: 123 },
+      ],
     });
     const invalidExpectations = expectModule(expected, {
       test: [
         { isLoggedIn: true, username: "John", password: "Snow" },
-        { isLoggedIn: true, temporaryUuid: 123 }
-      ]
+        { isLoggedIn: true, temporaryUuid: 123 },
+      ],
     });
 
     expect(validExpectations.wereMet()).toBe(true);
@@ -111,11 +113,11 @@ describe("Expect package (array validation):", () => {
   });
 
   it("items function error", () => {
-    const expected: any = {
+    const expected = {
       test: {
         type: "array",
-        items: (key: any) => (key.someKey.nonExisting ? "number" : "number")
-      }
+        items: (key: any) => (key.someKey.nonExisting ? "number" : "number"),
+      },
     };
 
     expect(() => expectModule(expected, { test: [123] })).not.toThrow();
@@ -130,8 +132,8 @@ describe("Expect package (array validation):", () => {
 
     expect(expectations.errors()).toEqual({
       test: {
-        2: 'Expected parameter test.2 to be of type number but it was "3"'
-      }
+        2: 'Expected parameter test.2 to be of type number but it was "3"',
+      },
     });
   });
 
@@ -142,15 +144,15 @@ describe("Expect package (array validation):", () => {
           type: "array",
           items: {
             type: "number",
-            errorCode: "incorrect.item.format"
-          }
-        }
+            errorCode: "incorrect.item.format",
+          },
+        },
       },
       { test: [1, 2, "3"] }
     );
 
     expect(expectations.errors()).toEqual({
-      test: { 2: "incorrect.item.format" }
+      test: { 2: "incorrect.item.format" },
     });
   });
 
@@ -163,9 +165,9 @@ describe("Expect package (array validation):", () => {
             type: "number",
             errorCode: "incorrect.item.format",
             allowNull: true,
-            parse: true
-          }
-        }
+            parse: true,
+          },
+        },
       },
       { test: [1, 2, "3"] }
     );
@@ -181,9 +183,9 @@ describe("Expect package (array validation):", () => {
           items: {
             type: "string",
             errorCode: "incorrect.item.format",
-            allowNull: true
-          }
-        }
+            allowNull: true,
+          },
+        },
       },
       { test: ["test", null, null] }
     );

@@ -104,11 +104,11 @@ const expect = require("@edgeguideab/expect");
 expect(
   {
     foo: "number", // Type string only validates the type
-    bar: { type: "number" } // Object can be used to combine type validation with other options
+    bar: { type: "number" }, // Object can be used to combine type validation with other options
   },
   {
     foo: 123,
-    bar: 321
+    bar: 321,
   }
 ).wereMet(); // true
 ```
@@ -126,11 +126,12 @@ expect(
 | **_string_**  | sanitize, allowed, blockUnsafe, strictEntities | expects a `string`                                                   |
 | **_array_**   | items, convert                                 | expects an `array`                                                   |
 | **_object_**  | keys, strictKeyCheck                           | expects an `object` (note that arrays will **not** count as objects) |
+| **_date_**    | N/A                                            | expects a `string` formatted as a date or a `Date` instance          |
 
 </br>
 
 <details>
-<summary><strong><i>object</i></strong></summary>
+<summary><strong><i>Notes on the object type</i></strong></summary>
 
 Expects the input value to be an object. If the `keys` option is provided, each property of the input object can be evaluated.
 
@@ -140,8 +141,8 @@ expect(
   {
     bar: {
       type: "object",
-      keys: { fizz: "number", buzz: "string" }
-    }
+      keys: { fizz: "number", buzz: "string" },
+    },
   },
   { bar: { fizz: 1, buzz: 1 } }
 ).errors(); // { bar: { buzz: 'Expected parameter bar.buzz to be of type string but it was 1' } }
@@ -157,9 +158,9 @@ expect(
       type: "object",
       keys: {
         fizz: "number",
-        buzz: { type: "object", keys: { bizz: "number" } }
-      }
-    }
+        buzz: { type: "object", keys: { bizz: "number" } },
+      },
+    },
   },
   { bar: { fizz: 1, buzz: { bizz: "hello" } } }
 ).errors(); // { bar: { buzz: { bizz: 'Expected parameter bar.buzz.bizz to be of type number but it was "hello"' } } }
@@ -176,16 +177,16 @@ expect(
       strictKeyCheck: true,
       keys: {
         fizz: "number",
-        buzz: { type: "object", keys: { bizz: "number" } }
-      }
-    }
+        buzz: { type: "object", keys: { bizz: "number" } },
+      },
+    },
   },
   {
     bar: {
       fizz: 1,
       buzz: { bizz: 2 },
-      kizz: 3
-    }
+      kizz: 3,
+    },
   }
 ).errors(); // { bar: 'Object contained unchecked keys "kizz"' }
 ```
@@ -193,7 +194,7 @@ expect(
 </details>
 
 <details>
-<summary><strong><i>array</i></strong></summary>
+<summary><strong><i>Notes on the array type</i></strong></summary>
 
 Expects the parameter to be an array. Each array item can be validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
 
@@ -206,17 +207,17 @@ expect(
       type: "array",
       items: {
         type: "object",
-        keys: { foo: "number", bar: "string" }
-      }
-    }
+        keys: { foo: "number", bar: "string" },
+      },
+    },
   },
   {
     beef: [
       { foo: 1, bar: "1" },
       { foo: 2, bar: "2" },
       { foo: 3, bar: "3" },
-      { foo: 4, bar: "4" }
-    ]
+      { foo: 4, bar: "4" },
+    ],
   }
 ).wereMet(); // true
 ```
@@ -229,35 +230,35 @@ const expect = require("@edgeguideab/expect");
 const schema = {
   beef: {
     type: "array",
-    items: item => ({
+    items: (item) => ({
       type: "object",
       keys: {
         foo: item.bar ? "number" : "string",
-        bar: "boolean"
-      }
-    })
-  }
+        bar: "boolean",
+      },
+    }),
+  },
 };
 
 expect(schema, {
   beef: [
     { foo: 1, bar: true },
-    { foo: 2, bar: true }
-  ]
+    { foo: 2, bar: true },
+  ],
 }).wereMet(); // true
 
 expect(schema, {
   beef: [
     { foo: "1", bar: false },
-    { foo: "2", bar: false }
-  ]
+    { foo: "2", bar: false },
+  ],
 }).wereMet(); // true
 
 expect(schema, {
   beef: [
     { foo: "1", bar: true },
-    { foo: "2", bar: true }
-  ]
+    { foo: "2", bar: true },
+  ],
 }).wereMet(); // false
 ```
 
@@ -273,9 +274,9 @@ const schema = {
     branches: {
       type: "array",
       allowNull: true,
-      items: () => schema
-    }
-  }
+      items: () => schema,
+    },
+  },
 };
 
 expect(
@@ -285,9 +286,9 @@ expect(
       value: "foo",
       branches: [
         { value: "bar" },
-        { value: "bizz", branches: [{ value: "buzz" }] }
-      ]
-    }
+        { value: "bizz", branches: [{ value: "buzz" }] },
+      ],
+    },
   }
 ).wereMet(); // true
 ```
@@ -319,7 +320,7 @@ const expect = require("@edgeguideab/expect");
 expect(
   {
     foo: { type: "string", allowNull: true },
-    bar: { type: "number", allowNull: true }
+    bar: { type: "number", allowNull: true },
   },
   { bar: "" }
 ).wereMet(); // true
@@ -327,7 +328,7 @@ expect(
 expect(
   {
     foo: { type: "string", allowNull: true },
-    bar: { type: "number", allowNull: bar => bar !== "" }
+    bar: { type: "number", allowNull: (bar) => bar !== "" },
   },
   { bar: "" }
 ).wereMet(); // false
@@ -346,7 +347,7 @@ const expect = require("@edgeguideab/expect");
 expect(
   {
     foo: { type: "string", allowNull: true },
-    bar: { type: "string", requiredIf: "foo" }
+    bar: { type: "string", requiredIf: "foo" },
   },
   { foo: null }
 ).wereMet(); // true
@@ -354,7 +355,7 @@ expect(
 expect(
   {
     foo: { type: "string", allowNull: true },
-    bar: { type: "string", requiredIf: "foo" }
+    bar: { type: "string", requiredIf: "foo" },
   },
   { foo: "test" }
 ).wereMet(); // false
@@ -362,7 +363,7 @@ expect(
 expect(
   {
     foo: { type: "string", allowNull: true },
-    bar: { type: "string", allowNull: true, requiredIf: "foo" }
+    bar: { type: "string", allowNull: true, requiredIf: "foo" },
   },
   { foo: "test" }
 ).wereMet(); // true (requiredIf has no effect if allowNull is true)
@@ -377,13 +378,13 @@ expect(
   {
     foo: {
       type: "object",
-      keys: { buzz: { type: "string", allowNull: true } }
+      keys: { buzz: { type: "string", allowNull: true } },
     },
-    bar: { type: "string", requiredIf: ["foo", "buzz"] }
+    bar: { type: "string", requiredIf: ["foo", "buzz"] },
   },
   {
     foo: { buzz: null },
-    bar: null
+    bar: null,
   }
 ).wereMet(); // true
 ```
@@ -400,7 +401,7 @@ If a function is passed as the `parse` option, the type checker will attempt to 
 ```javascript
 const expect = require("@edgeguideab/expect");
 expect(
-  { test: { type: "number", parse: test => Number(test) } },
+  { test: { type: "number", parse: (test) => Number(test) } },
   { test: "123" }
 ).getParsed(); // { test: 123 }
 ```
@@ -414,6 +415,7 @@ Some types support setting the `parse` option to _true_ which will instead use t
 - `string` - `JSON.stringify()`
 - `array` - `JSON.parse()`
 - `object` - `JSON.parse()`
+- `date` - `new Date()`
 
 Note that `parse` has a particular interaction with the `allowNull` and `requiredIf` options.
 
@@ -448,7 +450,7 @@ alsoValid.getParsed(); // { test: null }
 const anotherOne = expect(
   {
     test: { type: "string", requiredIf: "existing" },
-    existing: { type: "string", allowNull: true, parse: () => "test" }
+    existing: { type: "string", allowNull: true, parse: () => "test" },
   },
   { test: null, existing: null }
 );
@@ -469,7 +471,7 @@ const expect = require("@edgeguideab/expect");
 expect(
   {
     foo: { type: "boolean", equalTo: "bar" },
-    bar: "boolean"
+    bar: "boolean",
   },
   { foo: true, bar: true }
 ).wereMet(); // true
@@ -477,7 +479,7 @@ expect(
 expect(
   {
     foo: { type: "boolean", parse: true, equalTo: "bar" },
-    bar: "boolean"
+    bar: "boolean",
   },
   { foo: "true", bar: true }
 ).wereMet(); // true
@@ -485,7 +487,7 @@ expect(
 expect(
   {
     foo: { type: "boolean", equalTo: "bar" },
-    bar: "boolean"
+    bar: "boolean",
   },
   { foo: true, bar: false }
 ).wereMet(); // false
@@ -493,7 +495,7 @@ expect(
 expect(
   {
     foo: { type: "boolean", allowNull: true, equalTo: "bar" },
-    bar: { type: "boolean", allowNull: true }
+    bar: { type: "boolean", allowNull: true },
   },
   { foo: null, bar: null }
 ).wereMet(); // true
@@ -508,11 +510,11 @@ const expect = require("@edgeguideab/expect");
 expect(
   {
     foo: { type: "object", keys: { buzz: "string" } },
-    bar: { type: "string", equalTo: ["foo", "buzz"] }
+    bar: { type: "string", equalTo: ["foo", "buzz"] },
   },
   {
     foo: { buzz: "abc" },
-    bar: "abc"
+    bar: "abc",
   }
 ).wereMet(); // true
 ```
@@ -531,8 +533,8 @@ expect(
   {
     foo: {
       type: "array",
-      condition: test => test.length
-    }
+      condition: (test) => test.length,
+    },
   },
   { foo: [] }
 ).wereMet(); // false
@@ -547,9 +549,9 @@ expect(
   {
     foo: {
       type: "array",
-      condition: test => test !== null,
-      allowNull: true
-    }
+      condition: (test) => test !== null,
+      allowNull: true,
+    },
   },
   { foo: null }
 ).wereMet(); // true
@@ -558,9 +560,9 @@ expect(
   {
     foo: {
       type: "boolean",
-      parse: foo => !!foo,
-      condition: foo => typeof foo !== "string"
-    }
+      parse: (foo) => !!foo,
+      condition: (foo) => typeof foo !== "string",
+    },
   },
   { foo: "bar" }
 ).wereMet(); // true
@@ -611,8 +613,8 @@ expect(
       type: "string",
       blockUnsafe: true,
       strictEntities: true,
-      allowed: ["!"]
-    }
+      allowed: ["!"],
+    },
   },
   { test: "This would normally be considered unsafe!" }
 ).wereMet(); // true
@@ -662,8 +664,8 @@ expect(
       type: "string",
       sanitize: true,
       strictEntities: true,
-      allowed: ["(", ")"]
-    }
+      allowed: ["(", ")"],
+    },
   },
   { test: "keep (some) of this as it is [test]" }
 ).getParsed(); // { test: 'keep (some) of this as it is &lbrack;test&rbrack;'}
@@ -681,14 +683,14 @@ const expect = require("@edgeguideab/expect");
 
 expect(
   {
-    bar: { type: "string" }
+    bar: { type: "string" },
   },
   { bar: {} }
 ).errors(); // { bar: 'Expected parameter bar to be of type string but it was {}' }
 
 expect(
   {
-    bar: { type: "string", errorCode: "Invalid format" }
+    bar: { type: "string", errorCode: "Invalid format" },
   },
   { bar: {} }
 ).errors(); // { bar: 'Invalid format' }

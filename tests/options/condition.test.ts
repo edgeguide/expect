@@ -1,6 +1,14 @@
 import expectModule = require("../../src");
 
-const types: any = ["any", "number", "boolean", "string", "array", "object"];
+const types: any = [
+  "any",
+  "number",
+  "boolean",
+  "string",
+  "array",
+  "object",
+  "date",
+];
 
 const typesValues: any = {
   any: 123,
@@ -8,7 +16,8 @@ const typesValues: any = {
   boolean: true,
   string: "test",
   array: [1, 2, 3],
-  object: { test: "test" }
+  object: { test: "test" },
+  date: new Date(),
 };
 
 types.forEach((type: any) =>
@@ -33,7 +42,7 @@ types.forEach((type: any) =>
       expect(
         expectModule(
           {
-            test: { type, condition: () => false, conditionErrorCode: "error" }
+            test: { type, condition: () => false, conditionErrorCode: "error" },
           },
           { test: typesValues[type] }
         ).errors()
@@ -48,8 +57,8 @@ types.forEach((type: any) =>
               type,
               condition: () => {
                 throw new Error("fail");
-              }
-            }
+              },
+            },
           },
           { test: typesValues[type] }
         );
@@ -64,8 +73,8 @@ types.forEach((type: any) =>
             test: {
               type,
               allowNull: true,
-              condition: test => test !== null
-            }
+              condition: (test) => test !== null,
+            },
           },
           {}
         ).wereMet()
@@ -79,8 +88,8 @@ types.forEach((type: any) =>
             test: {
               type,
               requiredIf: "missing",
-              condition: test => test !== null
-            }
+              condition: (test) => test !== null,
+            },
           },
           {}
         ).wereMet()
@@ -94,7 +103,8 @@ types.forEach((type: any) =>
         boolean: false,
         string: "bar",
         array: [4, 5, 6],
-        object: { test: "object" }
+        object: { test: "object" },
+        date: new Date(1),
       };
 
       expect(
@@ -102,9 +112,9 @@ types.forEach((type: any) =>
           {
             test: {
               type,
-              condition: test => test !== typesValues[type],
-              parse: () => otherTypeValues[type]
-            }
+              condition: (test) => test !== typesValues[type],
+              parse: () => otherTypeValues[type],
+            },
           },
           { test: typesValues[type] }
         ).wereMet()
@@ -119,8 +129,8 @@ types.forEach((type: any) =>
               type,
               condition: () => false,
               conditionErrorCode: "condition",
-              allowNullErrorCode: "allowNull"
-            }
+              allowNullErrorCode: "allowNull",
+            },
           },
           {}
         ).errors()
@@ -136,8 +146,8 @@ types.forEach((type: any) =>
               condition: () => false,
               equalTo: "missing",
               conditionErrorCode: "condition",
-              equalToErrorCode: "equalTo"
-            }
+              equalToErrorCode: "equalTo",
+            },
           },
           { test: typesValues[type] }
         ).errors()
@@ -153,8 +163,8 @@ types.forEach((type: any) =>
                 type,
                 condition: () => false,
                 conditionErrorCode: "condition",
-                errorCode: "error"
-              }
+                errorCode: "error",
+              },
             },
             { test: Symbol() }
           ).errors()

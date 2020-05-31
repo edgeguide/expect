@@ -1,36 +1,35 @@
 import { IErrorObject, IObjectOption, ValidateFunction } from "../definitions";
+import isRecord from "../util/isRecord";
 
 export function validateObject({
   parameter,
   value,
-  actualValues,
   options,
-  validate
+  actualValues,
+  expected,
+  validate,
 }: {
-  parameter: Array<string | number> | string | number;
-  value: { [key: string]: any };
-  actualValues: object;
+  parameter: string | number | Array<string | number>;
+  value: unknown;
   options: IObjectOption;
+  actualValues?: unknown;
+  expected: Record<string, any>;
   validate: ValidateFunction;
 }) {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return { valid: false };
-  }
+  if (!isRecord(value) || Array.isArray(value)) return { valid: false };
 
   if (Object.prototype.hasOwnProperty.call(value, "__proto__")) {
     return { valid: false, error: 'Object contained unsafe keys "__proto__"' };
   }
 
-  if (!options.keys) {
-    return { valid: true };
-  }
+  if (!options.keys) return { valid: true };
 
-  const parsed: { [key: string]: any } = {};
+  const parsed: Record<string, any> = {};
   const error: IErrorObject = {};
   if (options.strictKeyCheck) {
     const checkedKeys = Object.keys(options.keys);
     const uncheckedKeys = Object.keys(value).filter(
-      key => !checkedKeys.includes(key)
+      (key) => !checkedKeys.includes(key)
     );
 
     if (uncheckedKeys.length) {
@@ -40,13 +39,13 @@ export function validateObject({
           options.errorCode ||
           `Object contained unchecked keys ${JSON.stringify(
             uncheckedKeys.join(", ")
-          )}`
+          )}`,
       };
     }
   }
 
   const optionsKeys = options.keys || {};
-  const invalidKeys = Object.keys(optionsKeys).filter(key => {
+  const invalidKeys = Object.keys(optionsKeys).filter((key) => {
     const option = optionsKeys[key];
 
     const keyType =
@@ -63,22 +62,16 @@ export function validateObject({
         ? parameter.concat(key)
         : [parameter, key],
       value: value[key],
+      options: keyOptions,
       actualValues,
-      options: keyOptions
+      expected,
     });
 
-    if (validation.valid) {
-      const parsedValue = Object.prototype.hasOwnProperty.call(
-        validation,
-        "parsed"
-      )
-        ? validation.parsed
-        : value[key];
-      if (parsedValue !== undefined) {
-        parsed[key] = parsedValue;
-      }
-    } else {
-      error[key] = validation.error;
+    if (!validation.valid) error[key] = validation.error;
+    else {
+      const parsedValue =
+        "parsed" in validation ? validation.parsed : value[key];
+      if (parsedValue !== undefined) parsed[key] = parsedValue;
     }
 
     return !validation.valid;

@@ -11,10 +11,12 @@ export {
   parseFunctionWrapper,
   isNull,
   sanitize,
-  containsUnsafe
+  containsUnsafe,
 };
 
-function formatParameter(parameter: string | number | Array<string | number>) {
+function formatParameter(
+  parameter: string | number | Array<string | number>
+): string | number {
   return Array.isArray(parameter) ? parameter.join(".") : parameter;
 }
 
@@ -36,7 +38,7 @@ const htmlEntityMap: {
   "{": "&lbrace;",
   "}": "&rbrace;",
   "[": "&lbrack;",
-  "]": "&rbrack;"
+  "]": "&rbrack;",
 };
 
 const nonStrictSubset = ["&", "<", ">", '"', "'"];
@@ -44,20 +46,15 @@ const nonStrictSubset = ["&", "<", ">", '"', "'"];
 function containsUnsafe({
   value,
   strict,
-  allowed = []
+  allowed = [],
 }: {
   value: string;
   strict?: boolean;
   allowed?: string[];
 }): boolean {
-  return Array.from(value).some(character => {
-    if (!strict && !nonStrictSubset.includes(character)) {
-      return false;
-    }
-    if (allowed.includes(character)) {
-      return false;
-    }
-
+  return Array.from(value).some((character) => {
+    if (!strict && !nonStrictSubset.includes(character)) return false;
+    if (allowed.includes(character)) return false;
     return htmlEntityMap[character] !== undefined;
   });
 }
@@ -65,12 +62,12 @@ function containsUnsafe({
 function sanitize({
   value,
   strict,
-  allowed = []
+  allowed = [],
 }: {
   value: string;
   strict?: boolean;
   allowed?: string[];
-}) {
+}): string {
   return Array.from(value).reduce(
     (sanitized, char) =>
       !htmlEntityMap[char] ||
@@ -82,6 +79,6 @@ function sanitize({
   );
 }
 
-function isNull(value: any) {
+function isNull(value: unknown): value is undefined | null | "" {
   return value === undefined || value === null || value === "";
 }

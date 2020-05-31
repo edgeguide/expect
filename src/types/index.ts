@@ -1,12 +1,19 @@
-import { ValidateFunction } from "../definitions";
-
+import {
+  ValidateFunction,
+  IDefaultOption,
+  Options,
+  IStringOption,
+  IObjectOption,
+  IArrayOption,
+  IErrorObject,
+} from "../definitions";
 import {
   formatParameter,
   getDeep,
   isEqualTo,
   isNull,
   parseFunctionWrapper,
-  parseType
+  parseType,
 } from "../util";
 
 import { validateAny } from "./any";
@@ -15,27 +22,29 @@ import { validateBoolean } from "./boolean";
 import { validateNumber } from "./number";
 import { validateObject } from "./object";
 import { validateString } from "./string";
+import { validateDate } from "./date";
 
-const mapTypeValidations: any = {
-  any: validateAny,
-  number: validateNumber,
-  boolean: validateBoolean,
-  string: validateString,
-  array: validateArray,
-  object: validateObject
-};
+export const ExpectType = {
+  any: "any",
+  number: "number",
+  boolean: "boolean",
+  string: "string",
+  array: "array",
+  object: "object",
+  date: "date",
+} as const;
+
+export type ExpectTypes = keyof typeof ExpectType;
 
 export const validate: ValidateFunction = ({
   type,
   parameter,
   value,
   options,
-  actualValues = {},
-  expected = {}
+  actualValues,
+  expected,
 }) => {
-  if (typeof options === "string") {
-    options = { type: options };
-  }
+  if (typeof options === "string") options = { type } as IDefaultOption;
 
   const {
     parse,
@@ -46,19 +55,8 @@ export const validate: ValidateFunction = ({
     errorCode,
     allowNullErrorCode,
     conditionErrorCode,
-    equalToErrorCode
+    equalToErrorCode,
   } = options;
-
-  if (
-    typeof type !== "string" ||
-    !Object.prototype.hasOwnProperty.call(mapTypeValidations, type)
-  ) {
-    throw new Error(
-      `Invalid type ${JSON.stringify(type)} for parameter ${formatParameter(
-        parameter
-      )}`
-    );
-  }
 
   const initialValue = value;
   if (parse) {
@@ -68,17 +66,16 @@ export const validate: ValidateFunction = ({
         : parseType({ value, type });
   }
 
-  const validation = mapTypeValidations[type]({
+  const validation = validateType({
+    type,
     parameter,
     value,
-    actualValues,
     options,
-    validate
+    actualValues,
+    expected,
   });
 
-  value = Object.prototype.hasOwnProperty.call(validation, "parsed")
-    ? validation.parsed
-    : value;
+  value = "parsed" in validation ? validation.parsed : value;
 
   const isNullValue = isNull(value) || isNull(initialValue);
   const isAllowNull =
@@ -100,7 +97,7 @@ export const validate: ValidateFunction = ({
           isNull(initialValue)
             ? JSON.stringify(initialValue)
             : JSON.stringify(value)
-        }`
+        }`,
     };
   }
 
@@ -112,7 +109,7 @@ export const validate: ValidateFunction = ({
         errorCode ||
         `Expected parameter ${formatParameter(
           parameter
-        )} to be of type ${type} but it was ${JSON.stringify(value)}`
+        )} to be of type ${type} but it was ${JSON.stringify(value)}`,
     };
   }
 
@@ -124,11 +121,12 @@ export const validate: ValidateFunction = ({
   if (
     equalTo &&
     !isEqualTo({
+      type,
       value: parsed,
       equalTo,
       actualValues,
       expected,
-      validate
+      validate,
     })
   ) {
     return {
@@ -138,13 +136,11 @@ export const validate: ValidateFunction = ({
         errorCode ||
         `Expected parameter ${formatParameter(
           parameter
-        )} to be equal to ${JSON.stringify(equalTo)}.`
+        )} to be equal to ${JSON.stringify(equalTo)}.`,
     };
   }
 
-  if (nullAllowed && isNullValue) {
-    return { valid: true, parsed };
-  }
+  if (nullAllowed && isNullValue) return { valid: true, parsed };
 
   if (typeof condition === "function") {
     let valid = false;
@@ -160,7 +156,7 @@ export const validate: ValidateFunction = ({
         error:
           conditionErrorCode ||
           errorCode ||
-          `Expected parameter ${formatParameter(parameter)} to meet condition`
+          `Expected parameter ${formatParameter(parameter)} to meet condition`,
       };
     }
   }
@@ -170,7 +166,7 @@ export const validate: ValidateFunction = ({
 
 function allowNullWrapper({
   value,
-  allowNull
+  allowNull,
 }: {
   value: any;
   allowNull: (value: any) => boolean;
@@ -179,5 +175,53 @@ function allowNullWrapper({
     return allowNull(value);
   } catch (error) {
     return false;
+  }
+}
+
+function validateType<T extends ExpectTypes>({
+  type,
+  ...props
+}: {
+  type: T;
+  parameter: string | number | Array<string | number>;
+  value: unknown;
+  options: Options<T>;
+  actualValues?: unknown;
+  expected: Record<string, any>;
+}):
+  | { valid: true; parsed?: any }
+  | { valid: false; error?: string | IErrorObject } {
+  switch (type) {
+    case "any":
+      return validateAny();
+    case "boolean":
+      return validateBoolean(props);
+    case "number":
+      return validateNumber(props);
+    case "date":
+      return validateDate(props);
+    case "string":
+      return validateString({
+        ...props,
+        options: props.options as IStringOption,
+      });
+    case "object":
+      return validateObject({
+        ...props,
+        validate,
+        options: props.options as IObjectOption,
+      });
+    case "array":
+      return validateArray({
+        ...props,
+        validate,
+        options: props.options as IArrayOption,
+      });
+    default:
+      throw new Error(
+        `Invalid type ${JSON.stringify(type)} for parameter ${formatParameter(
+          props.parameter
+        )}`
+      );
   }
 }

@@ -1,6 +1,14 @@
 import expectModule = require("../../src");
 
-const types: any = ["any", "number", "boolean", "string", "array", "object"];
+const types: any = [
+  "any",
+  "number",
+  "boolean",
+  "string",
+  "array",
+  "object",
+  "date",
+];
 
 const typesValues: any = {
   any: 123,
@@ -8,7 +16,8 @@ const typesValues: any = {
   boolean: true,
   string: "test",
   array: [1, 2, 3],
-  object: { test: "test" }
+  object: { test: "test" },
+  date: new Date(),
 };
 
 types.forEach((type: any) =>
@@ -21,13 +30,13 @@ types.forEach((type: any) =>
               type,
               equalTo: "bar",
               allowNullErrorCode: "allowNull",
-              equalToErrorCode: "equalTo"
-            }
+              equalToErrorCode: "equalTo",
+            },
           },
           { foo: null, bar: "bar" }
         ).errors()
       ).toEqual({
-        foo: "allowNull"
+        foo: "allowNull",
       });
     });
 
@@ -54,7 +63,7 @@ types.forEach((type: any) =>
         expectModule(
           {
             foo: { type, parse: () => typesValues[type], equalTo: "bar" },
-            bar: { type }
+            bar: { type },
           },
           { foo: "test", bar: typesValues[type] }
         ).wereMet()
@@ -64,7 +73,7 @@ types.forEach((type: any) =>
         expectModule(
           {
             foo: { type, equalTo: "bar" },
-            bar: { type, parse: () => typesValues[type] }
+            bar: { type, parse: () => typesValues[type] },
           },
           { foo: typesValues[type], bar: "test" }
         ).wereMet()
@@ -80,8 +89,8 @@ types.forEach((type: any) =>
                 type,
                 equalTo: "bar",
                 equalToErrorCode: "equalTo",
-                errorCode: "error"
-              }
+                errorCode: "error",
+              },
             },
             { test: Symbol() }
           ).errors()
@@ -106,7 +115,7 @@ describe("equalTo option", () => {
       expectModule(
         {
           foo: { type: "object", keys: { buzz: "string" } },
-          bar: { type: "string", equalTo: ["foo", "buzz"] }
+          bar: { type: "string", equalTo: ["foo", "buzz"] },
         },
         { foo: { buzz: "abc" }, bar: "cba" }
       ).wereMet()
@@ -122,6 +131,62 @@ describe("equalTo option", () => {
     ).toBe(false);
   });
 
+  it("date equality", () => {
+    expect(
+      expectModule(
+        { foo: { type: "date", equalTo: "bar" }, bar: "date" },
+        { foo: new Date("2017-01-01"), bar: new Date("2017-01-01") }
+      ).wereMet()
+    ).toBe(true);
+  });
+
+  it("date instances inequality", () => {
+    expect(
+      expectModule(
+        { foo: { type: "date", equalTo: "bar" }, bar: "date" },
+        { foo: new Date("2017-01-01"), bar: new Date("2017-01-02") }
+      ).wereMet()
+    ).toBe(false);
+  });
+
+  it("date instance and string can be equal", () => {
+    expect(
+      expectModule(
+        { foo: { type: "date", equalTo: "bar" }, bar: "string" },
+        { foo: new Date("2017-01-01"), bar: "2017-01-01T00:00:00.000Z" }
+      ).wereMet()
+    ).toBe(true);
+  });
+
+  it("date instance and number can be equal", () => {
+    expect(
+      expectModule(
+        { foo: { type: "date", equalTo: "bar" }, bar: "number" },
+        { foo: new Date("2017-01-01"), bar: 1483228800000 }
+      ).wereMet()
+    ).toBe(true);
+  });
+
+  it("date instance and object are not equal", () => {
+    expect(
+      expectModule(
+        { foo: { type: "date", equalTo: "bar" }, bar: "object" },
+        { foo: new Date("2017-01-01"), bar: { date: new Date() } }
+      ).wereMet()
+    ).toBe(false);
+  });
+
+  it("date instance and null values are not equal", () => {
+    [null, undefined, ""].forEach((bar) =>
+      expect(
+        expectModule(
+          { foo: { type: "date", equalTo: "bar" } },
+          { foo: new Date("2017-01-01"), bar }
+        ).wereMet()
+      ).toBe(false)
+    );
+  });
+
   it("falsy values are not equal", () => {
     const nullValues = [NaN, 0, false, "", null, undefined];
     nullValues.forEach((foo, i) =>
@@ -132,7 +197,7 @@ describe("equalTo option", () => {
             expectModule(
               {
                 foo: { type: "any", allowNull: true, equalTo: "bar" },
-                bar: "any"
+                bar: "any",
               },
               { foo, bar }
             ).wereMet()
@@ -146,7 +211,7 @@ describe("equalTo option", () => {
       expectModule(
         {
           foo: { type: "number", equalTo: "bar", equalToErrorCode: "error" },
-          bar: "number"
+          bar: "number",
         },
         { foo: 0, bar: 1 }
       ).errors()
@@ -158,7 +223,7 @@ describe("equalTo option", () => {
       expectModule(
         {
           foo: { type: "boolean", equalTo: "bar", equalToErrorCode: "error" },
-          bar: { type: "string" }
+          bar: { type: "string" },
         },
         { foo: true, bar: "true" }
       ).errors()
@@ -170,7 +235,7 @@ describe("equalTo option", () => {
       expectModule(
         {
           foo: { type: "boolean", equalTo: "bar", equalToErrorCode: "error" },
-          bar: { type: "boolean", parse: true }
+          bar: { type: "boolean", parse: true },
         },
         { foo: true, bar: "true" }
       ).wereMet()
@@ -187,9 +252,9 @@ describe("equalTo option", () => {
             errorCode: "error",
             keys: {
               dead: { type: "string", equalTo: ["foo", "bar"] },
-              bar: { type: "string" }
-            }
-          }
+              bar: { type: "string" },
+            },
+          },
         },
         { foo: { dead: "abc", bar: "abc" } }
       ).wereMet()
@@ -208,10 +273,10 @@ describe("equalTo option", () => {
               type: "object",
               keys: {
                 dead: { type: "string", equalTo: ["foo", "0", "bar"] },
-                bar: "string"
-              }
-            }
-          }
+                bar: "string",
+              },
+            },
+          },
         },
         { foo: [{ dead: "abc", bar: "abc" }] }
       ).wereMet()
@@ -223,7 +288,7 @@ describe("equalTo option", () => {
       expectModule(
         {
           foo: { type: "boolean", parse: true, equalTo: "bar" },
-          bar: { type: "boolean" }
+          bar: { type: "boolean" },
         },
         { foo: "true", bar: true }
       ).wereMet()
@@ -235,7 +300,7 @@ describe("equalTo option", () => {
       expectModule(
         {
           foo: { type: "boolean", allowNull: true, equalTo: "bar" },
-          bar: { type: "boolean", allowNull: true }
+          bar: { type: "boolean", allowNull: true },
         },
         { foo: undefined, bar: null }
       ).wereMet()

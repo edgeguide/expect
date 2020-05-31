@@ -1,3 +1,3 @@
-export function validateNumber({ value }: { value: number }) {
+export function validateNumber({ value }: { value: unknown }) {
   return { valid: typeof value === "number" && !isNaN(value) };
 }

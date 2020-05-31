@@ -1,19 +1,25 @@
-import { ExpectedType, IErrorObject, Options } from "./definitions";
-import { validate } from "./types";
+import { IErrorObject, Options, OptionsValue } from "./definitions";
+import { validate, ExpectTypes } from "./types";
 
-export = (
-  expected: { [key: string]: ExpectedType | Options },
-  actualValues: { [key: string]: any }
-) => {
+export = function expect<
+  Schema extends Record<string, Options | ExpectTypes> | Record<string, any>
+>(
+  expected: Schema,
+  actualValues: Record<string, unknown>
+): {
+  errors(): Record<string, any>;
+  getParsed(): { [K in keyof Schema]?: OptionsValue<Schema[K]> };
+  wereMet(): boolean;
+} {
   if (expected === null || typeof expected !== "object") {
     throw new Error("Invalid validation schema");
   }
 
-  const parsedValues: { [key: string]: any } = {};
+  const parsedValues: Record<string, any> = {};
   const errors: IErrorObject = {};
   let valid = true;
 
-  Object.keys(expected).forEach(parameter => {
+  Object.keys(expected).forEach((parameter) => {
     if (actualValues === null || typeof actualValues !== "object") {
       valid = false;
       errors[parameter] = "Invalid input";
@@ -29,12 +35,12 @@ export = (
       options,
       parameter,
       type: typeof options === "string" ? options : options.type,
-      value: actual
+      value: actual,
     });
 
     if (!validation.valid) {
       valid = false;
-      errors[parameter] = validation.error;
+      if (validation.error) errors[parameter] = validation.error;
       return;
     }
 
@@ -45,7 +51,7 @@ export = (
 
   return {
     errors: () => errors,
-    getParsed: () => parsedValues,
-    wereMet: () => valid
+    getParsed: () => parsedValues as any,
+    wereMet: () => valid,
   };
 };

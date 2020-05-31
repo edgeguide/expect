@@ -7,7 +7,7 @@ describe("Expect package (object validation):", () => {
     expect(expectations.wereMet()).toBe(true);
   });
 
-  [null, undefined, [], 1].forEach(test =>
+  [null, undefined, [], 1].forEach((test) =>
     it(`rejects ${test}`, () => {
       const expectations = expectModule({ test: "object" }, { test });
 
@@ -24,9 +24,9 @@ describe("Expect package (object validation):", () => {
           errorCode: "error",
           keys: {
             bar: { type: "number", errorCode: "invalid type" },
-            fest: "string"
-          }
-        }
+            fest: "string",
+          },
+        },
       },
       { foo: { bar: "testest", fest: "festfest" } }
     );
@@ -44,17 +44,17 @@ describe("Expect package (object validation):", () => {
           keys: {
             dead: {
               type: "object",
-              keys: { beef: "number" }
+              keys: { beef: "number" },
             },
-            bar: "string"
-          }
-        }
+            bar: "string",
+          },
+        },
       },
       {
         foo: {
           dead: { beef: "fail" },
-          bar: "festfest"
-        }
+          bar: "festfest",
+        },
       }
     );
 
@@ -62,9 +62,9 @@ describe("Expect package (object validation):", () => {
       foo: {
         dead: {
           beef:
-            'Expected parameter foo.dead.beef to be of type number but it was "fail"'
-        }
-      }
+            'Expected parameter foo.dead.beef to be of type number but it was "fail"',
+        },
+      },
     });
   });
 
@@ -79,22 +79,22 @@ describe("Expect package (object validation):", () => {
             dead: {
               type: "object",
               keys: {
-                beef: "number"
-              }
+                beef: "number",
+              },
             },
             bar: "string",
-            bizz: "number"
-          }
-        }
+            bizz: "number",
+          },
+        },
       },
       {
         foo: {
           dead: {
-            beef: "fail"
+            beef: "fail",
           },
           bar: "festfest",
-          bizz: "1a"
-        }
+          bizz: "1a",
+        },
       }
     );
 
@@ -104,9 +104,9 @@ describe("Expect package (object validation):", () => {
           'Expected parameter foo.bizz to be of type number but it was "1a"',
         dead: {
           beef:
-            'Expected parameter foo.dead.beef to be of type number but it was "fail"'
-        }
-      }
+            'Expected parameter foo.dead.beef to be of type number but it was "fail"',
+        },
+      },
     });
   });
 
@@ -120,34 +120,34 @@ describe("Expect package (object validation):", () => {
             type: "object",
             keys: {
               dead: "string",
-              beef: "number"
-            }
-          }
-        }
+              beef: "number",
+            },
+          },
+        },
       },
       {
         foo: [
           {
             dead: "fed",
-            beef: 1
+            beef: 1,
           },
           {
             dead: "fed",
-            beef: 2
+            beef: 2,
           },
           {
             dead: "fed",
-            beef: 3
+            beef: 3,
           },
           {
             dead: "fed",
-            beef: 4
+            beef: 4,
           },
           {
             dead: "fed",
-            beef: 5
-          }
-        ]
+            beef: 5,
+          },
+        ],
       }
     );
 
@@ -164,10 +164,10 @@ describe("Expect package (object validation):", () => {
             type: "object",
             keys: {
               dead: "string",
-              beef: "number"
-            }
-          }
-        }
+              beef: "number",
+            },
+          },
+        },
       },
       {
         foo: [
@@ -175,8 +175,8 @@ describe("Expect package (object validation):", () => {
           { dead: "fed", beef: 2 },
           { dead: "fed", beef: "hello" },
           { dead: "fed", beef: 4 },
-          { dead: "fed", beef: 5 }
-        ]
+          { dead: "fed", beef: 5 },
+        ],
       }
     );
 
@@ -191,9 +191,9 @@ describe("Expect package (object validation):", () => {
           allowNullErrorCode: "missing",
           items: {
             type: "object",
-            keys: { dead: "string", beef: "number" }
-          }
-        }
+            keys: { dead: "string", beef: "number" },
+          },
+        },
       },
       {
         foo: [
@@ -201,8 +201,8 @@ describe("Expect package (object validation):", () => {
           { dead: "fed", beef: 2 },
           { dead: "fed", beef: "hello" },
           { dead: "fed", beef: 4 },
-          { dead: "fed", beef: 5 }
-        ]
+          { dead: "fed", beef: 5 },
+        ],
       }
     );
 
@@ -210,9 +210,9 @@ describe("Expect package (object validation):", () => {
       foo: {
         2: {
           beef:
-            'Expected parameter foo.2.beef to be of type number but it was "hello"'
-        }
-      }
+            'Expected parameter foo.2.beef to be of type number but it was "hello"',
+        },
+      },
     });
   });
 
@@ -226,11 +226,11 @@ describe("Expect package (object validation):", () => {
           keys: {
             dead: {
               type: "object",
-              keys: { beef: "number" }
+              keys: { beef: "number" },
             },
-            bar: "string"
-          }
-        }
+            bar: "string",
+          },
+        },
       },
       { foo: { dead: { beef: null }, bar: "festfest" } }
     );
@@ -239,9 +239,9 @@ describe("Expect package (object validation):", () => {
       foo: {
         dead: {
           beef:
-            "Expected parameter foo.dead.beef to be of type number but it was null"
-        }
-      }
+            "Expected parameter foo.dead.beef to be of type number but it was null",
+        },
+      },
     });
   });
 
@@ -255,17 +255,17 @@ describe("Expect package (object validation):", () => {
           keys: {
             dead: {
               type: "object",
-              keys: { beef: { type: "number", allowNull: true } }
+              keys: { beef: { type: "number", allowNull: true } },
             },
-            bar: "string"
-          }
-        }
+            bar: "string",
+          },
+        },
       },
       {
         foo: {
           dead: { beef: null },
-          bar: "festfest"
-        }
+          bar: "festfest",
+        },
       }
     );
 
@@ -285,21 +285,21 @@ describe("Expect package (object validation):", () => {
               keys: {
                 beef: {
                   type: "boolean",
-                  parse: true
-                }
-              }
+                  parse: true,
+                },
+              },
             },
-            bar: "string"
-          }
-        }
+            bar: "string",
+          },
+        },
       },
       {
         foo: {
           dead: {
-            beef: "true"
+            beef: "true",
           },
-          bar: "festfest"
-        }
+          bar: "festfest",
+        },
       }
     );
 
@@ -319,21 +319,21 @@ describe("Expect package (object validation):", () => {
               keys: {
                 beef: {
                   type: "boolean",
-                  parse: true
-                }
-              }
+                  parse: true,
+                },
+              },
             },
-            bar: "string"
-          }
-        }
+            bar: "string",
+          },
+        },
       },
       {
         foo: {
           dead: {
-            beef: "true"
+            beef: "true",
           },
-          bar: "festfest"
-        }
+          bar: "festfest",
+        },
       }
     );
 
@@ -348,19 +348,19 @@ describe("Expect package (object validation):", () => {
           keys: {
             dead: {
               type: "object",
-              keys: { beef: { type: "boolean", parse: true } }
+              keys: { beef: { type: "boolean", parse: true } },
             },
             bar: { type: "number", parse: true },
-            bizz: { type: "array", parse: true }
-          }
-        }
+            bizz: { type: "array", parse: true },
+          },
+        },
       },
       {
         foo: {
           dead: { beef: "true" },
           bar: "1",
-          bizz: "[1, 2, 3]"
-        }
+          bizz: "[1, 2, 3]",
+        },
       }
     );
 
@@ -369,8 +369,8 @@ describe("Expect package (object validation):", () => {
       foo: {
         dead: { beef: true },
         bar: 1,
-        bizz: [1, 2, 3]
-      }
+        bizz: [1, 2, 3],
+      },
     });
   });
 
@@ -382,19 +382,19 @@ describe("Expect package (object validation):", () => {
           keys: {
             dead: {
               type: "object",
-              keys: { beef: "boolean" }
+              keys: { beef: "boolean" },
             },
             bar: { type: "string", allowNull: true },
-            bizz: "array"
-          }
-        }
+            bizz: "array",
+          },
+        },
       },
       {
         foo: {
           dead: { beef: "true" },
           bar: "",
-          bizz: [1, 2, 3]
-        }
+          bizz: [1, 2, 3],
+        },
       }
     );
 
@@ -404,9 +404,9 @@ describe("Expect package (object validation):", () => {
       foo: {
         dead: {
           beef:
-            'Expected parameter foo.dead.beef to be of type boolean but it was "true"'
-        }
-      }
+            'Expected parameter foo.dead.beef to be of type boolean but it was "true"',
+        },
+      },
     });
   });
 
@@ -422,36 +422,36 @@ describe("Expect package (object validation):", () => {
               keys: {
                 beef: {
                   type: "boolean",
-                  parse: true
-                }
-              }
+                  parse: true,
+                },
+              },
             },
             bar: {
               type: "number",
-              parse: true
+              parse: true,
             },
             bizz: {
               type: "array",
-              parse: true
-            }
-          }
-        }
+              parse: true,
+            },
+          },
+        },
       },
       {
         foo: {
           dead: {
-            beef: "true"
+            beef: "true",
           },
           bar: "1",
           bizz: "[1,2,3,4,5]",
-          buzz: "1337"
-        }
+          buzz: "1337",
+        },
       }
     );
 
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
-      foo: 'Object contained unchecked keys "buzz"'
+      foo: 'Object contained unchecked keys "buzz"',
     });
   });
 
@@ -464,26 +464,26 @@ describe("Expect package (object validation):", () => {
             dead: {
               type: "object",
               strictKeyCheck: true,
-              keys: { beef: { type: "boolean", parse: true } }
+              keys: { beef: { type: "boolean", parse: true } },
             },
             bar: { type: "number", parse: true },
-            bizz: { type: "array", parse: true }
-          }
-        }
+            bizz: { type: "array", parse: true },
+          },
+        },
       },
       {
         foo: {
           dead: { beef: "true", well: "fed" },
           bar: "1",
           bizz: "[1,2,3,4,5]",
-          buzz: "1337"
-        }
+          buzz: "1337",
+        },
       }
     );
 
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
-      foo: { dead: 'Object contained unchecked keys "well"' }
+      foo: { dead: 'Object contained unchecked keys "well"' },
     });
   });
 
@@ -496,20 +496,20 @@ describe("Expect package (object validation):", () => {
             dead: {
               type: "object",
               strictKeyCheck: true,
-              keys: { beef: { type: "boolean", allowNull: true, parse: true } }
+              keys: { beef: { type: "boolean", allowNull: true, parse: true } },
             },
             bar: { type: "number", parse: true },
-            bizz: { type: "array", parse: true }
-          }
-        }
+            bizz: { type: "array", parse: true },
+          },
+        },
       },
       {
         foo: {
           dead: { beef: null },
           bar: "1",
           bizz: "[1,2,3,4,5]",
-          buzz: "1337"
-        }
+          buzz: "1337",
+        },
       }
     );
 
@@ -530,17 +530,17 @@ describe("Expect package (object validation):", () => {
                 beef: {
                   type: "boolean",
                   allowNull: true,
-                  parse: true
-                }
-              }
-            }
-          }
+                  parse: true,
+                },
+              },
+            },
+          },
         },
         bar: {
           type: "number",
           parse: true,
-          requiredIf: ["foo", "dead", "beef"]
-        }
+          requiredIf: ["foo", "dead", "beef"],
+        },
       },
       { foo: { dead: { beef: null } }, bar: "" }
     );
@@ -558,11 +558,11 @@ describe("Expect package (object validation):", () => {
             items: {
               type: "object",
               keys: {
-                bar: "string"
+                bar: "string",
               },
-              strictKeyCheck: true
-            }
-          }
+              strictKeyCheck: true,
+            },
+          },
         },
         { foo: [null, { bar: "test" }] }
       )
@@ -585,11 +585,11 @@ describe("Expect package (object validation):", () => {
           foo: {
             type: "object",
             errorCode: "foo error",
-            condition: foo => Object.keys(foo).length > 10,
+            condition: (foo) => Object.keys(foo).length > 10,
             keys: {
-              bar: { type: "number", errorCode: "bar error" }
-            }
-          }
+              bar: { type: "number", errorCode: "bar error" },
+            },
+          },
         },
         { foo: { bar: "123" } }
       ).errors()
@@ -601,11 +601,11 @@ describe("Expect package (object validation):", () => {
           foo: {
             type: "object",
             errorCode: "foo error",
-            condition: foo => Object.keys(foo).length > 10,
+            condition: (foo) => Object.keys(foo).length > 10,
             keys: {
-              bar: { type: "number", errorCode: "bar error" }
-            }
-          }
+              bar: { type: "number", errorCode: "bar error" },
+            },
+          },
         },
         { foo: { bar: 123 } }
       ).errors()
@@ -627,16 +627,16 @@ describe("Expect package (object validation):", () => {
           type: "object",
           keys: {
             bar: { type: "number", parse: true },
-            bizz: { type: "array", parse: true }
-          }
-        }
+            bizz: { type: "array", parse: true },
+          },
+        },
       },
       value
     );
 
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
-      foo: 'Object contained unsafe keys "__proto__"'
+      foo: 'Object contained unsafe keys "__proto__"',
     });
   });
 
@@ -650,12 +650,12 @@ describe("Expect package (object validation):", () => {
             bar: {
               type: "object",
               keys: {
-                test: "string"
-              }
+                test: "string",
+              },
             },
-            bizz: { type: "array", parse: true }
-          }
-        }
+            bizz: { type: "array", parse: true },
+          },
+        },
       },
       JSON.parse(`{
         "foo": {
@@ -667,7 +667,7 @@ describe("Expect package (object validation):", () => {
 
     expect(expectations.wereMet()).toBe(false);
     expect(expectations.errors()).toEqual({
-      foo: { bar: 'Object contained unsafe keys "__proto__"' }
+      foo: { bar: 'Object contained unsafe keys "__proto__"' },
     });
   });
 });

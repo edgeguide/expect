@@ -1,6 +1,10 @@
 ## 8.0.0
 
-- Removed customized types ([#2](https://github.com/edgeguide/expect/issues/2))
+- Major improvements to the type declarations. `getParsed()` will now try to infer the return value type from the schema.
+
+### Breaking changes
+
+- Removed customized types except for `date` ([#2](https://github.com/edgeguide/expect/issues/2))
 
 ## 7.0.1 (15 July 2019)
 

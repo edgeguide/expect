@@ -1,14 +1,23 @@
 import expectModule = require("../../src");
 
-const types: any = ["any", "number", "boolean", "string", "array", "object"];
+const types: any = [
+  "any",
+  "number",
+  "boolean",
+  "string",
+  "array",
+  "object",
+  "date",
+];
 
 const typesValues: any = {
   any: 123,
-  array: [1, 2, 3],
-  boolean: true,
   number: 321,
+  boolean: true,
+  string: "test",
+  array: [1, 2, 3],
   object: { test: "test" },
-  string: "test"
+  date: new Date(),
 };
 
 types.forEach((type: any) =>
@@ -34,7 +43,7 @@ types.forEach((type: any) =>
     });
 
     it("ignores null values", () => {
-      [null, undefined, ""].forEach(missing =>
+      [null, undefined, ""].forEach((missing) =>
         expect(
           expectModule(
             { test: { type, requiredIf: "missing" } },
@@ -46,7 +55,7 @@ types.forEach((type: any) =>
 
     it("checks initial value before parse", () => {
       const expected = {
-        test: { type, parse: () => typesValues[type], requiredIf: "existing" }
+        test: { type, parse: () => typesValues[type], requiredIf: "existing" },
       };
       expect(expectModule(expected, { existing: 123 }).wereMet()).toBe(false);
       expect(expectModule(expected, { existing: 123 }).getParsed()).toEqual({});
@@ -61,7 +70,7 @@ types.forEach((type: any) =>
 
     it("checks parsed value", () => {
       const expected = {
-        test: { type, parse: () => null, requiredIf: "missing" }
+        test: { type, parse: () => null, requiredIf: "missing" },
       };
       expect(
         expectModule(expected, { test: typesValues[type] }).wereMet()
@@ -74,11 +83,11 @@ types.forEach((type: any) =>
     it("does not check target parsed value", () => {
       const expected = {
         test: { type, requiredIf: "existing" },
-        existing: { type, allowNull: true, parse: () => typesValues[type] }
+        existing: { type, allowNull: true, parse: () => typesValues[type] },
       };
       expect(expectModule(expected, {}).wereMet()).toBe(true);
       expect(expectModule(expected, {}).getParsed()).toEqual({
-        existing: typesValues[type]
+        existing: typesValues[type],
       });
     });
 
@@ -89,8 +98,8 @@ types.forEach((type: any) =>
             test: {
               type,
               parse: () => typesValues[type],
-              requiredIf: "missing"
-            }
+              requiredIf: "missing",
+            },
           },
           {}
         ).getParsed()
@@ -98,7 +107,7 @@ types.forEach((type: any) =>
     });
 
     it("does not ignore falsy values (not null values)", () => {
-      [0, NaN, false].forEach(existing =>
+      [0, NaN, false].forEach((existing) =>
         expect(
           expectModule(
             { test: { type, requiredIf: "existing" } },

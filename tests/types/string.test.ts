@@ -14,7 +14,7 @@ describe("Expect package (string validation):", () => {
 
   it("rejects other data types", () => {
     const tests = [null, undefined, true, 1, NaN, Infinity, [], {}, Symbol()];
-    tests.forEach(test => {
+    tests.forEach((test) => {
       const expectations = expectModule({ test: "string" }, { test });
       expect(expectations.wereMet()).toBe(false);
     });
@@ -83,10 +83,10 @@ describe("Expect package (string validation):", () => {
     const typeValues: any = {
       null: "null",
       undefined,
-      "": ""
+      "": "",
     };
 
-    [null, undefined, ""].forEach(test => {
+    [null, undefined, ""].forEach((test) => {
       const expectations = expectModule(
         { test: { type: "string", allowNull: true, parse: true } },
         { test }
@@ -126,7 +126,7 @@ describe("Expect package (string validation):", () => {
     );
 
     expect(expectations.errors()).toEqual({
-      test: "Parameter test contained unsafe, unescaped characters"
+      test: "Parameter test contained unsafe, unescaped characters",
     });
   });
 
@@ -164,8 +164,8 @@ describe("Expect package (string validation):", () => {
           test: {
             type: "string",
             blockUnsafe: true,
-            blockUnsafeErrorCode: "blockUnsafe"
-          }
+            blockUnsafeErrorCode: "blockUnsafe",
+          },
         },
         { test: "<div>I am unsafe</div>" }
       ).errors()
@@ -180,8 +180,8 @@ describe("Expect package (string validation):", () => {
             type: "string",
             blockUnsafe: true,
             blockUnsafeErrorCode: "blockUnsafe",
-            errorCode: "error"
-          }
+            errorCode: "error",
+          },
         },
         { test: 123 }
       ).errors()
@@ -196,8 +196,8 @@ describe("Expect package (string validation):", () => {
             type: "string",
             blockUnsafe: true,
             blockUnsafeErrorCode: "blockUnsafe",
-            allowNullErrorCode: "allowNull"
-          }
+            allowNullErrorCode: "allowNull",
+          },
         },
         {}
       ).errors()
@@ -213,8 +213,8 @@ describe("Expect package (string validation):", () => {
             blockUnsafe: true,
             equalTo: "missing",
             blockUnsafeErrorCode: "blockUnsafe",
-            equalToErrorCode: "equalTo"
-          }
+            equalToErrorCode: "equalTo",
+          },
         },
         { test: "<div>I am unsafe</div>" }
       ).errors()
@@ -230,8 +230,8 @@ describe("Expect package (string validation):", () => {
             blockUnsafe: true,
             condition: () => false,
             blockUnsafeErrorCode: "blockUnsafe",
-            conditionErrorCode: "condition"
-          }
+            conditionErrorCode: "condition",
+          },
         },
         { test: "<div>I am unsafe</div>" }
       ).errors()
@@ -245,8 +245,8 @@ describe("Expect package (string validation):", () => {
           type: "string",
           blockUnsafe: true,
           strictEntities: true,
-          allowed: ["@"]
-        }
+          allowed: ["@"],
+        },
       },
       { test: "This is not strictly safe, but whatever: foo@bar.xcc" }
     );
@@ -261,8 +261,8 @@ describe("Expect package (string validation):", () => {
           type: "string",
           blockUnsafe: true,
           strictEntities: true,
-          allowed: ["(", ")", "[", "]"]
-        }
+          allowed: ["(", ")", "[", "]"],
+        },
       },
       { test: "This [should] get a pass even in strict mode (yay)" }
     );
@@ -277,8 +277,8 @@ describe("Expect package (string validation):", () => {
           type: "string",
           blockUnsafe: true,
           strictEntities: true,
-          allowed: ["(", ")", "["]
-        }
+          allowed: ["(", ")", "["],
+        },
       },
       { test: "This [should] NOT get a pass in strict mode (aaaww)" }
     );
@@ -288,7 +288,7 @@ describe("Expect package (string validation):", () => {
 
   it("blocks input with surrogate pairs", () => {
     const testObject = {
-      test: "Some japanese characters (日本語) should be handled correctly"
+      test: "Some japanese characters (日本語) should be handled correctly",
     };
     const expectations = expectModule(
       {
@@ -296,8 +296,8 @@ describe("Expect package (string validation):", () => {
           type: "string",
           blockUnsafe: true,
           strictEntities: true,
-          allowed: ["(", "["]
-        }
+          allowed: ["(", "["],
+        },
       },
       testObject
     );
@@ -307,105 +307,84 @@ describe("Expect package (string validation):", () => {
 
   it("sanitized strings and put them in the parsed field", () => {
     const testObject = {
-      test: "<p>Sanitize this dangerous input</p>"
-    };
-    const expectations = expectModule(
-      {
-        test: {
-          type: "string",
-          sanitize: true
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.getParsed()).toEqual({
-      test: "&lt;p&gt;Sanitize this dangerous input&lt;/p&gt;"
-    });
-  });
-
-  it("does not sanitize non-strict characters when not in strict mode", () => {
-    const testObject = {
-      test: "Skip this (not so) dangerous input!"
-    };
-    const expectations = expectModule(
-      {
-        test: {
-          type: "string",
-          sanitize: true
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.getParsed()).toEqual({
-      test: "Skip this (not so) dangerous input!"
-    });
-  });
-
-  it("sanitized strings and put them in the parsed field", () => {
-    const testObject = {
-      test: "<p>Sanitize this dangerous input</p>"
-    };
-    const expectations = expectModule(
-      {
-        test: {
-          type: "string",
-          sanitize: true
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.getParsed()).toEqual({
-      test: "&lt;p&gt;Sanitize this dangerous input&lt;/p&gt;"
-    });
-  });
-
-  it("can still sanitize some characters when not in strict mode", () => {
-    const testObject = {
-      test: "<p>sanitize this</p>Skip this (not so) dangerous input!"
-    };
-    const expectations = expectModule(
-      {
-        test: {
-          type: "string",
-          sanitize: true
-        }
-      },
-      testObject
-    );
-
-    expect(expectations.getParsed()).toEqual({
-      test:
-        "&lt;p&gt;sanitize this&lt;/p&gt;Skip this (not so) dangerous input!"
-    });
-  });
-
-  it("can sanitize all characters when in strict mode", () => {
-    const testObject = {
-      test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!"
+      test: "<p>Sanitize this dangerous input</p>",
     };
     const expectations = expectModule(
       {
         test: {
           type: "string",
           sanitize: true,
-          strictEntities: true
-        }
+        },
+      },
+      testObject
+    );
+
+    expect(expectations.getParsed()).toEqual({
+      test: "&lt;p&gt;Sanitize this dangerous input&lt;/p&gt;",
+    });
+  });
+
+  it("does not sanitize non-strict characters when not in strict mode", () => {
+    const testObject = {
+      test: "Skip this (not so) dangerous input!",
+    };
+    const expectations = expectModule(
+      {
+        test: {
+          type: "string",
+          sanitize: true,
+        },
+      },
+      testObject
+    );
+
+    expect(expectations.getParsed()).toEqual({
+      test: "Skip this (not so) dangerous input!",
+    });
+  });
+
+  it("sanitized strings and put them in the parsed field", () => {
+    const testObject = {
+      test: "<p>Sanitize this dangerous input</p>",
+    };
+    const expectations = expectModule(
+      {
+        test: {
+          type: "string",
+          sanitize: true,
+        },
+      },
+      testObject
+    );
+
+    expect(expectations.getParsed()).toEqual({
+      test: "&lt;p&gt;Sanitize this dangerous input&lt;/p&gt;",
+    });
+  });
+
+  it("can still sanitize some characters when not in strict mode", () => {
+    const testObject = {
+      test: "<p>sanitize this</p>Skip this (not so) dangerous input!",
+    };
+    const expectations = expectModule(
+      {
+        test: {
+          type: "string",
+          sanitize: true,
+        },
       },
       testObject
     );
 
     expect(expectations.getParsed()).toEqual({
       test:
-        "&lt;p&gt;sanitize this&lt;/p&gt;Sanitize this &lpar;not so&rpar; dangerous input&excl;"
+        "&lt;p&gt;sanitize this&lt;/p&gt;Skip this (not so) dangerous input!",
     });
   });
 
-  it("can skip allowed characters when in strict mode", () => {
+  it("can sanitize all characters when in strict mode", () => {
     const testObject = {
-      test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!"
+      test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!",
     };
     const expectations = expectModule(
       {
@@ -413,21 +392,42 @@ describe("Expect package (string validation):", () => {
           type: "string",
           sanitize: true,
           strictEntities: true,
-          allowed: ["(", ")"]
-        }
+        },
       },
       testObject
     );
 
     expect(expectations.getParsed()).toEqual({
       test:
-        "&lt;p&gt;sanitize this&lt;/p&gt;Sanitize this (not so) dangerous input&excl;"
+        "&lt;p&gt;sanitize this&lt;/p&gt;Sanitize this &lpar;not so&rpar; dangerous input&excl;",
+    });
+  });
+
+  it("can skip allowed characters when in strict mode", () => {
+    const testObject = {
+      test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!",
+    };
+    const expectations = expectModule(
+      {
+        test: {
+          type: "string",
+          sanitize: true,
+          strictEntities: true,
+          allowed: ["(", ")"],
+        },
+      },
+      testObject
+    );
+
+    expect(expectations.getParsed()).toEqual({
+      test:
+        "&lt;p&gt;sanitize this&lt;/p&gt;Sanitize this (not so) dangerous input&excl;",
     });
   });
 
   it("does not destroy the original value when sanitizing", () => {
     const testObject = {
-      test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!"
+      test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!",
     };
     expectModule(
       {
@@ -435,35 +435,35 @@ describe("Expect package (string validation):", () => {
           type: "string",
           sanitize: true,
           strictEntities: true,
-          allowed: ["(", ")"]
-        }
+          allowed: ["(", ")"],
+        },
       },
       testObject
     );
 
     expect(testObject).toEqual({
-      test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!"
+      test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!",
     });
   });
 
   it("does not destroy surrogate pairs when sanitizing", () => {
     const testObject = {
-      test: "Some japanese characters (日本語) should be handled correctly"
+      test: "Some japanese characters (日本語) should be handled correctly",
     };
     const expectations = expectModule(
       {
         test: {
           type: "string",
           sanitize: true,
-          strictEntities: true
-        }
+          strictEntities: true,
+        },
       },
       testObject
     );
 
     expect(expectations.getParsed()).toEqual({
       test:
-        "Some japanese characters &lpar;日本語&rpar; should be handled correctly"
+        "Some japanese characters &lpar;日本語&rpar; should be handled correctly",
     });
   });
 });

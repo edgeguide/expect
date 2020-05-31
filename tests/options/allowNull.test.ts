@@ -2,7 +2,15 @@ import expectModule = require("../../src");
 
 const nullValues = [null, undefined, ""];
 
-const types: any = ["any", "number", "boolean", "string", "array", "object"];
+const types = [
+  "any",
+  "number",
+  "boolean",
+  "string",
+  "array",
+  "object",
+  "date",
+] as const;
 
 const typesValues: any = {
   any: 123,
@@ -10,13 +18,14 @@ const typesValues: any = {
   boolean: true,
   string: "test",
   array: [1, 2, 3],
-  object: { test: "test" }
+  object: { test: "test" },
+  date: new Date(),
 };
 
-types.forEach((type: any) =>
+types.forEach((type) =>
   describe(`allowNull - type ${type}`, () => {
     it("option can be used", () => {
-      nullValues.forEach(test => {
+      nullValues.forEach((test) => {
         expect(
           expectModule({ test: { type, allowNull: false } }, { test }).wereMet()
         ).toBe(false);
@@ -46,7 +55,7 @@ types.forEach((type: any) =>
 
       expect(expectModule(expected, { test: Symbol() }).wereMet()).toBe(true);
       expect(expectModule(expected, { test: Symbol() }).getParsed()).toEqual({
-        test: typesValues[type]
+        test: typesValues[type],
       });
     });
 
@@ -85,7 +94,7 @@ types.forEach((type: any) =>
         ).wereMet()
       ).toBe(false);
 
-      [NaN, 0, false, "null", {}, [], Symbol()].forEach(test =>
+      [NaN, 0, false, "null", {}, [], Symbol()].forEach((test) =>
         expect(
           expectModule(
             { test: { type, parse: () => typesValues[type] } },
@@ -96,10 +105,10 @@ types.forEach((type: any) =>
     });
 
     it("allowNull can filter allowed null values for all types using function", () => {
-      ["", null, undefined].forEach(test => {
+      ["", null, undefined].forEach((test) => {
         expect(
           expectModule(
-            { test: { type, allowNull: x => x !== test } },
+            { test: { type, allowNull: (x) => x !== test } },
             { test }
           ).wereMet()
         ).toBe(false);
@@ -116,7 +125,7 @@ types.forEach((type: any) =>
     });
 
     it("allowNullErrorCode has higher priority than type validation (errorCode)", () => {
-      nullValues.forEach(test =>
+      nullValues.forEach((test) =>
         expect(
           expectModule(
             { test: { type, allowNullErrorCode: "error", errorCode: "error" } },
@@ -136,8 +145,8 @@ it("does not throw", () => {
           type: "string",
           allowNull: () => {
             throw new Error();
-          }
-        }
+          },
+        },
       },
       {}
     )
@@ -159,8 +168,8 @@ it("nested parsed value is not returned if undefined", () => {
     {
       foo: {
         type: "object",
-        keys: { bar: { type: "number", allowNull: true, parse: true } }
-      }
+        keys: { bar: { type: "number", allowNull: true, parse: true } },
+      },
     },
     { foo: {} }
   ).getParsed();
@@ -172,7 +181,7 @@ it("allowNull with invalid parse behaves correctly with equalTo", () => {
     expectModule(
       {
         foo: { type: "string", allowNull: true, equalTo: "bar" },
-        bar: { type: "string", allowNull: true, parse: () => 123 }
+        bar: { type: "string", allowNull: true, parse: () => 123 },
       },
       {}
     ).wereMet()

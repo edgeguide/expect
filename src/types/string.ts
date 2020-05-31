@@ -4,22 +4,20 @@ import { containsUnsafe, formatParameter, sanitize } from "../util";
 export function validateString({
   parameter,
   value,
-  options
+  options,
 }: {
-  parameter: string | string[];
-  value: string;
+  parameter: string | number | Array<string | number>;
+  value: unknown;
   options: IStringOption;
 }) {
-  if (typeof value !== "string") {
-    return { valid: false };
-  }
+  if (typeof value !== "string") return { valid: false };
 
   if (
     options.blockUnsafe &&
     containsUnsafe({
       value,
       strict: options.strictEntities,
-      allowed: options.allowed
+      allowed: options.allowed,
     })
   ) {
     return {
@@ -29,7 +27,7 @@ export function validateString({
         options.errorCode ||
         `Parameter ${formatParameter(
           parameter
-        )} contained unsafe, unescaped characters`
+        )} contained unsafe, unescaped characters`,
     };
   }
 
@@ -39,8 +37,8 @@ export function validateString({
       ? sanitize({
           value,
           strict: options.strictEntities,
-          allowed: options.allowed
+          allowed: options.allowed,
         })
-      : value
+      : value,
   };
 }

@@ -1,12 +1,19 @@
+import { ExpectTypes } from "../types";
+
 export { parseType, parseFunctionWrapper };
 
-function parseType({ value, type }: { value: any; type: string }) {
+function parseType({ value, type }: { value: any; type: ExpectTypes }) {
   try {
     switch (type) {
       case "string":
         return typeof value === "string" ? value : JSON.stringify(value);
       case "number":
         return typeof value === "string" && value ? Number(value) : value;
+      case "date":
+        return new Date(value);
+      case "array":
+      case "object":
+        return JSON.parse(value);
       case "boolean":
         try {
           return value === "undefined" || value === "NaN"
@@ -15,9 +22,6 @@ function parseType({ value, type }: { value: any; type: string }) {
         } catch (error) {
           return !!value;
         }
-      case "array":
-      case "object":
-        return JSON.parse(value);
       default:
         return value;
     }
@@ -28,7 +32,7 @@ function parseType({ value, type }: { value: any; type: string }) {
 
 function parseFunctionWrapper({
   value,
-  parse
+  parse,
 }: {
   value: any;
   parse: (x: any) => any;

@@ -1,6 +1,14 @@
 import expectModule = require("../../src");
 
-const types: any = ["any", "number", "boolean", "string", "array", "object"];
+const types: any = [
+  "any",
+  "number",
+  "boolean",
+  "string",
+  "array",
+  "object",
+  "date",
+];
 
 types.forEach((type: any) =>
   describe(`errorCode - type ${type}`, () => {

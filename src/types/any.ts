@@ -1,3 +1,3 @@
 export function validateAny() {
-  return { valid: true };
+  return { valid: true } as const;
 }

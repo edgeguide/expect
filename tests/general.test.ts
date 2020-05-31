@@ -22,11 +22,11 @@ describe("handling of __proto__ poisoning", () => {
       {
         test: {
           type: "object",
-          parse: true
-        }
+          parse: true,
+        },
       },
       {
-        test: '{ "b": 5, "__proto__": { "c": 6 } }'
+        test: '{ "b": 5, "__proto__": { "c": 6 } }',
       }
     );
 
@@ -38,11 +38,11 @@ describe("handling of __proto__ poisoning", () => {
       {
         test: {
           type: "object",
-          parse: true
-        }
+          parse: true,
+        },
       },
       {
-        test: '{ "a": 5, b: { "__proto__": { "c": 6 } } }'
+        test: '{ "a": 5, b: { "__proto__": { "c": 6 } } }',
       }
     );
 
@@ -55,11 +55,11 @@ describe("handling of __proto__ poisoning", () => {
         {
           test: {
             type: "__proto__",
-            parse: true
-          } as any
+            parse: true,
+          } as any,
         },
         {
-          test: '{ "b": 5, "__proto__": { "c": 6 } }'
+          test: '{ "b": 5, "__proto__": { "c": 6 } }',
         }
       );
 

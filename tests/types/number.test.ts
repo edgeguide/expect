@@ -1,7 +1,7 @@
 import expectModule = require("../../src");
 
 describe("Expect package (number validation):", () => {
-  [-1, 0, 1, Infinity, -Infinity].forEach(test =>
+  [-1, 0, 1, Infinity, -Infinity].forEach((test) =>
     it(`accepts ${test}`, () => {
       const expectations = expectModule({ test: "number" }, { test });
       expect(expectations.wereMet()).toBe(true);
@@ -13,7 +13,7 @@ describe("Expect package (number validation):", () => {
     expect(expectations.wereMet()).toBe(false);
   });
 
-  [null, undefined, true, false, "", [], {}, Symbol()].forEach(test =>
+  [null, undefined, true, false, "", [], {}, Symbol()].forEach((test) =>
     it(`rejects ${typeof test === "symbol" ? test.toString() : test}`, () => {
       const expectations = expectModule({ test: "number" }, { test });
       expect(expectations.wereMet()).toBe(false);
@@ -44,7 +44,7 @@ describe("Expect package (number validation):", () => {
     expect(expectations.getParsed()).toEqual({ test: 83 });
   });
 
-  ["", null, undefined, true, NaN, [], {}, Symbol()].forEach(test =>
+  ["", null, undefined, true, NaN, [], {}, Symbol()].forEach((test) =>
     it(`reject parse ${
       typeof test === "symbol" ? test.toString() : test
     }`, () => {
@@ -186,8 +186,8 @@ describe("Expect package (number validation):", () => {
       {
         test: {
           type: "number",
-          parse: test => (typeof test === "number" ? test : 0)
-        }
+          parse: (test) => (typeof test === "number" ? test : 0),
+        },
       },
       { test: "invalid" }
     );
@@ -202,8 +202,8 @@ describe("Expect package (number validation):", () => {
             type: "number",
             parse: () => {
               throw new Error("fail");
-            }
-          }
+            },
+          },
         },
         { test: 2 }
       );
