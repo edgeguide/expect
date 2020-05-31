@@ -1,6 +1,7 @@
 ## 8.0.0
 
 - `getParsed()` will now try to infer the return value type from the schema.
+- Using `equalTo` in a circular manner no longer causes an infinie recursion
 
 ### Breaking changes
 
@@ -111,7 +112,7 @@ const expect = require("@edgeguideab/expect");
 expect(
   {
     foo: { type: "array", items: "number" },
-    bar: { type: "object", keys: { buzz: "number" } }
+    bar: { type: "object", keys: { buzz: "number" } },
   },
   { foo: [1, "2"], bar: { buzz: "3" } }
 ).errors(); // { foo: { '1': [ 'Expected parameter foo.1 to be of type number but it was "2"' ] }, bar: { buzz: [ 'Expected parameter bar.buzz to be of type number but it was "3"' ] } }

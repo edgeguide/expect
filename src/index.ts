@@ -36,6 +36,7 @@ export = function expect<
       parameter,
       type: typeof options === "string" ? options : options.type,
       value: actual,
+      visitedParams: [],
     });
 
     if (!validation.valid) {

@@ -1,4 +1,5 @@
 import { IArrayOption, IErrorObject, ValidateFunction } from "../definitions";
+import { formatParameter } from "../util";
 
 export function validateArray({
   parameter,
@@ -6,6 +7,7 @@ export function validateArray({
   options,
   actualValues,
   expected,
+  visitedParams = [],
   validate,
 }: {
   parameter: string | number | Array<string | number>;
@@ -13,6 +15,7 @@ export function validateArray({
   options: IArrayOption;
   actualValues?: unknown;
   expected: Record<string, any>;
+  visitedParams: Array<string | number>;
   validate: ValidateFunction;
 }) {
   const { convert, items } = options;
@@ -53,6 +56,7 @@ export function validateArray({
       options: itemOptions,
       actualValues,
       expected,
+      visitedParams: visitedParams.concat(formatParameter(parameter)),
     });
 
     if (!validation.valid) error[index] = validation.error;

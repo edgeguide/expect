@@ -1,5 +1,6 @@
 import { IErrorObject, IObjectOption, ValidateFunction } from "../definitions";
 import isRecord from "../util/isRecord";
+import { formatParameter } from "../util";
 
 export function validateObject({
   parameter,
@@ -7,6 +8,7 @@ export function validateObject({
   options,
   actualValues,
   expected,
+  visitedParams = [],
   validate,
 }: {
   parameter: string | number | Array<string | number>;
@@ -14,6 +16,7 @@ export function validateObject({
   options: IObjectOption;
   actualValues?: unknown;
   expected: Record<string, any>;
+  visitedParams: Array<string | number>;
   validate: ValidateFunction;
 }) {
   if (!isRecord(value) || Array.isArray(value)) return { valid: false };
@@ -65,6 +68,7 @@ export function validateObject({
       options: keyOptions,
       actualValues,
       expected,
+      visitedParams: visitedParams.concat(formatParameter(parameter)),
     });
 
     if (!validation.valid) error[key] = validation.error;

@@ -36,14 +36,10 @@ export const ExpectType = {
 
 export type ExpectTypes = keyof typeof ExpectType;
 
-export const validate: ValidateFunction = ({
-  type,
-  parameter,
-  value,
-  options,
-  actualValues,
-  expected,
-}) => {
+export const validate: ValidateFunction = (props) => {
+  const { type, parameter, actualValues, expected, visitedParams } = props;
+  let { options, value } = props;
+
   if (typeof options === "string") options = { type } as IDefaultOption;
 
   const {
@@ -73,6 +69,7 @@ export const validate: ValidateFunction = ({
     options,
     actualValues,
     expected,
+    visitedParams,
   });
 
   value = "parsed" in validation ? validation.parsed : value;
@@ -123,9 +120,11 @@ export const validate: ValidateFunction = ({
     !isEqualTo({
       type,
       value: parsed,
+      parameter,
       equalTo,
       actualValues,
       expected,
+      visitedParams,
       validate,
     })
   ) {
@@ -188,6 +187,7 @@ function validateType<T extends ExpectTypes>({
   options: Options<T>;
   actualValues?: unknown;
   expected: Record<string, any>;
+  visitedParams: Array<string | number>;
 }):
   | { valid: true; parsed?: any }
   | { valid: false; error?: string | IErrorObject } {

@@ -11,6 +11,7 @@ export type ValidateFunction<T extends ExpectTypes = ExpectTypes> = (input: {
   options: T | Options<T>;
   actualValues?: unknown;
   expected: Record<string, any>;
+  visitedParams: Array<string | number>;
 }) =>
   | { valid: true; parsed: TypeValue<T> }
   | { valid: false; error: string | IErrorObject };
