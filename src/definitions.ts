@@ -101,6 +101,6 @@ export type CheckNull<O extends Options> = O extends {
   ? undefined | null
   : O extends { allowNull: false }
   ? never
-  : O extends { allowNull: boolean | true }
+  : O extends { allowNull: boolean | true | ((x: any) => boolean) }
   ? undefined | null
   : never;
