@@ -1,6 +1,6 @@
 import expectModule = require("../../src");
 
-const types: any = [
+const types = [
   "any",
   "number",
   "boolean",
@@ -8,9 +8,9 @@ const types: any = [
   "array",
   "object",
   "date",
-];
+] as const;
 
-const typesValues: any = {
+const typesValues = {
   any: 123,
   number: 321,
   boolean: true,
@@ -18,9 +18,9 @@ const typesValues: any = {
   array: [1, 2, 3],
   object: { test: "test" },
   date: new Date(),
-};
+} as const;
 
-types.forEach((type: any) =>
+types.forEach((type) =>
   describe(`requiredIf - type ${type}`, () => {
     it("option can be used", () => {
       expect(

@@ -1,6 +1,7 @@
 import expectModule = require("../../src");
+import { ExpectTypes } from "../../src/types";
 
-const types: any = [
+const types: ExpectTypes[] = [
   "any",
   "number",
   "boolean",
@@ -10,7 +11,7 @@ const types: any = [
   "date",
 ];
 
-const typesValues: any = {
+const typesValues = {
   any: 123,
   number: 321,
   boolean: true,
@@ -18,9 +19,9 @@ const typesValues: any = {
   array: [1, 2, 3],
   object: { test: "test" },
   date: new Date(),
-};
+} as const;
 
-types.forEach((type: any) =>
+types.forEach((type) =>
   describe(`equalTo - type ${type}`, () => {
     it("equalToErrorCode has lower priority than allowNullErrorCode", () => {
       expect(

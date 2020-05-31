@@ -1,6 +1,6 @@
 ## 8.0.0
 
-- Major improvements to the type declarations. `getParsed()` will now try to infer the return value type from the schema.
+- `getParsed()` will now try to infer the return value type from the schema.
 
 ### Breaking changes
 

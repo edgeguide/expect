@@ -1,6 +1,6 @@
 import expectModule = require("../../src");
 
-const nullValues = [null, undefined, ""];
+const nullValues = [null, undefined, ""] as const;
 
 const types = [
   "any",
@@ -12,7 +12,7 @@ const types = [
   "date",
 ] as const;
 
-const typesValues: any = {
+const typesValues = {
   any: 123,
   number: 321,
   boolean: true,
@@ -20,7 +20,7 @@ const typesValues: any = {
   array: [1, 2, 3],
   object: { test: "test" },
   date: new Date(),
-};
+} as const;
 
 types.forEach((type) =>
   describe(`allowNull - type ${type}`, () => {

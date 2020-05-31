@@ -80,19 +80,15 @@ describe("Expect package (string validation):", () => {
   });
 
   it("parse null values", () => {
-    const typeValues: any = {
-      null: "null",
-      undefined,
-      "": "",
-    };
-
     [null, undefined, ""].forEach((test) => {
       const expectations = expectModule(
         { test: { type: "string", allowNull: true, parse: true } },
         { test }
       );
       expect(expectations.wereMet()).toBe(true);
-      expect(expectations.getParsed()).toEqual({ test: typeValues[`${test}`] });
+      expect(expectations.getParsed()).toEqual({
+        test: test ?? JSON.stringify(test),
+      });
     });
   });
 
