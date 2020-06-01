@@ -1,4 +1,4 @@
-import { IErrorObject, Options, OptionsValue } from "./definitions";
+import { IErrorObject, Options, OptionsValue, Errors } from "./definitions";
 import { validate, ExpectTypes } from "./types";
 
 export = function expect<
@@ -7,7 +7,7 @@ export = function expect<
   schema: Schema,
   input: Record<string, unknown>
 ): {
-  errors(): Record<string, any>;
+  errors(): { [K in keyof Schema]?: Errors<Schema[K]> };
   getParsed(): { [K in keyof Schema]?: OptionsValue<Schema[K]> };
   wereMet(): boolean;
 } {
@@ -51,7 +51,7 @@ export = function expect<
   });
 
   return {
-    errors: () => errors,
+    errors: () => errors as any,
     getParsed: () => parsedValues as any,
     wereMet: () => valid,
   };

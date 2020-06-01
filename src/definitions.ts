@@ -104,3 +104,19 @@ export type CheckNull<O extends Options> = O extends {
   : O extends { allowNull: boolean | true | ((x: any) => boolean) }
   ? undefined | null
   : never;
+
+export type Errors<O> = O extends "array"
+  ? string | { [key: number]: string | IErrorObject }
+  : O extends "object"
+  ? string | IErrorObject
+  : O extends IArrayOption
+  ? O["items"] extends (...args: any) => infer R
+    ? string | { [key: number]: Errors<R> }
+    : string | { [key: number]: Errors<O["items"]> }
+  : O extends IObjectOption
+  ? O["keys"] extends IObjectOption["keys"]
+    ? string | { [K in keyof O["keys"]]: Errors<O["keys"][K]> }
+    : string | IErrorObject
+  : O extends ExpectTypes | Options
+  ? string
+  : any;

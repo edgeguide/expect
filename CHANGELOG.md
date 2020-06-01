@@ -1,6 +1,6 @@
 ## 8.0.0
 
-- `getParsed()` will now try to infer the return value type from the schema. If the type inference fails, it will fallback to using `any`
+- `getParsed()` and `errors()` will now try to infer the return value type from the schema. If the type inference fails, it will fallback to using `any`
 - Using `equalTo` in a circular manner no longer causes an infinie recursion
 
 ### Breaking changes
