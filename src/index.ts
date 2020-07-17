@@ -5,13 +5,13 @@ export = function expect<
   Schema extends Record<string, Options | ExpectTypes> | Record<string, any>
 >(
   schema: Schema,
-  input: Record<string, unknown>
+  input: unknown
 ): {
   errors(): { [K in keyof Schema]?: Errors<Schema[K]> };
   getParsed(): { [K in keyof Schema]?: OptionsValue<Schema[K]> };
   wereMet(): boolean;
 } {
-  if (schema === null || typeof schema !== "object") {
+  if (!isObject(schema)) {
     throw new Error("Invalid validation schema");
   }
 
@@ -20,7 +20,7 @@ export = function expect<
   let valid = true;
 
   Object.keys(schema).forEach((parameter) => {
-    if (input === null || typeof input !== "object") {
+    if (!isObject(input)) {
       valid = false;
       errors[parameter] = "Invalid input";
       return;
@@ -56,3 +56,7 @@ export = function expect<
     wereMet: () => valid,
   };
 };
+
+function isObject(val: unknown): val is Record<string, unknown> {
+  return val !== null && typeof val === "object";
+}
