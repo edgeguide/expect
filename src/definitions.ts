@@ -98,11 +98,11 @@ export type OptionsValue<O> = O extends ExpectTypes
 export type CheckNull<O extends Options> = O extends {
   requiredIf: string | string[];
 }
-  ? undefined | null
+  ? undefined | null | ""
   : O extends { allowNull: false }
   ? never
   : O extends { allowNull: boolean | true | ((x: any) => boolean) }
-  ? undefined | null
+  ? undefined | null | ""
   : never;
 
 export type Errors<O> = O extends "array"
@@ -118,5 +118,5 @@ export type Errors<O> = O extends "array"
     ? string | { [K in keyof O["keys"]]: Errors<O["keys"][K]> }
     : string | IErrorObject
   : O extends ExpectTypes | Options
-  ? string
+  ? string | undefined
   : any;
