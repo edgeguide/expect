@@ -1,8 +1,8 @@
-import { ExpectTypes } from "../types";
+import { ExpectTypes } from "../types/index";
 import { ValidateFunction } from "../definitions";
 import { getDeep, getDeepOptions } from "./getDeep";
 import isDateValue from "./isDateValue";
-import { formatParameter } from ".";
+import { formatParameter } from "./index";
 
 export function isEqualTo({
   type,

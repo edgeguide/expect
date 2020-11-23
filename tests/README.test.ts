@@ -1,4 +1,4 @@
-import expectModule = require("../src");
+import expectModule from "../src/index";
 
 describe("Expect package (README examples):", () => {
   it("Usage - Validate parameters on the server", () => {

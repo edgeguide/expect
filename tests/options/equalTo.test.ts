@@ -1,5 +1,5 @@
-import expectModule = require("../../src");
-import { ExpectTypes } from "../../src/types";
+import expectModule from "../../src/index";
+import { ExpectTypes } from "../../src/types/index";
 
 const types: ExpectTypes[] = [
   "any",

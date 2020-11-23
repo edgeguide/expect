@@ -1,4 +1,4 @@
-import expectModule = require("../../src");
+import expectModule from "../../src/index";
 
 describe("Expect package (number validation):", () => {
   [-1, 0, 1, Infinity, -Infinity].forEach((test) =>

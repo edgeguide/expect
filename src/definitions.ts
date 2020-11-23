@@ -1,4 +1,4 @@
-import { ExpectTypes } from "./types";
+import { ExpectTypes } from "./types/index";
 
 export interface IErrorObject {
   [key: string]: string | IErrorObject;
@@ -16,8 +16,7 @@ export type ValidateFunction<T extends ExpectTypes = ExpectTypes> = (params: {
   | { valid: true; parsed: TypeValue<T> }
   | { valid: false; error: string | IErrorObject };
 
-type DefaultTypes = Exclude<ExpectTypes, "array" | "object" | "string">;
-export interface IDefaultOption<T extends DefaultTypes = DefaultTypes> {
+export interface IDefaultOption<T extends ExpectTypes = ExpectTypes> {
   type: T;
   requiredIf?: string | string[];
   allowNull?: boolean | ((x: any) => boolean);
@@ -30,28 +29,21 @@ export interface IDefaultOption<T extends DefaultTypes = DefaultTypes> {
   conditionErrorCode?: string;
 }
 
-export interface IArrayOption extends Omit<IDefaultOption, "type" | "parse"> {
-  type: "array";
-  parse?: boolean | ((x: any) => any[]);
+export interface IArrayOption extends IDefaultOption<"array"> {
   convert?: boolean;
   items?: ExpectTypes | Options | ((x: any) => ExpectTypes | Options);
 }
 
-export interface IObjectOption extends Omit<IDefaultOption, "type" | "parse"> {
-  type: "object";
-  parse?: boolean | ((x: any) => any);
+export interface IObjectOption extends IDefaultOption<"object"> {
   keys?: { [key: string]: ExpectTypes | Options };
   strictKeyCheck?: boolean;
 }
 
-export interface IStringOption extends Omit<IDefaultOption, "type" | "parse"> {
-  type: "string";
-  parse?: boolean | ((x: any) => string);
+export interface IStringOption extends IDefaultOption<"string"> {
   strictEntities?: boolean;
   allowed?: string[];
   blockUnsafe?: boolean;
   blockUnsafeErrorCode?: string;
-  errorCode?: string;
   sanitize?: boolean;
 }
 

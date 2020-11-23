@@ -1,4 +1,4 @@
-import expectModule = require("../../src");
+import expectModule from "../../src/index";
 
 describe("Expect package (string validation):", () => {
   it("accepts non-empty string", () => {

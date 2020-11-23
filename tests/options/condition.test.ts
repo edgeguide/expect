@@ -1,4 +1,4 @@
-import expectModule = require("../../src");
+import expectModule from "../../src/index";
 
 const types = [
   "any",

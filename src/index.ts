@@ -1,5 +1,5 @@
 import { IErrorObject, Options, OptionsValue, Errors } from "./definitions";
-import { validate, ExpectTypes } from "./types";
+import { validate, ExpectTypes } from "./types/index";
 
 export = function expect<
   Schema extends Record<string, Options | ExpectTypes> | Record<string, any>

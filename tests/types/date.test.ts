@@ -1,4 +1,4 @@
-import expectModule = require("../../src");
+import expectModule from "../../src/index";
 
 describe("Expect package (date validation):", () => {
   it("accepts date", () => {

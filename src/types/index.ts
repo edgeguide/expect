@@ -14,7 +14,7 @@ import {
   isNull,
   parseFunctionWrapper,
   parseType,
-} from "../util";
+} from "../util/index";
 
 import { validateAny } from "./any";
 import { validateArray } from "./array";

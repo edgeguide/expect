@@ -1,4 +1,4 @@
-import { ExpectTypes } from "../types";
+import { ExpectTypes } from "../types/index";
 
 export { parseType, parseFunctionWrapper };
 

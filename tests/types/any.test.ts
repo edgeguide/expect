@@ -1,4 +1,4 @@
-import expectModule = require("../../src");
+import expectModule from "../../src/index";
 
 describe("Expect package (any validation):", () => {
   it("accepts non-null various data types", () => {

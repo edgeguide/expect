@@ -1,11 +1,11 @@
-## 8.0.0
+## 8.0.0 (23 November 2020)
 
 - `getParsed()` and `errors()` will now try to infer the return value type from the schema. If the type inference fails, it will fallback to using `any`
-- Using `equalTo` in a circular manner no longer causes an infinie recursion
+- Using `equalTo` in a circular manner is now supported and no longer causes an infinite recursion
 
 ### Breaking changes
 
-- Removed customized types except for `date` ([#2](https://github.com/edgeguide/expect/issues/2))
+- Removed the following custom types: `phone`, `email` and `identityNumber` [[#2](https://github.com/edgeguide/expect/issues/2)]. Migration can be done using type `string` or `number` with a `condition` function for custom validation
 
 ## 7.0.1 (15 July 2019)
 
@@ -107,7 +107,7 @@
 - `errors()` for types _array_ and _object_ now returns an object with nested properties instead of dot-separated string properties. Example illustrating changes:
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {

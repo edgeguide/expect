@@ -1,5 +1,5 @@
 import { IArrayOption, IErrorObject, ValidateFunction } from "../definitions";
-import { formatParameter } from "../util";
+import { formatParameter } from "../util/index";
 
 export function validateArray({
   parameter,
@@ -60,9 +60,7 @@ export function validateArray({
     });
 
     if (!validation.valid) error[index] = validation.error;
-    else {
-      parsed.push("parsed" in validation ? validation.parsed : item);
-    }
+    else parsed.push("parsed" in validation ? validation.parsed : item);
 
     return !validation.valid;
   });

@@ -4,6 +4,9 @@
   "description": "Check for user input in a consistent way and generate error messages for missings ",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "expect",
     "input",
@@ -29,18 +32,28 @@
       "pre-commit": "lint-staged"
     }
   },
+  "jest": {
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.eslint.json"
+      }
+    }
+  },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^26.0.4",
-    "@typescript-eslint/eslint-plugin": "^3.6.1",
-    "@typescript-eslint/parser": "^3.6.1",
-    "eslint": "^7.4.0",
-    "eslint-config-prettier": "^6.11.0",
-    "husky": "^4.2.5",
-    "jest": "^26.1.0",
-    "lint-staged": "^10.2.11",
-    "prettier": "^2.0.5",
-    "ts-jest": "^26.1.3",
-    "typescript": "^3.9.7"
+    "@types/jest": "^26.0.15",
+    "@typescript-eslint/eslint-plugin": "^4.8.2",
+    "@typescript-eslint/parser": "^4.8.2",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "husky": "^4.3.0",
+    "jest": "^26.6.3",
+    "lint-staged": "^10.5.1",
+    "prettier": "^2.2.0",
+    "ts-jest": "^26.4.4",
+    "typescript": "^4.1.2"
   }
 }

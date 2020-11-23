@@ -47,7 +47,7 @@ The function returns an object exposing three method definitions:
 <summary><strong>Example of each method definition</strong></summary>
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 const schema = { foo: "string" };
 const validInput = { foo: "test" };
@@ -72,7 +72,7 @@ invalid.getParsed(); // {}
 <summary><strong>Example validating input with Express.js</strong></summary>
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 app.put("/user", function addUser(req, res) {
   const expectations = expect(
@@ -99,7 +99,7 @@ app.put("/user", function addUser(req, res) {
 Types must be specified in the validation schema for each input field, either by using a string or an object with the `type` property,
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -136,7 +136,7 @@ expect(
 Expects the input value to be an object. If the `keys` option is provided, each property of the input object can be evaluated.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 expect(
   {
     bar: {
@@ -151,7 +151,7 @@ expect(
 Object validation may be nested with several keys-options.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 expect(
   {
     bar: {
@@ -169,7 +169,7 @@ expect(
 Using the `strictKeyCheck` option, the validation will fail if the input object has a property that is not specified in the `keys` option.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 expect(
   {
     bar: {
@@ -199,7 +199,7 @@ expect(
 Expects the parameter to be an array. Each array item can be validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -225,7 +225,7 @@ expect(
 A function may be used as an `items` option. The function will be passed the input array as its parameter and must return a validation schema.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 const schema = {
   beef: {
@@ -265,7 +265,7 @@ expect(schema, {
 Note that a function can also be used for recursive validation schemas.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 const schema = {
   type: "object",
@@ -315,7 +315,7 @@ Note that _null_, _undefined_ and empty string are valid input values with `allo
 It is possible to pass a function to `allowNull`, in which case the return value will be used (errors thrown will be ignored and treated as _false_). This may be used to filter allowed null values.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -342,7 +342,7 @@ expect(
 The `requiredIf` option is available for all types and allows an element to be _null_ or _undefined_, but only if another value is _null_, _undefined_ or empty string.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -372,7 +372,7 @@ expect(
 Note that when using `requiredIf` on nested objects or arrays, you need to pass an array to `requiredIf` with the path to the target parameter.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -399,7 +399,7 @@ The `parse` option is available to all types. This option allows the user to mut
 If a function is passed as the `parse` option, the type checker will attempt to call the `parse` function with the input value as its parameter. The function's return value will then be used for type checking instead of the input value. If an error is thrown when calling the function, the type checker will proceed using the initial input value.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 expect(
   { test: { type: "number", parse: (test) => Number(test) } },
   { test: "123" }
@@ -424,7 +424,7 @@ Note that `parse` has a particular interaction with the `allowNull` and `require
 - `parse` will not be applied for the target parameter when `requiredIf` checks the value of the target path
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 const invalid = expect(
   { test: { type: "string", allowNull: false, parse: true } },
@@ -466,7 +466,7 @@ anotherOne.getParsed(); // { test: null, existing: 'test' }
 `equalTo` is another option available to all types. It ensures that the input value matches another value specified by a key.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -505,7 +505,7 @@ Note that when using the keys/items options when nestling objects/arrays, you ne
 the other parameter.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -527,7 +527,7 @@ expect(
 The `condition` option is available for all types. Passing a function as a `condition` option will test that the function evaluates to a _truthy_ value with the input value as its parameter.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -543,7 +543,7 @@ expect(
 Note that the `condition` option has a lower priority than `allowNull`, `requiredIf` and `parse`.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -584,7 +584,7 @@ expect(
 `& < > " '`, and with the strictEntities option enabled they are `& < > " ' ! @ $ ( ) = + { } [ ]`.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 expect(
   { test: { type: "string", blockUnsafe: true } },
   { test: "<div>Some html</div>" }
@@ -605,7 +605,7 @@ To explicitly allow some characters (even when in strict mode), you can pass a p
 characters.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -630,7 +630,7 @@ If true, the value will have dangerous characters replaced with html entities. I
 **The original values will be kept as-is, and the sanitized value will can be retrieved using the getParsed method**.
 
 ```javascript
-const expect = require('@edgeguideab/expect');
+import expect from "@edgdeguideab/expect";
 
 expect(
   { test: { type: 'string', sanitize: true } },
@@ -639,7 +639,7 @@ expect(
 ```
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   { test: { type: "string", sanitize: true } },
@@ -656,7 +656,7 @@ To explicitly allow some characters (even when in strict mode), you can pass a p
 characters. These will not be sanitized
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {
@@ -679,7 +679,7 @@ expect(
 Changes the error message returned by `errors()` if the validation fails. Default errorCode is a string describing what went wrong, this option allows for customized error codes.
 
 ```javascript
-const expect = require("@edgeguideab/expect");
+import expect from "@edgeguideab/expect";
 
 expect(
   {

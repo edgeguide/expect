@@ -1,6 +1,6 @@
 import { IErrorObject, IObjectOption, ValidateFunction } from "../definitions";
 import isRecord from "../util/isRecord";
-import { formatParameter } from "../util";
+import { formatParameter } from "../util/index";
 
 export function validateObject({
   parameter,
