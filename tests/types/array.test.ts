@@ -44,7 +44,6 @@ describe("Expect package (array validation):", () => {
     const testObject = { test: "[1,2,3]" };
     expectModule({ test: { type: "array", parse: true } }, testObject);
 
-    expect(testObject.test).toEqual(jasmine.any(String));
     expect(testObject.test).toEqual("[1,2,3]");
   });
 

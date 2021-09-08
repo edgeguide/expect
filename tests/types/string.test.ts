@@ -59,8 +59,6 @@ describe("Expect package (string validation):", () => {
   it("does not mutate the input value when parsing", () => {
     const testObject = { test: 1337 };
     expectModule({ test: { type: "string", parse: true } }, testObject);
-
-    expect(testObject.test).toEqual(jasmine.any(Number));
     expect(testObject.test).toEqual(testObject.test);
   });
 

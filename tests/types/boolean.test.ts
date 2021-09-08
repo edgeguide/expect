@@ -72,8 +72,6 @@ describe("Expect package (boolean validation):", () => {
   it("does not mutate the input value when parsing", () => {
     const testObject = { test: "true" };
     expectModule({ test: { type: "boolean", parse: true } }, testObject);
-
-    expect(testObject.test).toEqual(jasmine.any(String));
     expect(testObject.test).toEqual("true");
   });
 

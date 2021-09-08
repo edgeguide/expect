@@ -54,8 +54,6 @@ describe("Expect package (date validation):", () => {
   it("does not mutate the input value when parsing", () => {
     const testObject = { test: new Date() };
     expectModule({ test: { type: "date", parse: true } }, testObject);
-
-    expect(testObject.test).toEqual(jasmine.any(Date));
     expect(testObject.test).toEqual(testObject.test);
   });
 

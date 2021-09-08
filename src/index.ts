@@ -8,7 +8,7 @@ export = function expect<
   input: unknown
 ): {
   errors(): { [K in keyof Schema]?: Errors<Schema[K]> };
-  getParsed(): { [K in keyof Schema]?: OptionsValue<Schema[K]> };
+  getParsed(): { [K in keyof Schema]: OptionsValue<Schema[K]> };
   wereMet(): boolean;
 } {
   if (!isObject(schema)) {
