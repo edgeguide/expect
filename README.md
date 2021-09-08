@@ -1,24 +1,18 @@
-## Installation
+<h2>Runtime type validation with expect</h2>
 
-<details open>
-<summary><strong>Using NPM</strong></summary>
+**Zero-dependencies**
+
+**Supports any runtime environment (browser / server)**
+
+**TypeScript support, infers types for parsed objects based on the input schema**
+
+## Installation
 
 ```
 npm install @edgeguideab/expect
 ```
 
-</details>
-
-<details>
-<summary><strong>Using a browser</strong></summary>
-
-You will need to require the module and then package your scripts using a bundler like webpack or browserify.
-
-```
-import expect from '@edgeguideab/expect
-```
-
-</details>
+Note: The library is transpiled to ES5 but does not include polyfills.
 
 <details>
 <summary><strong>Function signature</strong></summary>
@@ -37,7 +31,7 @@ The function returns an object exposing three method definitions:
 {
   wereMet(): Boolean, // Returns true if the input object was validated correctly
   errors(): Object,   // Returns errors for each property in the input object
-  getParsed(): Object // Returns a subset of the input, containing parts that were specified in the schema
+  getParsed(): Object // Returns a validated subset of the input
 }
 ```
 
@@ -85,8 +79,6 @@ app.put("/user", function addUser(req, res) {
   }
 
   const { username, age, isAdmin } = expectations.getParsed();
-
-  // Our parameters were correct, add the user to our application
 });
 ```
 
@@ -96,7 +88,7 @@ app.put("/user", function addUser(req, res) {
 
 ## Types
 
-Types must be specified in the validation schema for each input field, either by using a string or an object with the `type` property,
+Types can be specified in the schema either by using a string or an object with the `type` property,
 
 ```javascript
 import expect from "@edgeguideab/expect";
@@ -104,7 +96,11 @@ import expect from "@edgeguideab/expect";
 expect(
   {
     foo: "number", // Type string only validates the type
-    bar: { type: "number" }, // Object can be used to combine type validation with other options
+    bar: {
+      // Object is used to combine type validation with other options
+      type: "number",
+      condition: (bar) => bar > 300,
+    },
   },
   {
     foo: 123,
@@ -115,8 +111,7 @@ expect(
 
 </br>
 
-<details open>
-<summary><strong>Standard types</strong></summary>
+### Standard types
 
 | Type          | Custom options                                 | Description                                                          |
 | ------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
@@ -133,18 +128,24 @@ expect(
 <details>
 <summary><strong><i>Notes on the object type</i></strong></summary>
 
-Expects the input value to be an object. If the `keys` option is provided, each property of the input object can be evaluated.
+Does not allow `null` values by default (even though `typeof null === 'object'`).
+
+If the `keys` option is provided, each property of the input object can be evaluated.
 
 ```javascript
 import expect from "@edgeguideab/expect";
 expect(
   {
+    foo: "object",
     bar: {
       type: "object",
       keys: { fizz: "number", buzz: "string" },
     },
   },
-  { bar: { fizz: 1, buzz: 1 } }
+  {
+    foo: { bizz: 1 },
+    bar: { fizz: 1, buzz: 1 },
+  }
 ).errors(); // { bar: { buzz: 'Expected parameter bar.buzz to be of type string but it was 1' } }
 ```
 
@@ -196,7 +197,7 @@ expect(
 <details>
 <summary><strong><i>Notes on the array type</i></strong></summary>
 
-Expects the parameter to be an array. Each array item can be validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
+Validates with `Array.isArray()`. Each array item can be validated with the `items` option. Arrays and objects may be nested by combining the `items` and `keys` options.
 
 ```javascript
 import expect from "@edgeguideab/expect";
@@ -292,8 +293,6 @@ expect(
   }
 ).wereMet(); // true
 ```
-
-</details>
 
 </details>
 
