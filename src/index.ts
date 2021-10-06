@@ -12,36 +12,38 @@ function expect<
   const errors: IErrorObject = {};
   let valid = true;
 
-  Object.keys(schema).forEach((parameter) => {
-    if (!isObject(input)) {
-      valid = false;
-      errors[parameter] = "Invalid input";
-      return;
-    }
+  Object.keys(schema)
+    .filter((key) => schema[key] !== undefined)
+    .forEach((parameter) => {
+      if (!isObject(input)) {
+        valid = false;
+        errors[parameter] = "Invalid input";
+        return;
+      }
 
-    const options = schema[parameter];
-    const value = input[parameter];
+      const options = schema[parameter];
+      const value = input[parameter];
 
-    const validation = validate({
-      input,
-      value,
-      schema,
-      options,
-      parameter,
-      visitedParams: [],
-      type: typeof options === "string" ? options : options.type,
+      const validation = validate({
+        input,
+        value,
+        schema,
+        options,
+        parameter,
+        visitedParams: [],
+        type: typeof options === "string" ? options : options.type,
+      });
+
+      if (!validation.valid) {
+        valid = false;
+        if (validation.error) errors[parameter] = validation.error;
+        return;
+      }
+
+      if (validation.parsed !== undefined) {
+        parsedValues[parameter] = validation.parsed;
+      }
     });
-
-    if (!validation.valid) {
-      valid = false;
-      if (validation.error) errors[parameter] = validation.error;
-      return;
-    }
-
-    if (validation.parsed !== undefined) {
-      parsedValues[parameter] = validation.parsed;
-    }
-  });
 
   return {
     isValid: valid,

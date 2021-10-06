@@ -79,3 +79,8 @@ describe("handling of __proto__ poisoning", () => {
     );
   });
 });
+
+it("ignores undefined top-level properties in the schema", () => {
+  const validation = expectModule({ test: undefined }, {});
+  expect(validation.isValid).toEqual(true);
+});

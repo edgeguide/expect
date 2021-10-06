@@ -16,7 +16,9 @@ export type Validation<
       /**
        * Returns parsed input for the properties that passed the validation
        */
-      getParsed(): Writeable<{ [K in keyof Schema]: OptionsValue<Schema[K]> }>;
+      getParsed(): Writeable<
+        { [K in keyof OmitUndefined<Schema>]: OptionsValue<Schema[K]> }
+      >;
       /**
        * Returns errors for the properties that failed the validation
        */
@@ -35,12 +37,20 @@ export type Validation<
       /**
        * Returns parsed input for the properties that passed the validation
        */
-      getParsed(): Writeable<{ [K in keyof Schema]?: OptionsValue<Schema[K]> }>;
+      getParsed(): Writeable<
+        { [K in keyof OmitUndefined<Schema>]?: OptionsValue<Schema[K]> }
+      >;
       /**
        * Returns errors for the properties that failed the validation
        */
-      errors(): { [K in keyof Schema]?: Errors<Schema[K]> };
+      errors(): { [K in keyof OmitUndefined<Schema>]?: Errors<Schema[K]> };
     };
+
+export type UndefinedProperties<T> = {
+  [K in keyof T]: T[K] extends undefined ? K : never;
+}[keyof T];
+
+export type OmitUndefined<T> = Omit<T, UndefinedProperties<T>>;
 
 export type Writeable<T> = { -readonly [K in keyof T]: T[K] };
 
@@ -128,7 +138,11 @@ export type OptionsValue<O> = O extends ExpectTypes
             : OptionsValue<O["items"]>[]
           : O extends IObjectOption
           ? O["keys"] extends IObjectOption["keys"]
-            ? { [K in keyof O["keys"]]: OptionsValue<O["keys"][K]> }
+            ? {
+                [K in keyof OmitUndefined<O["keys"]>]: OptionsValue<
+                  O["keys"][K]
+                >;
+              }
             : Record<string, any>
           : O extends IDefaultOption | IStringOption
           ? TypeValue<O["type"]>
@@ -155,7 +169,7 @@ export type Errors<O> = O extends "array"
     : string | { [key: number]: Errors<O["items"]> }
   : O extends IObjectOption
   ? O["keys"] extends IObjectOption["keys"]
-    ? string | { [K in keyof O["keys"]]: Errors<O["keys"][K]> }
+    ? string | { [K in keyof OmitUndefined<O["keys"]>]: Errors<O["keys"][K]> }
     : string | IErrorObject
   : O extends ExpectTypes | Options
   ? string | undefined

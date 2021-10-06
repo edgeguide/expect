@@ -1,3 +1,11 @@
+## 8.0.2
+
+- Ignore undefined top-level properties in the schema instead of throwing an error
+
+- `equalTo` now compares with `Object.is()` instead of strict equality operator (`===`), handles NaN and +/- 0 values.
+
+- Fixed `equalTo` comparison for type `date`
+
 ## 8.0.1 (6 October 2021)
 
 - Added `isValid` and deprecated `wereMet()` (see issue #15)

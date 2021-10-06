@@ -39,12 +39,22 @@ export function isEqualTo({
           visitedParams: visitedParams.concat(formatParameter(parameter)),
         });
 
-  if ("parsed" in validated)
-    return type !== "date"
-      ? value === validated.parsed
-      : isDateValue(value) &&
-          isDateValue(validated.parsed) &&
-          new Date(value).getTime() === new Date(validated.parsed).getTime();
+  if ("parsed" in validated) {
+    if (
+      type !== "date" ||
+      !isDateValue(value) ||
+      !isDateValue(validated.parsed) ||
+      value === "" ||
+      validated.parsed === ""
+    ) {
+      return Object.is(value, validated.parsed);
+    }
+
+    return Object.is(
+      new Date(value).getTime(),
+      new Date(validated.parsed).getTime()
+    );
+  }
 
   return value === undefined;
 }

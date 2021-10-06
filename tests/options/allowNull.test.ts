@@ -44,7 +44,7 @@ types.forEach((type) =>
       });
     });
 
-    it("checks initial value before parse", () => {
+    it("if disabled, rejects null value before parse option", () => {
       const schema = { test: { type, parse: () => typesValues[type] } };
       expect(expectModule(schema, {}).isValid).toBe(false);
       expect(expectModule(schema, {}).getParsed()).toEqual({});
@@ -55,17 +55,20 @@ types.forEach((type) =>
       });
     });
 
-    it("checks parsed value", () => {
-      const schema = { test: { type, parse: () => null, allowNull: true } };
-      expect(expectModule(schema, { test: typesValues[type] }).isValid).toBe(
-        true
-      );
-      expect(
-        expectModule(schema, { test: typesValues[type] }).getParsed()
-      ).toEqual({ test: null });
+    it("if enabled, allows null value after parse option", () => {
+      nullValues.forEach((nullValue) => {
+        const schema = {
+          test: { type, parse: () => nullValue, allowNull: true },
+        };
+        const input = { test: Symbol() };
+        expect(expectModule(schema, input).isValid).toBe(true);
+        expect(expectModule(schema, input).getParsed()).toEqual({
+          test: nullValue,
+        });
+      });
     });
 
-    it("parsed value is returned even if intital value is null", () => {
+    it("parse option works even if intital null value is allowed", () => {
       expect(
         expectModule(
           { test: { type, parse: () => typesValues[type], allowNull: true } },
@@ -74,34 +77,44 @@ types.forEach((type) =>
       ).toEqual({ test: typesValues[type] });
     });
 
-    it("parsed value is not returned if undefined", () => {
+    it("getParsed() returns the same null value as the input object", () => {
+      nullValues.forEach((nullValue) => {
+        const parsed = expectModule(
+          { test: { type, allowNull: true } },
+          { test: nullValue }
+        ).getParsed();
+
+        expect(parsed.test).toEqual(nullValue);
+        nullValues
+          .filter((otherValue) => otherValue !== nullValue)
+          .forEach((otherValue) => expect(parsed.test).not.toEqual(otherValue));
+      });
+    });
+
+    it("getParsed() only removes the initial property for undefined", () => {
+      nullValues.forEach((nullValue) => {
+        const parsed = expectModule(
+          { test: { type, allowNull: true } },
+          { test: nullValue }
+        ).getParsed();
+
+        const shouldPropertyExist = nullValue !== undefined;
+        expect(Object.prototype.hasOwnProperty.call(parsed, "test")).toBe(
+          shouldPropertyExist
+        );
+      });
+    });
+
+    it("parsing to undefined removes the property", () => {
       const parsed = expectModule(
         { test: { type, parse: () => undefined, allowNull: true } },
-        {}
+        { test: undefined }
       ).getParsed();
       expect(Object.prototype.hasOwnProperty.call(parsed, "test")).toBe(false);
     });
 
-    it("non-null values are ignored by allowNull", () => {
-      expect(
-        expectModule(
-          { test: { type, parse: () => typesValues[type] } },
-          { test: null }
-        ).isValid
-      ).toBe(false);
-
-      [NaN, 0, false, "null", {}, [], Symbol()].forEach((test) =>
-        expect(
-          expectModule(
-            { test: { type, parse: () => typesValues[type] } },
-            { test }
-          ).isValid
-        ).toBe(true)
-      );
-    });
-
     it("allowNull can filter allowed null values for all types using function", () => {
-      ["", null, undefined].forEach((test) => {
+      nullValues.forEach((test) => {
         expect(
           expectModule(
             { test: { type, allowNull: (x) => x !== test } },
@@ -133,7 +146,16 @@ types.forEach((type) =>
   })
 );
 
-it("does not throw", () => {
+it("rejects edge cases", () => {
+  [NaN, 0, "null", {}, [], Symbol()].forEach((test) =>
+    expect(
+      expectModule({ test: { type: "boolean", allowNull: true } }, { test })
+        .isValid
+    ).toBe(false)
+  );
+});
+
+it("does not propagate errors", () => {
   expect(() =>
     expectModule(
       {
@@ -159,27 +181,15 @@ it("allowNull with invalid parse is ignored", () => {
   expect(validation.getParsed()).toEqual({});
 });
 
-it("nested parsed value is not returned if undefined", () => {
+it("removes undefined property that is nested", () => {
   const parsed = expectModule(
     {
       foo: {
         type: "object",
-        keys: { bar: { type: "number", allowNull: true, parse: true } },
+        keys: { bar: { type: "number", allowNull: true } },
       },
     },
-    { foo: {} }
+    { foo: { bar: undefined } }
   ).getParsed();
   expect(Object.prototype.hasOwnProperty.call(parsed.foo, "bar")).toBe(false);
-});
-
-it("allowNull with invalid parse behaves correctly with equalTo", () => {
-  expect(
-    expectModule(
-      {
-        foo: { type: "string", allowNull: true, equalTo: "bar" },
-        bar: { type: "string", allowNull: true, parse: () => 123 },
-      },
-      {}
-    ).isValid
-  ).toBe(true);
 });

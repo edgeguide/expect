@@ -1,6 +1,9 @@
 import expectModule from "../../src/index";
 import { ExpectTypes } from "../../src/types/index";
 
+const nullValues = ["", null, undefined];
+const falsyValues = [NaN, 0, false, "", null, undefined];
+
 const types: ExpectTypes[] = [
   "any",
   "number",
@@ -81,7 +84,36 @@ types.forEach((type) =>
       ).toBe(true);
     });
 
+    it("null values must be the same", () => {
+      nullValues.forEach((foo, i) =>
+        nullValues.forEach((bar, j) => {
+          if (i === j) return;
+          expect(
+            expectModule(
+              {
+                foo: { type, allowNull: true, equalTo: "bar" },
+                bar: { type, allowNull: true },
+              },
+              { foo, bar }
+            ).isValid
+          ).toBe(false);
+        })
+      );
+    });
+
     if (type !== "any") {
+      it("ignores invalid parse", () => {
+        expect(
+          expectModule(
+            {
+              foo: { type, allowNull: true, equalTo: "bar" },
+              bar: { type, allowNull: true, parse: () => Symbol() },
+            },
+            {}
+          ).isValid
+        ).toBe(true);
+      });
+
       it("equalToErrorCode has lower priority than type validation (errorCode)", () => {
         expect(
           expectModule(
@@ -189,9 +221,8 @@ describe("equalTo option", () => {
   });
 
   it("falsy values are not equal", () => {
-    const nullValues = [NaN, 0, false, "", null, undefined];
-    nullValues.forEach((foo, i) =>
-      nullValues.forEach(
+    falsyValues.forEach((foo, i) =>
+      falsyValues.forEach(
         (bar, j) =>
           i !== j &&
           expect(
