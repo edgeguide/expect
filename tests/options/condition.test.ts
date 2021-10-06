@@ -27,14 +27,14 @@ types.forEach((type) =>
         expectModule(
           { test: { type, condition: () => true } },
           { test: typesValues[type] }
-        ).wereMet()
+        ).isValid
       ).toBe(true);
 
       expect(
         expectModule(
           { test: { type, condition: () => false } },
           { test: typesValues[type] }
-        ).wereMet()
+        ).isValid
       ).toBe(false);
     });
 
@@ -50,7 +50,7 @@ types.forEach((type) =>
     });
 
     it("reject gracefully if condition throws error", () => {
-      const expectationsFunc = () =>
+      const validationFunc = () =>
         expectModule(
           {
             test: {
@@ -62,8 +62,8 @@ types.forEach((type) =>
           },
           { test: typesValues[type] }
         );
-      expect(expectationsFunc).not.toThrow();
-      expect(expectationsFunc().wereMet()).toBe(false);
+      expect(validationFunc).not.toThrow();
+      expect(validationFunc().isValid).toBe(false);
     });
 
     it("lower priority than allowNull", () => {
@@ -77,7 +77,7 @@ types.forEach((type) =>
             },
           },
           {}
-        ).wereMet()
+        ).isValid
       ).toBe(true);
     });
 
@@ -92,7 +92,7 @@ types.forEach((type) =>
             },
           },
           {}
-        ).wereMet()
+        ).isValid
       ).toBe(true);
     });
 
@@ -117,7 +117,7 @@ types.forEach((type) =>
             },
           },
           { test: typesValues[type] }
-        ).wereMet()
+        ).isValid
       ).toBe(true);
     });
 

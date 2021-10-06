@@ -24,21 +24,21 @@ types.forEach((type) =>
   describe(`requiredIf - type ${type}`, () => {
     it("option can be used", () => {
       expect(
-        expectModule({ test: { type } }, { existing: "existing" }).wereMet()
+        expectModule({ test: { type } }, { existing: "existing" }).isValid
       ).toBe(false);
 
       expect(
         expectModule(
           { test: { type, requiredIf: "existing" } },
           { existing: "existing" }
-        ).wereMet()
+        ).isValid
       ).toBe(false);
 
       expect(
         expectModule(
           { test: { type, requiredIf: "missing" } },
           { existing: null }
-        ).wereMet()
+        ).isValid
       ).toBe(true);
     });
 
@@ -48,7 +48,7 @@ types.forEach((type) =>
           expectModule(
             { test: { type, requiredIf: "missing" } },
             { missing }
-          ).wereMet()
+          ).isValid
         ).toBe(true)
       );
     });
@@ -57,11 +57,11 @@ types.forEach((type) =>
       const schema = {
         test: { type, parse: () => typesValues[type], requiredIf: "existing" },
       };
-      expect(expectModule(schema, { existing: 123 }).wereMet()).toBe(false);
+      expect(expectModule(schema, { existing: 123 }).isValid).toBe(false);
       expect(expectModule(schema, { existing: 123 }).getParsed()).toEqual({});
 
       expect(
-        expectModule(schema, { test: Symbol(), existing: 123 }).wereMet()
+        expectModule(schema, { test: Symbol(), existing: 123 }).isValid
       ).toBe(true);
       expect(
         expectModule(schema, { test: Symbol(), existing: 123 }).getParsed()
@@ -72,7 +72,7 @@ types.forEach((type) =>
       const schema = {
         test: { type, parse: () => null, requiredIf: "missing" },
       };
-      expect(expectModule(schema, { test: typesValues[type] }).wereMet()).toBe(
+      expect(expectModule(schema, { test: typesValues[type] }).isValid).toBe(
         true
       );
       expect(
@@ -85,7 +85,7 @@ types.forEach((type) =>
         test: { type, requiredIf: "existing" },
         existing: { type, allowNull: true, parse: () => typesValues[type] },
       };
-      expect(expectModule(schema, {}).wereMet()).toBe(true);
+      expect(expectModule(schema, {}).isValid).toBe(true);
       expect(expectModule(schema, {}).getParsed()).toEqual({
         existing: typesValues[type],
       });
@@ -112,7 +112,7 @@ types.forEach((type) =>
           expectModule(
             { test: { type, requiredIf: "existing" } },
             { existing }
-          ).wereMet()
+          ).isValid
         ).toBe(false)
       );
     });
@@ -122,7 +122,7 @@ types.forEach((type) =>
         expectModule(
           { test: { type, allowNull: true, requiredIf: "existing" } },
           { existing: "existing" }
-        ).wereMet()
+        ).isValid
       ).toBe(true);
     });
   })

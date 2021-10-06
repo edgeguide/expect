@@ -1,10 +1,54 @@
 import { ExpectTypes } from "./types/index";
 
+export type Validation<
+  Schema extends Record<string, Options | ExpectTypes> | Record<string, any>
+> =
+  | {
+      /**
+       * Indicates whether the validation was successful
+       */
+      isValid: true;
+      /**
+       * Indicates whether the validation was successful
+       * @deprecated wereMet() is replaced with isValid
+       */
+      wereMet(): true;
+      /**
+       * Returns parsed input for the properties that passed the validation
+       */
+      getParsed(): Writeable<{ [K in keyof Schema]: OptionsValue<Schema[K]> }>;
+      /**
+       * Returns errors for the properties that failed the validation
+       */
+      errors(): Record<string, never>;
+    }
+  | {
+      /**
+       * Indicates whether the validation was successful
+       */
+      isValid: false;
+      /**
+       * Indicates whether the validation was successful
+       * @deprecated wereMet() is replaced with isValid
+       */
+      wereMet(): false;
+      /**
+       * Returns parsed input for the properties that passed the validation
+       */
+      getParsed(): Writeable<{ [K in keyof Schema]?: OptionsValue<Schema[K]> }>;
+      /**
+       * Returns errors for the properties that failed the validation
+       */
+      errors(): { [K in keyof Schema]?: Errors<Schema[K]> };
+    };
+
+export type Writeable<T> = { -readonly [K in keyof T]: T[K] };
+
 export interface IErrorObject {
   [key: string]: string | IErrorObject;
 }
 
-export type ValidateFunction<T extends ExpectTypes = ExpectTypes> = (params: {
+interface IValidateFunctionParams<T extends ExpectTypes> {
   type: T;
   parameter: string | number | Array<string | number>;
   value: unknown;
@@ -12,7 +56,11 @@ export type ValidateFunction<T extends ExpectTypes = ExpectTypes> = (params: {
   input?: unknown;
   schema: Record<string, any>;
   visitedParams: Array<string | number>;
-}) =>
+}
+
+export type ValidateFunction<T extends ExpectTypes = ExpectTypes> = (
+  params: IValidateFunctionParams<T>
+) =>
   | { valid: true; parsed: TypeValue<T> }
   | { valid: false; error: string | IErrorObject };
 
@@ -35,7 +83,7 @@ export interface IArrayOption extends IDefaultOption<"array"> {
 }
 
 export interface IObjectOption extends IDefaultOption<"object"> {
-  keys?: { [key: string]: ExpectTypes | Options };
+  keys?: { [key: string]: undefined | ExpectTypes | Options };
   strictKeyCheck?: boolean;
 }
 
@@ -74,9 +122,7 @@ export type OptionsValue<O> = O extends ExpectTypes
   : O extends Options
   ?
       | CheckNull<O>
-      | (O extends IDefaultOption | IStringOption
-          ? TypeValue<O["type"]>
-          : O extends IArrayOption
+      | (O extends IArrayOption
           ? O["items"] extends (...args: any) => infer R
             ? OptionsValue<R>[]
             : OptionsValue<O["items"]>[]
@@ -84,6 +130,8 @@ export type OptionsValue<O> = O extends ExpectTypes
           ? O["keys"] extends IObjectOption["keys"]
             ? { [K in keyof O["keys"]]: OptionsValue<O["keys"][K]> }
             : Record<string, any>
+          : O extends IDefaultOption | IStringOption
+          ? TypeValue<O["type"]>
           : any)
   : any;
 

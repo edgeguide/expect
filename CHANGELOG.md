@@ -1,3 +1,8 @@
+## 8.0.1 (6 October 2021)
+
+- Added `isValid` and deprecated `wereMet()` (see issue #15)
+- The `keys` option now ignores undefined properties in the schema instead of throwing an error
+
 ## 8.0.0 (23 November 2020)
 
 - `getParsed()` and `errors()` will now try to infer the return value type from the schema. If the type inference fails, it will fallback to using `any`

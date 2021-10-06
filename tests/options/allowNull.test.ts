@@ -27,33 +27,29 @@ types.forEach((type) =>
     it("option can be used", () => {
       nullValues.forEach((test) => {
         expect(
-          expectModule({ test: { type, allowNull: false } }, { test }).wereMet()
+          expectModule({ test: { type, allowNull: false } }, { test }).isValid
         ).toBe(false);
         expect(
-          expectModule(
-            { test: { type, allowNull: () => false } },
-            { test }
-          ).wereMet()
+          expectModule({ test: { type, allowNull: () => false } }, { test })
+            .isValid
         ).toBe(false);
 
         expect(
-          expectModule({ test: { type, allowNull: true } }, { test }).wereMet()
+          expectModule({ test: { type, allowNull: true } }, { test }).isValid
         ).toBe(true);
         expect(
-          expectModule(
-            { test: { type, allowNull: () => true } },
-            { test }
-          ).wereMet()
+          expectModule({ test: { type, allowNull: () => true } }, { test })
+            .isValid
         ).toBe(true);
       });
     });
 
     it("checks initial value before parse", () => {
       const schema = { test: { type, parse: () => typesValues[type] } };
-      expect(expectModule(schema, {}).wereMet()).toBe(false);
+      expect(expectModule(schema, {}).isValid).toBe(false);
       expect(expectModule(schema, {}).getParsed()).toEqual({});
 
-      expect(expectModule(schema, { test: Symbol() }).wereMet()).toBe(true);
+      expect(expectModule(schema, { test: Symbol() }).isValid).toBe(true);
       expect(expectModule(schema, { test: Symbol() }).getParsed()).toEqual({
         test: typesValues[type],
       });
@@ -61,7 +57,7 @@ types.forEach((type) =>
 
     it("checks parsed value", () => {
       const schema = { test: { type, parse: () => null, allowNull: true } };
-      expect(expectModule(schema, { test: typesValues[type] }).wereMet()).toBe(
+      expect(expectModule(schema, { test: typesValues[type] }).isValid).toBe(
         true
       );
       expect(
@@ -91,7 +87,7 @@ types.forEach((type) =>
         expectModule(
           { test: { type, parse: () => typesValues[type] } },
           { test: null }
-        ).wereMet()
+        ).isValid
       ).toBe(false);
 
       [NaN, 0, false, "null", {}, [], Symbol()].forEach((test) =>
@@ -99,7 +95,7 @@ types.forEach((type) =>
           expectModule(
             { test: { type, parse: () => typesValues[type] } },
             { test }
-          ).wereMet()
+          ).isValid
         ).toBe(true)
       );
     });
@@ -110,7 +106,7 @@ types.forEach((type) =>
           expectModule(
             { test: { type, allowNull: (x) => x !== test } },
             { test }
-          ).wereMet()
+          ).isValid
         ).toBe(false);
       });
     });
@@ -154,13 +150,13 @@ it("does not throw", () => {
 });
 
 it("allowNull with invalid parse is ignored", () => {
-  const expectations = expectModule(
+  const validation = expectModule(
     { test: { type: "number", parse: () => "test", allowNull: true } },
     {}
   );
 
-  expect(expectations.wereMet()).toBe(true);
-  expect(expectations.getParsed()).toEqual({});
+  expect(validation.isValid).toBe(true);
+  expect(validation.getParsed()).toEqual({});
 });
 
 it("nested parsed value is not returned if undefined", () => {
@@ -184,6 +180,6 @@ it("allowNull with invalid parse behaves correctly with equalTo", () => {
         bar: { type: "string", allowNull: true, parse: () => 123 },
       },
       {}
-    ).wereMet()
+    ).isValid
   ).toBe(true);
 });

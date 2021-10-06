@@ -2,42 +2,42 @@ import expectModule from "../../src/index";
 
 describe("Expect package (array validation):", () => {
   it("accepts boolean", () => {
-    const expectations = expectModule({ test: "array" }, { test: [1, 2, 3] });
+    const validation = expectModule({ test: "array" }, { test: [1, 2, 3] });
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("accepts empty array", () => {
-    const expectations = expectModule({ test: "array" }, { test: [] });
+    const validation = expectModule({ test: "array" }, { test: [] });
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("rejects other data types", () => {
     const tests = [null, undefined, true, 1, NaN, Infinity, "", {}, Symbol()];
     tests.forEach((test) => {
-      const expectations = expectModule({ test: "array" }, { test });
-      expect(expectations.wereMet()).toBe(false);
+      const validation = expectModule({ test: "array" }, { test });
+      expect(validation.isValid).toBe(false);
     });
   });
 
   it("convert string", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "array", convert: true } },
       { test: "convertme" }
     );
 
-    expect(expectations.wereMet()).toBe(true);
-    expect(expectations.getParsed()).toEqual({ test: ["convertme"] });
+    expect(validation.isValid).toBe(true);
+    expect(validation.getParsed()).toEqual({ test: ["convertme"] });
   });
 
   it("parse string array", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "array", parse: true } },
       { test: "[1,2,3]" }
     );
 
-    expect(expectations.getParsed()).toEqual({ test: [1, 2, 3] });
+    expect(validation.getParsed()).toEqual({ test: [1, 2, 3] });
   });
 
   it("does not mutate the input value when parsing", () => {
@@ -48,18 +48,18 @@ describe("Expect package (array validation):", () => {
   });
 
   it("returns the initial if no parsing is specified", () => {
-    const expectations = expectModule({ test: "array" }, { test: [1, 2, 3] });
+    const validation = expectModule({ test: "array" }, { test: [1, 2, 3] });
 
-    expect(expectations.getParsed()).toEqual({ test: [1, 2, 3] });
+    expect(validation.getParsed()).toEqual({ test: [1, 2, 3] });
   });
 
   it("does not destroy correct values when parsing", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "array", parse: true } },
       { test: [1, 2, 3] }
     );
 
-    expect(expectations.getParsed()).toEqual({ test: [1, 2, 3] });
+    expect(validation.getParsed()).toEqual({ test: [1, 2, 3] });
   });
 
   it("can validate all items", () => {
@@ -67,11 +67,11 @@ describe("Expect package (array validation):", () => {
       test: { type: "array", items: "number" },
     } as const;
 
-    const validExpectations = expectModule(schema, { test: [1, 2, 3] });
-    const invalidExpectations = expectModule(schema, { test: [1, 2, "3"] });
+    const validvalidation = expectModule(schema, { test: [1, 2, 3] });
+    const invalidvalidation = expectModule(schema, { test: [1, 2, "3"] });
 
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(invalidExpectations.wereMet()).toBe(false);
+    expect(validvalidation.isValid).toBe(true);
+    expect(invalidvalidation.isValid).toBe(false);
   });
 
   it("items function", () => {
@@ -94,21 +94,21 @@ describe("Expect package (array validation):", () => {
       },
     };
 
-    const validExpectations = expectModule(schema, {
+    const validvalidation = expectModule(schema, {
       test: [
         { isLoggedIn: true, username: "John", password: "Snow" },
         { isLoggedIn: false, temporaryUuid: 123 },
       ],
     });
-    const invalidExpectations = expectModule(schema, {
+    const invalidvalidation = expectModule(schema, {
       test: [
         { isLoggedIn: true, username: "John", password: "Snow" },
         { isLoggedIn: true, temporaryUuid: 123 },
       ],
     });
 
-    expect(validExpectations.wereMet()).toBe(true);
-    expect(invalidExpectations.wereMet()).toBe(false);
+    expect(validvalidation.isValid).toBe(true);
+    expect(invalidvalidation.isValid).toBe(false);
   });
 
   it("items function error", () => {
@@ -120,16 +120,16 @@ describe("Expect package (array validation):", () => {
     };
 
     expect(() => expectModule(schema, { test: [123] })).not.toThrow();
-    expect(expectModule(schema, { test: [123] }).wereMet()).toBe(false);
+    expect(expectModule(schema, { test: [123] }).isValid).toBe(false);
   });
 
   it("item validation error format", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "array", items: "number" } },
       { test: [1, 2, "3"] }
     );
 
-    expect(expectations.errors()).toEqual({
+    expect(validation.errors()).toEqual({
       test: {
         2: 'Expected parameter test.2 to be of type number but it was "3"',
       },
@@ -137,7 +137,7 @@ describe("Expect package (array validation):", () => {
   });
 
   it("item validation respects errorCode", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "array",
@@ -150,13 +150,13 @@ describe("Expect package (array validation):", () => {
       { test: [1, 2, "3"] }
     );
 
-    expect(expectations.errors()).toEqual({
+    expect(validation.errors()).toEqual({
       test: { 2: "incorrect.item.format" },
     });
   });
 
   it("parses items", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "array",
@@ -171,11 +171,11 @@ describe("Expect package (array validation):", () => {
       { test: [1, 2, "3"] }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("can allow items to be null", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "array",
@@ -189,6 +189,6 @@ describe("Expect package (array validation):", () => {
       { test: ["test", null, null] }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 });

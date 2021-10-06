@@ -25,21 +25,24 @@ export function validateObject({
     return { valid: false, error: 'Object contained unsafe keys "__proto__"' };
   }
 
-  if (!options.keys) return { valid: true };
+  const { errorCode, keys, strictKeyCheck } = options;
+
+  if (!keys) return { valid: true };
+
+  const validKeys = Object.keys(keys).filter((key) => keys[key] != null);
 
   const parsed: Record<string, any> = {};
   const error: IErrorObject = {};
-  if (options.strictKeyCheck) {
-    const checkedKeys = Object.keys(options.keys);
+  if (strictKeyCheck) {
     const uncheckedKeys = Object.keys(value).filter(
-      (key) => !checkedKeys.includes(key)
+      (key) => !validKeys.includes(key)
     );
 
     if (uncheckedKeys.length) {
       return {
         valid: false,
         error:
-          options.errorCode ||
+          errorCode ||
           `Object contained unchecked keys ${JSON.stringify(
             uncheckedKeys.join(", ")
           )}`,
@@ -47,12 +50,13 @@ export function validateObject({
     }
   }
 
-  const optionsKeys = options.keys || {};
-  const invalidKeys = Object.keys(optionsKeys).filter((key) => {
-    const option = optionsKeys[key];
+  const invalidKeys = validKeys.filter((key) => {
+    const option = keys[key];
 
     const keyType =
       typeof option === "object" && option !== null ? option.type : option;
+
+    if (!keyType) return true;
 
     const keyOptions =
       typeof option === "object" && option !== null

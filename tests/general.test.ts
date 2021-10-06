@@ -22,14 +22,14 @@ testData.forEach((input) =>
     it("Does not throw error on invalid input", () => {
       const expectFunction = () => expectModule({ x: "string" }, input as any);
       expect(expectFunction).not.toThrow();
-      expect(expectFunction().wereMet()).toBe(false);
+      expect(expectFunction().isValid).toBe(false);
     });
   })
 );
 
 describe("handling of __proto__ poisoning", () => {
   it("fails if __proto__ key is present when parse is true for objects", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "object",
@@ -41,11 +41,11 @@ describe("handling of __proto__ poisoning", () => {
       }
     );
 
-    expect(expectations.wereMet()).toEqual(false);
+    expect(validation.isValid).toEqual(false);
   });
 
   it("fails if __proto__ is present deeper in the object if parse is true", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "object",
@@ -57,7 +57,7 @@ describe("handling of __proto__ poisoning", () => {
       }
     );
 
-    expect(expectations.wereMet()).toEqual(false);
+    expect(validation.isValid).toEqual(false);
   });
 
   it("should not accept __proto__ as type", () => {

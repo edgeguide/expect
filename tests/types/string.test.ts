@@ -2,58 +2,58 @@ import expectModule from "../../src/index";
 
 describe("Expect package (string validation):", () => {
   it("accepts non-empty string", () => {
-    const expectations = expectModule({ test: "string" }, { test: "batman" });
+    const validation = expectModule({ test: "string" }, { test: "batman" });
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("rejects empty string", () => {
-    const expectations = expectModule({ test: "string" }, { test: "" });
-    expect(expectations.wereMet()).toBe(false);
+    const validation = expectModule({ test: "string" }, { test: "" });
+    expect(validation.isValid).toBe(false);
   });
 
   it("rejects other data types", () => {
     const tests = [null, undefined, true, 1, NaN, Infinity, [], {}, Symbol()];
     tests.forEach((test) => {
-      const expectations = expectModule({ test: "string" }, { test });
-      expect(expectations.wereMet()).toBe(false);
+      const validation = expectModule({ test: "string" }, { test });
+      expect(validation.isValid).toBe(false);
     });
   });
 
   it("parse numbers", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", parse: true } },
       { test: 1 }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("parse arrays", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", parse: true } },
       { test: [1, 2, 3] }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("parse objects", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", parse: true } },
       { test: { foo: "bar" } }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("parse booleans", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", parse: true } },
       { test: false }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("does not mutate the input value when parsing", () => {
@@ -63,83 +63,83 @@ describe("Expect package (string validation):", () => {
   });
 
   it("correctly returns the parsed value", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", parse: true } },
       { test: 1337 }
     );
 
-    expect(expectations.getParsed()).toEqual({ test: "1337" });
+    expect(validation.getParsed()).toEqual({ test: "1337" });
   });
 
   it("returns the initial if no parsing is specified", () => {
     const testObject = { test: "1337" };
-    const expectations = expectModule({ test: "string" }, testObject);
-    expect(expectations.getParsed()).toEqual(testObject);
+    const validation = expectModule({ test: "string" }, testObject);
+    expect(validation.getParsed()).toEqual(testObject);
   });
 
   it("parse null values", () => {
     [null, undefined, ""].forEach((test) => {
-      const expectations = expectModule(
+      const validation = expectModule(
         { test: { type: "string", allowNull: true, parse: true } },
         { test }
       );
-      expect(expectations.wereMet()).toBe(true);
-      expect(expectations.getParsed()).toEqual({
+      expect(validation.isValid).toBe(true);
+      expect(validation.getParsed()).toEqual({
         test: test ?? JSON.stringify(test),
       });
     });
   });
 
   it("does not destroy correct values when parsing", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", parse: true } },
       { test: "hello world" }
     );
 
-    expect(expectations.getParsed()).toEqual({ test: "hello world" });
+    expect(validation.getParsed()).toEqual({ test: "hello world" });
   });
 
   it("fails to parse undefined", () => {
-    const expectations = expectModule({ test: { type: "string" } }, {});
+    const validation = expectModule({ test: { type: "string" } }, {});
 
-    expect(expectations.wereMet()).toBe(false);
+    expect(validation.isValid).toBe(false);
   });
 
   it("blocks unsafe input with the blockUnsafe flag", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", blockUnsafe: true } },
       { test: "<div>I am unsafe</div>" }
     );
-    expect(expectations.wereMet()).toBe(false);
+    expect(validation.isValid).toBe(false);
   });
 
   it("returns a correct error message when blocking unsafe characters", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", blockUnsafe: true } },
       { test: "<div>I am unsafe</div>" }
     );
 
-    expect(expectations.errors()).toEqual({
+    expect(validation.errors()).toEqual({
       test: "Parameter test contained unsafe, unescaped characters",
     });
   });
 
   it("allows safe input with the blockUnsafe flag", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", blockUnsafe: true } },
       { test: "I am so very safe" }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("allows some unsafe input with the blockUnsafe flag when not in strict mode", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "string", blockUnsafe: true } },
       { test: "I am safe (though I contain some questionable characters)!" }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("blocks assitional unsafe input with the blockUnsafe flag when in strict mode", () => {
@@ -147,7 +147,7 @@ describe("Expect package (string validation):", () => {
       expectModule(
         { test: { type: "string", blockUnsafe: true, strictEntities: true } },
         { test: "I am not exactly safe (though it is hard to ever be)!" }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
   });
 
@@ -233,7 +233,7 @@ describe("Expect package (string validation):", () => {
   });
 
   it("allows some specified characters in strict mode", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -245,11 +245,11 @@ describe("Expect package (string validation):", () => {
       { test: "This is not strictly safe, but whatever: foo@bar.xcc" }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("allows several specified characters in strict mode", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -261,11 +261,11 @@ describe("Expect package (string validation):", () => {
       { test: "This [should] get a pass even in strict mode (yay)" }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("blocks input even with several specified characters in strict mode", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -277,14 +277,14 @@ describe("Expect package (string validation):", () => {
       { test: "This [should] NOT get a pass in strict mode (aaaww)" }
     );
 
-    expect(expectations.wereMet()).toBe(false);
+    expect(validation.isValid).toBe(false);
   });
 
   it("blocks input with surrogate pairs", () => {
     const testObject = {
       test: "Some japanese characters (日本語) should be handled correctly",
     };
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -296,14 +296,14 @@ describe("Expect package (string validation):", () => {
       testObject
     );
 
-    expect(expectations.wereMet()).toBe(false);
+    expect(validation.isValid).toBe(false);
   });
 
   it("sanitized strings and put them in the parsed field", () => {
     const testObject = {
       test: "<p>Sanitize this dangerous input</p>",
     };
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -313,7 +313,7 @@ describe("Expect package (string validation):", () => {
       testObject
     );
 
-    expect(expectations.getParsed()).toEqual({
+    expect(validation.getParsed()).toEqual({
       test: "&lt;p&gt;Sanitize this dangerous input&lt;/p&gt;",
     });
   });
@@ -322,7 +322,7 @@ describe("Expect package (string validation):", () => {
     const testObject = {
       test: "Skip this (not so) dangerous input!",
     };
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -332,7 +332,7 @@ describe("Expect package (string validation):", () => {
       testObject
     );
 
-    expect(expectations.getParsed()).toEqual({
+    expect(validation.getParsed()).toEqual({
       test: "Skip this (not so) dangerous input!",
     });
   });
@@ -341,7 +341,7 @@ describe("Expect package (string validation):", () => {
     const testObject = {
       test: "<p>Sanitize this dangerous input</p>",
     };
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -351,7 +351,7 @@ describe("Expect package (string validation):", () => {
       testObject
     );
 
-    expect(expectations.getParsed()).toEqual({
+    expect(validation.getParsed()).toEqual({
       test: "&lt;p&gt;Sanitize this dangerous input&lt;/p&gt;",
     });
   });
@@ -360,7 +360,7 @@ describe("Expect package (string validation):", () => {
     const testObject = {
       test: "<p>sanitize this</p>Skip this (not so) dangerous input!",
     };
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -370,9 +370,8 @@ describe("Expect package (string validation):", () => {
       testObject
     );
 
-    expect(expectations.getParsed()).toEqual({
-      test:
-        "&lt;p&gt;sanitize this&lt;/p&gt;Skip this (not so) dangerous input!",
+    expect(validation.getParsed()).toEqual({
+      test: "&lt;p&gt;sanitize this&lt;/p&gt;Skip this (not so) dangerous input!",
     });
   });
 
@@ -380,7 +379,7 @@ describe("Expect package (string validation):", () => {
     const testObject = {
       test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!",
     };
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -391,9 +390,8 @@ describe("Expect package (string validation):", () => {
       testObject
     );
 
-    expect(expectations.getParsed()).toEqual({
-      test:
-        "&lt;p&gt;sanitize this&lt;/p&gt;Sanitize this &lpar;not so&rpar; dangerous input&excl;",
+    expect(validation.getParsed()).toEqual({
+      test: "&lt;p&gt;sanitize this&lt;/p&gt;Sanitize this &lpar;not so&rpar; dangerous input&excl;",
     });
   });
 
@@ -401,7 +399,7 @@ describe("Expect package (string validation):", () => {
     const testObject = {
       test: "<p>sanitize this</p>Sanitize this (not so) dangerous input!",
     };
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -413,9 +411,8 @@ describe("Expect package (string validation):", () => {
       testObject
     );
 
-    expect(expectations.getParsed()).toEqual({
-      test:
-        "&lt;p&gt;sanitize this&lt;/p&gt;Sanitize this (not so) dangerous input&excl;",
+    expect(validation.getParsed()).toEqual({
+      test: "&lt;p&gt;sanitize this&lt;/p&gt;Sanitize this (not so) dangerous input&excl;",
     });
   });
 
@@ -444,7 +441,7 @@ describe("Expect package (string validation):", () => {
     const testObject = {
       test: "Some japanese characters (日本語) should be handled correctly",
     };
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         test: {
           type: "string",
@@ -455,9 +452,8 @@ describe("Expect package (string validation):", () => {
       testObject
     );
 
-    expect(expectations.getParsed()).toEqual({
-      test:
-        "Some japanese characters &lpar;日本語&rpar; should be handled correctly",
+    expect(validation.getParsed()).toEqual({
+      test: "Some japanese characters &lpar;日本語&rpar; should be handled correctly",
     });
   });
 });

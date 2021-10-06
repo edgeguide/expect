@@ -1,26 +1,6 @@
 import expectModule from "../src/index";
 
 describe("Expect package (README examples):", () => {
-  it("Usage - Validate parameters on the server", () => {
-    const schema: { [key: string]: "string" } = { foo: "string" };
-    const validInput = { foo: "test" };
-    const invalidInput = {};
-
-    const valid = expectModule(schema, validInput);
-    const invalid = expectModule(schema, invalidInput);
-
-    expect(valid.wereMet()).toBe(true);
-    expect(invalid.wereMet()).toBe(false);
-
-    expect(valid.errors()).toEqual({});
-    expect(invalid.errors()).toEqual({
-      foo: "Expected parameter foo to be of type string but it was undefined",
-    });
-
-    expect(valid.getParsed()).toEqual({ foo: "test" });
-    expect(invalid.getParsed()).toEqual({});
-  });
-
   it("Options", () => {
     expect(
       expectModule(
@@ -32,7 +12,7 @@ describe("Expect package (README examples):", () => {
           foo: 123,
           bar: 321,
         }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -40,21 +20,21 @@ describe("Expect package (README examples):", () => {
     expect(
       expectModule(
         {
-          foo: { type: "string", allowNull: true },
+          foo: { type: "string", allowNull: (foo) => foo !== "" },
           bar: { type: "number", allowNull: true },
         },
         { bar: "" }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
 
     expect(
       expectModule(
         {
           foo: { type: "string", allowNull: true },
-          bar: { type: "number", allowNull: (bar: any) => bar !== "" },
+          bar: { type: "number", allowNull: (bar) => bar !== "" },
         },
         { bar: "" }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
   });
 
@@ -63,31 +43,31 @@ describe("Expect package (README examples):", () => {
       expectModule(
         {
           foo: { type: "string", allowNull: true },
+          bar: { type: "string", requiredIf: "foo" },
+        },
+        {}
+      ).isValid
+    ).toBe(true);
+
+    expect(
+      expectModule(
+        {
+          foo: { type: "string", allowNull: true },
+          bar: { type: "string", requiredIf: "foo" },
+        },
+        { foo: "test" }
+      ).isValid
+    ).toBe(false);
+
+    expect(
+      expectModule(
+        {
+          foo: { type: "string", allowNull: true },
           bar: { type: "string", allowNull: true, requiredIf: "foo" },
         },
         { foo: "test" }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
-
-    expect(
-      expectModule(
-        {
-          foo: { type: "string", allowNull: true },
-          bar: { type: "string", requiredIf: "foo" },
-        },
-        { foo: null }
-      ).wereMet()
-    ).toBe(true);
-
-    expect(
-      expectModule(
-        {
-          foo: { type: "string", allowNull: true },
-          bar: { type: "string", requiredIf: "foo" },
-        },
-        { foo: "test" }
-      ).wereMet()
-    ).toBe(false);
 
     expect(
       expectModule(
@@ -102,7 +82,7 @@ describe("Expect package (README examples):", () => {
           foo: { buzz: null },
           bar: null,
         }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -123,14 +103,14 @@ describe("Expect package (README examples):", () => {
       { test: { type: "string", allowNull: false, parse: true } },
       { test: null }
     );
-    expect(invalid.wereMet()).toBe(false);
+    expect(invalid.isValid).toBe(false);
     expect(invalid.getParsed()).toEqual({});
 
     const valid = expectModule(
       { test: { type: "string", allowNull: true, parse: true } },
       { test: null }
     );
-    expect(valid.wereMet()).toBe(true);
+    expect(valid.isValid).toBe(true);
     expect(valid.getParsed()).toEqual({ test: "null" });
 
     const alsoValid = expectModule(
@@ -139,7 +119,7 @@ describe("Expect package (README examples):", () => {
       },
       { test: "test" }
     );
-    expect(alsoValid.wereMet()).toBe(true); // true
+    expect(alsoValid.isValid).toBe(true); // true
     expect(alsoValid.getParsed()).toEqual({ test: null });
 
     const anotherOne = expectModule(
@@ -153,7 +133,7 @@ describe("Expect package (README examples):", () => {
       },
       { test: null, existing: null }
     );
-    expect(anotherOne.wereMet()).toBe(true);
+    expect(anotherOne.isValid).toBe(true);
     expect(anotherOne.getParsed()).toEqual({ test: null, existing: "test" });
   });
 
@@ -167,7 +147,7 @@ describe("Expect package (README examples):", () => {
           },
         },
         { foo: [] }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
 
     expect(
@@ -180,7 +160,7 @@ describe("Expect package (README examples):", () => {
           },
         },
         { foo: null }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
 
     expect(
@@ -193,7 +173,7 @@ describe("Expect package (README examples):", () => {
           },
         },
         { foo: "bar" }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -255,8 +235,7 @@ describe("Expect package (README examples):", () => {
     ).toEqual({
       bar: {
         buzz: {
-          bizz:
-            'Expected parameter bar.buzz.bizz to be of type number but it was "hello"',
+          bizz: 'Expected parameter bar.buzz.bizz to be of type number but it was "hello"',
         },
       },
     });
@@ -307,7 +286,7 @@ describe("Expect package (README examples):", () => {
             { foo: 4, bar: false },
           ],
         }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
 
     const schema: any = {
@@ -329,7 +308,7 @@ describe("Expect package (README examples):", () => {
           { foo: 1, bar: true },
           { foo: 2, bar: true },
         ],
-      }).wereMet()
+      }).isValid
     ).toBe(true);
 
     expect(
@@ -338,7 +317,7 @@ describe("Expect package (README examples):", () => {
           { foo: "1", bar: false },
           { foo: "2", bar: false },
         ],
-      }).wereMet()
+      }).isValid
     ).toBe(true);
 
     expect(
@@ -347,7 +326,7 @@ describe("Expect package (README examples):", () => {
           { foo: "1", bar: true },
           { foo: "2", bar: true },
         ],
-      }).wereMet()
+      }).isValid
     ).toBe(false);
 
     const recursion: any = {
@@ -374,7 +353,7 @@ describe("Expect package (README examples):", () => {
             ],
           },
         }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -386,7 +365,7 @@ describe("Expect package (README examples):", () => {
           bar: "boolean",
         },
         { foo: true, bar: true }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
 
     expect(
@@ -396,7 +375,7 @@ describe("Expect package (README examples):", () => {
           bar: "boolean",
         },
         { foo: "true", bar: true }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
 
     expect(
@@ -406,7 +385,7 @@ describe("Expect package (README examples):", () => {
           bar: "boolean",
         },
         { foo: true, bar: false }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
 
     expect(
@@ -416,7 +395,7 @@ describe("Expect package (README examples):", () => {
           bar: { type: "boolean", allowNull: true },
         },
         { foo: null, bar: null }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
 
     expect(
@@ -432,23 +411,30 @@ describe("Expect package (README examples):", () => {
           foo: { buzz: "abc" },
           bar: "abc",
         }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
   it("Matchers - blockUnsafe", () => {
     expect(
       expectModule(
+        { test: { type: "string", blockUnsafe: false } },
+        { test: "<div>Some html</div>" }
+      ).isValid
+    ).toBe(true);
+
+    expect(
+      expectModule(
         { test: { type: "string", blockUnsafe: true } },
         { test: "<div>Some html</div>" }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
 
     expect(
       expectModule(
         { test: { type: "string", blockUnsafe: true } },
         { test: "This is not so unsafe in non-strict mode!" }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
 
     expect(
@@ -461,7 +447,7 @@ describe("Expect package (README examples):", () => {
           },
         },
         { test: "But it is not safe in strict mode!" }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
 
     expect(
@@ -475,7 +461,7 @@ describe("Expect package (README examples):", () => {
           },
         },
         { test: "This would normally be considered unsafe!" }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 

@@ -144,7 +144,7 @@ export const validate: ValidateFunction = (props) => {
   if (typeof condition === "function") {
     let valid = false;
     try {
-      valid = condition(value);
+      valid = condition(value as any);
     } catch (error) {
       // Do nothing
     }

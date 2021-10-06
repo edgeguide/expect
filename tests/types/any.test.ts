@@ -4,25 +4,25 @@ describe("Expect package (any validation):", () => {
   it("accepts non-null various data types", () => {
     const tests = [0, 1, false, true, "test", NaN, Infinity, [], {}, Symbol()];
     tests.forEach((test) => {
-      const expectations = expectModule({ test: "any" }, { test });
-      expect(expectations.wereMet()).toBe(true);
+      const validation = expectModule({ test: "any" }, { test });
+      expect(validation.isValid).toBe(true);
     });
   });
 
   it("rejects null data types", () => {
     const tests = [null, undefined, ""];
     tests.forEach((test) => {
-      const expectations = expectModule({ test: "any" }, { test });
-      expect(expectations.wereMet()).toBe(false);
+      const validation = expectModule({ test: "any" }, { test });
+      expect(validation.isValid).toBe(false);
     });
   });
 
   it("parse function can be used with any", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       { test: { type: "any", parse: (test) => JSON.stringify(test) } },
       { test: 123 }
     );
-    expect(expectations.getParsed()).toEqual({ test: "123" });
+    expect(validation.getParsed()).toEqual({ test: "123" });
   });
 
   it("allowNull checks value after parse", () =>
@@ -30,6 +30,6 @@ describe("Expect package (any validation):", () => {
       expectModule(
         { test: { type: "any", parse: () => null, allowNull: false } },
         { test: 123 }
-      ).wereMet()
+      ).isValid
     ).toBe(false));
 });

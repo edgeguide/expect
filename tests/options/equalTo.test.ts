@@ -46,7 +46,7 @@ types.forEach((type) =>
         expectModule(
           { foo: { type, allowNull: true, equalTo: "bar" } },
           { foo: null, bar: "test" }
-        ).wereMet()
+        ).isValid
       ).toBe(false);
     });
 
@@ -55,7 +55,7 @@ types.forEach((type) =>
         expectModule(
           { foo: { type, requiredIf: "buzz", equalTo: "bar" } },
           { foo: null, bar: "test" }
-        ).wereMet()
+        ).isValid
       ).toBe(false);
     });
 
@@ -67,7 +67,7 @@ types.forEach((type) =>
             bar: { type },
           },
           { foo: "test", bar: typesValues[type] }
-        ).wereMet()
+        ).isValid
       ).toBe(true);
 
       expect(
@@ -77,7 +77,7 @@ types.forEach((type) =>
             bar: { type, parse: () => typesValues[type] },
           },
           { foo: typesValues[type], bar: "test" }
-        ).wereMet()
+        ).isValid
       ).toBe(true);
     });
 
@@ -107,7 +107,7 @@ describe("equalTo option", () => {
       expectModule(
         { foo: { type: "number", equalTo: "bar" }, bar: "number" },
         { foo: 1, bar: 1 }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -119,7 +119,7 @@ describe("equalTo option", () => {
           bar: { type: "string", equalTo: ["foo", "buzz"] },
         },
         { foo: { buzz: "abc" }, bar: "cba" }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
   });
 
@@ -128,7 +128,7 @@ describe("equalTo option", () => {
       expectModule(
         { foo: { type: "number", equalTo: "bar" }, bar: "number" },
         { foo: 1, bar: "1" }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
   });
 
@@ -137,7 +137,7 @@ describe("equalTo option", () => {
       expectModule(
         { foo: { type: "date", equalTo: "bar" }, bar: "date" },
         { foo: new Date("2017-01-01"), bar: new Date("2017-01-01") }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -146,7 +146,7 @@ describe("equalTo option", () => {
       expectModule(
         { foo: { type: "date", equalTo: "bar" }, bar: "date" },
         { foo: new Date("2017-01-01"), bar: new Date("2017-01-02") }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
   });
 
@@ -155,7 +155,7 @@ describe("equalTo option", () => {
       expectModule(
         { foo: { type: "date", equalTo: "bar" }, bar: "string" },
         { foo: new Date("2017-01-01"), bar: "2017-01-01T00:00:00.000Z" }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -164,7 +164,7 @@ describe("equalTo option", () => {
       expectModule(
         { foo: { type: "date", equalTo: "bar" }, bar: "number" },
         { foo: new Date("2017-01-01"), bar: 1483228800000 }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -173,7 +173,7 @@ describe("equalTo option", () => {
       expectModule(
         { foo: { type: "date", equalTo: "bar" }, bar: "object" },
         { foo: new Date("2017-01-01"), bar: { date: new Date() } }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
   });
 
@@ -183,7 +183,7 @@ describe("equalTo option", () => {
         expectModule(
           { foo: { type: "date", equalTo: "bar" } },
           { foo: new Date("2017-01-01"), bar }
-        ).wereMet()
+        ).isValid
       ).toBe(false)
     );
   });
@@ -201,7 +201,7 @@ describe("equalTo option", () => {
                 bar: "any",
               },
               { foo, bar }
-            ).wereMet()
+            ).isValid
           ).toBe(false)
       )
     );
@@ -239,7 +239,7 @@ describe("equalTo option", () => {
           bar: { type: "boolean", parse: true },
         },
         { foo: true, bar: "true" }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -258,7 +258,7 @@ describe("equalTo option", () => {
           },
         },
         { foo: { dead: "abc", bar: "abc" } }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -280,7 +280,7 @@ describe("equalTo option", () => {
           },
         },
         { foo: [{ dead: "abc", bar: "abc" }] }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -292,7 +292,7 @@ describe("equalTo option", () => {
           bar: { type: "boolean" },
         },
         { foo: "true", bar: true }
-      ).wereMet()
+      ).isValid
     ).toBe(true);
   });
 
@@ -304,7 +304,7 @@ describe("equalTo option", () => {
           bar: { type: "boolean", allowNull: true },
         },
         { foo: undefined, bar: null }
-      ).wereMet()
+      ).isValid
     ).toBe(false);
   });
 });

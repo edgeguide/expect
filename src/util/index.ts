@@ -80,5 +80,5 @@ function sanitize({
 }
 
 function isNull(value: unknown): value is undefined | null | "" {
-  return value === undefined || value === null || value === "";
+  return value == null || value === "";
 }

@@ -1,16 +1,9 @@
-import { IErrorObject, Options, OptionsValue, Errors } from "./definitions";
+import { IErrorObject, Options, Validation } from "./definitions";
 import { validate, ExpectTypes } from "./types/index";
 
-export = function expect<
+function expect<
   Schema extends Record<string, Options | ExpectTypes> | Record<string, any>
->(
-  schema: Schema,
-  input: unknown
-): {
-  errors(): { [K in keyof Schema]?: Errors<Schema[K]> };
-  getParsed(): { [K in keyof Schema]: OptionsValue<Schema[K]> };
-  wereMet(): boolean;
-} {
+>(schema: Schema, input: unknown): Validation<Schema> {
   if (!isObject(schema)) {
     throw new Error("Invalid validation schema");
   }
@@ -51,12 +44,15 @@ export = function expect<
   });
 
   return {
+    isValid: valid,
     errors: () => errors as any,
     getParsed: () => parsedValues as any,
-    wereMet: () => valid,
+    wereMet: () => valid as any,
   };
-};
+}
 
 function isObject(val: unknown): val is Record<string, unknown> {
   return val !== null && typeof val === "object";
 }
+
+export = expect;

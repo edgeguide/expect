@@ -2,21 +2,21 @@ import expectModule from "../../src/index";
 
 describe("Expect package (object validation):", () => {
   it("tests for object type correctly", () => {
-    const expectations = expectModule({ test: "object" }, { test: {} });
+    const validation = expectModule({ test: "object" }, { test: {} });
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   [null, undefined, [], 1].forEach((test) =>
     it(`rejects ${String(test)}`, () => {
-      const expectations = expectModule({ test: "object" }, { test });
+      const validation = expectModule({ test: "object" }, { test });
 
-      expect(expectations.wereMet()).toBe(false);
+      expect(validation.isValid).toBe(false);
     })
   );
 
   it("validates object keys if given the keys option", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -31,11 +31,11 @@ describe("Expect package (object validation):", () => {
       { foo: { bar: "testest", fest: "festfest" } }
     );
 
-    expect(expectations.errors()).toEqual({ foo: { bar: "invalid type" } });
+    expect(validation.errors()).toEqual({ foo: { bar: "invalid type" } });
   });
 
   it("validates nested objects with the keys option", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -58,18 +58,17 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.errors()).toEqual({
+    expect(validation.errors()).toEqual({
       foo: {
         dead: {
-          beef:
-            'Expected parameter foo.dead.beef to be of type number but it was "fail"',
+          beef: 'Expected parameter foo.dead.beef to be of type number but it was "fail"',
         },
       },
     });
   });
 
   it("validates nested objects with errors on several levels", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -98,20 +97,18 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.errors()).toEqual({
+    expect(validation.errors()).toEqual({
       foo: {
-        bizz:
-          'Expected parameter foo.bizz to be of type number but it was "1a"',
+        bizz: 'Expected parameter foo.bizz to be of type number but it was "1a"',
         dead: {
-          beef:
-            'Expected parameter foo.dead.beef to be of type number but it was "fail"',
+          beef: 'Expected parameter foo.dead.beef to be of type number but it was "fail"',
         },
       },
     });
   });
 
   it("validates an array with objects", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "array",
@@ -151,11 +148,11 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.wereMet()).toBe(true);
+    expect(validation.isValid).toBe(true);
   });
 
   it("validates an array with objects where one is incorrect", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "array",
@@ -180,11 +177,11 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.wereMet()).toBe(false);
+    expect(validation.isValid).toBe(false);
   });
 
   it("prints out an error when validation an array with objects where one is incorrect", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "array",
@@ -206,18 +203,17 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.errors()).toEqual({
+    expect(validation.errors()).toEqual({
       foo: {
         2: {
-          beef:
-            'Expected parameter foo.2.beef to be of type number but it was "hello"',
+          beef: 'Expected parameter foo.2.beef to be of type number but it was "hello"',
         },
       },
     });
   });
 
   it("detects null for nested objects", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -235,18 +231,17 @@ describe("Expect package (object validation):", () => {
       { foo: { dead: { beef: null }, bar: "festfest" } }
     );
 
-    expect(expectations.errors()).toEqual({
+    expect(validation.errors()).toEqual({
       foo: {
         dead: {
-          beef:
-            "Expected parameter foo.dead.beef to be of type number but it was null",
+          beef: "Expected parameter foo.dead.beef to be of type number but it was null",
         },
       },
     });
   });
 
   it("allows null for nested objects", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -269,11 +264,11 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.errors()).toEqual({});
+    expect(validation.errors()).toEqual({});
   });
 
   it("can parse values deep in a nested object", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -303,11 +298,11 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.errors()).toEqual({});
+    expect(validation.errors()).toEqual({});
   });
 
   it("can parse values deep in a nested object", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -337,11 +332,11 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.errors()).toEqual({});
+    expect(validation.errors()).toEqual({});
   });
 
   it("getParsed returns correct values for valid nested objects", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -364,8 +359,8 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.wereMet()).toBe(true);
-    expect(expectations.getParsed()).toEqual({
+    expect(validation.isValid).toBe(true);
+    expect(validation.getParsed()).toEqual({
       foo: {
         dead: { beef: true },
         bar: 1,
@@ -375,7 +370,7 @@ describe("Expect package (object validation):", () => {
   });
 
   it("errors for invalid nested objects", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -398,20 +393,19 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.wereMet()).toBe(false);
-    expect(expectations.getParsed()).toEqual({});
-    expect(expectations.errors()).toEqual({
+    expect(validation.isValid).toBe(false);
+    expect(validation.getParsed()).toEqual({});
+    expect(validation.errors()).toEqual({
       foo: {
         dead: {
-          beef:
-            'Expected parameter foo.dead.beef to be of type boolean but it was "true"',
+          beef: 'Expected parameter foo.dead.beef to be of type boolean but it was "true"',
         },
       },
     });
   });
 
   it("fails if an object contains unused keys when the strictKeyCheck mode is enabled", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -449,14 +443,14 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.wereMet()).toBe(false);
-    expect(expectations.errors()).toEqual({
+    expect(validation.isValid).toBe(false);
+    expect(validation.errors()).toEqual({
       foo: 'Object contained unchecked keys "buzz"',
     });
   });
 
   it("fails if a nested object contains unused keys when the strictKeyCheck mode is enabled", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -481,14 +475,14 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.wereMet()).toBe(false);
-    expect(expectations.errors()).toEqual({
+    expect(validation.isValid).toBe(false);
+    expect(validation.errors()).toEqual({
       foo: { dead: 'Object contained unchecked keys "well"' },
     });
   });
 
   it("passes if a nested object contains null keys when the strictKeyCheck mode is enabled", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -513,12 +507,12 @@ describe("Expect package (object validation):", () => {
       }
     );
 
-    expect(expectations.wereMet()).toBe(true);
-    expect(expectations.errors()).toEqual({});
+    expect(validation.isValid).toBe(true);
+    expect(validation.errors()).toEqual({});
   });
 
   it("allows nested requiredIf statements ", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -545,8 +539,8 @@ describe("Expect package (object validation):", () => {
       { foo: { dead: { beef: null } }, bar: "" }
     );
 
-    expect(expectations.wereMet()).toBe(true);
-    expect(expectations.errors()).toEqual({});
+    expect(validation.isValid).toBe(true);
+    expect(validation.errors()).toEqual({});
   });
 
   it("does not throw on null key in strictKeyCheck", () => {
@@ -621,7 +615,7 @@ describe("Expect package (object validation):", () => {
         "buzz": "1337"
       }
     }`);
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -634,14 +628,14 @@ describe("Expect package (object validation):", () => {
       value
     );
 
-    expect(expectations.wereMet()).toBe(false);
-    expect(expectations.errors()).toEqual({
+    expect(validation.isValid).toBe(false);
+    expect(validation.errors()).toEqual({
       foo: 'Object contained unsafe keys "__proto__"',
     });
   });
 
   it("fails if the __proto__ is present on a deeper level for an object", () => {
-    const expectations = expectModule(
+    const validation = expectModule(
       {
         foo: {
           type: "object",
@@ -665,9 +659,52 @@ describe("Expect package (object validation):", () => {
       }`)
     );
 
-    expect(expectations.wereMet()).toBe(false);
-    expect(expectations.errors()).toEqual({
+    expect(validation.isValid).toBe(false);
+    expect(validation.errors()).toEqual({
       foo: { bar: 'Object contained unsafe keys "__proto__"' },
+    });
+  });
+
+  it("ignores undefined keys in the validation schema", () => {
+    const validation = expectModule(
+      {
+        foo: {
+          type: "object",
+          keys: {
+            bar: undefined,
+            bizz: "number",
+          },
+        },
+      },
+      { foo: { bizz: 1 } }
+    );
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.getParsed()).toEqual({
+      foo: {
+        bizz: 1,
+      },
+    });
+  });
+
+  it("strictKeyCheck ignores undefined keys in the validation schema", () => {
+    const validation = expectModule(
+      {
+        foo: {
+          type: "object",
+          strictKeyCheck: true,
+          keys: {
+            bar: undefined,
+            bizz: "number",
+          },
+        },
+      },
+      { foo: { bizz: 1 } }
+    );
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.getParsed()).toEqual({
+      foo: { bizz: 1 },
     });
   });
 });
