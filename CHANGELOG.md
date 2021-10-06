@@ -1,4 +1,4 @@
-## 8.0.2
+## 8.0.2 (6 October 2021)
 
 - Ignore undefined top-level properties in the schema instead of throwing an error
 
