@@ -58,8 +58,6 @@ function addUser(req, res) {
 
 </details>
 
-</br>
-
 ## Validation schema
 
 The first argument for `expect` is an object that specifies how to validate the input.
@@ -84,8 +82,6 @@ expect(
 ).isValid; // true
 ```
 
-</br>
-
 ### Types
 
 | Type          | Default validation                                              | Custom options                                 |
@@ -98,7 +94,6 @@ expect(
 | **_object_**  | `typeof x === "object" && x !== null && !Array.isArray(x)`      | keys, strictKeyCheck                           |
 | **_date_**    | Valid Date instance, or a valid string for the Date constructor | N/A                                            |
 
-</br>
 
 Note that _null_, _undefined_ and empty string are not allowed by default. These will be referred to as "null values" and their validation can be customized by using the `allowNull` or `requiredIf` option.
 
@@ -715,8 +710,6 @@ Custom error message if the error was caused by the `condition` option.
 Errors caused by `condition` have the fourth highest priority.
 
 </details>
-
-</br>
 
 ## Author
 
