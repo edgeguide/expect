@@ -630,7 +630,7 @@ describe("Expect package (object validation):", () => {
 
     expect(validation.isValid).toBe(false);
     expect(validation.errors()).toEqual({
-      foo: 'Object contained unsafe keys "__proto__"',
+      foo: "Object contained unsafe prototype keys",
     });
   });
 
@@ -661,7 +661,7 @@ describe("Expect package (object validation):", () => {
 
     expect(validation.isValid).toBe(false);
     expect(validation.errors()).toEqual({
-      foo: { bar: 'Object contained unsafe keys "__proto__"' },
+      foo: { bar: "Object contained unsafe prototype keys" },
     });
   });
 

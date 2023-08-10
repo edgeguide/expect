@@ -1,6 +1,7 @@
 import { IErrorObject, IObjectOption, ValidateFunction } from "../definitions";
 import isRecord from "../util/isRecord";
 import { formatParameter } from "../util/index";
+import { isUnsafe } from "../util/validation";
 
 export function validateObject({
   parameter,
@@ -21,18 +22,21 @@ export function validateObject({
 }) {
   if (!isRecord(value) || Array.isArray(value)) return { valid: false };
 
-  if (Object.prototype.hasOwnProperty.call(value, "__proto__")) {
-    return { valid: false, error: 'Object contained unsafe keys "__proto__"' };
-  }
-
   const { errorCode, keys, strictKeyCheck } = options;
+
+  if (Object.keys(value).some((key) => isUnsafe(key))) {
+    return {
+      valid: false,
+      error: errorCode || `Object contained unsafe prototype keys`,
+    };
+  }
 
   if (!keys) return { valid: true };
 
   const validKeys = Object.keys(keys).filter((key) => keys[key] != null);
 
-  const parsed: Record<string, any> = {};
-  const error: IErrorObject = {};
+  const parsed: Record<string, any> = Object.create(null);
+  const error: IErrorObject = Object.create(null);
   if (strictKeyCheck) {
     const uncheckedKeys = Object.keys(value).filter(
       (key) => !validKeys.includes(key)

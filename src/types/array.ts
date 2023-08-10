@@ -28,7 +28,7 @@ export function validateArray({
 
   if (!items) return { valid: true, parsed: value };
 
-  const error: IErrorObject = {};
+  const error: IErrorObject = Object.create(null);
   const parsed: any[] = [];
   const hasInvalidItems = value.filter((item, index) => {
     let itemOptions = items;

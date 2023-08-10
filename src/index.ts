@@ -1,5 +1,6 @@
 import { IErrorObject, Options, Validation } from "./definitions";
 import { validate, ExpectTypes } from "./types/index";
+import { isUnsafe } from "./util/validation";
 
 function expect<
   Schema extends Record<string, Options | ExpectTypes> | Record<string, any>
@@ -8,11 +9,12 @@ function expect<
     throw new Error("Invalid validation schema");
   }
 
-  const parsedValues: Record<string, any> = {};
-  const errors: IErrorObject = {};
+  const parsedValues: Record<string, any> = Object.create(null);
+  const errors: IErrorObject = Object.create(null);
   let valid = true;
 
   Object.keys(schema)
+    .filter((key) => !isUnsafe(key))
     .filter((key) => schema[key] !== undefined)
     .forEach((parameter) => {
       if (!isObject(input)) {
