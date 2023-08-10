@@ -1,3 +1,11 @@
+## 9.0.0 (10 August 2023)
+
+- Added additional protections against prototype pollution
+
+### Breaking changes
+
+- Internally in the library, Object.create(null) is used to create the error object and parsed object returned by .errors() and .getParsed(). This will only affect you if you rely on the prototype for these object in your code.
+
 ## 8.0.2 (6 October 2021)
 
 - Ignore undefined top-level properties in the schema instead of throwing an error
